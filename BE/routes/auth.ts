@@ -1,9 +1,11 @@
 import express from "express";
-import { getPosts } from "../controllers/posts";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { ControllerProps } from "../types/types";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getPosts);
+// auth routes
+router.post("/login", authMiddleware);
+router.post("/register", authMiddleware);
 
 export default router;

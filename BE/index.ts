@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/users.js";
+import authRoutes from "./routes/auth.js";
 import helmet from "helmet";
 import morgan from "morgan";
 
@@ -12,6 +13,7 @@ app.use(helmet());
 app.use(morgan("common"));
 
 // ROUTES
+app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", userRoutes);
 

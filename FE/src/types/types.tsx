@@ -45,3 +45,22 @@ export interface PaginationProps {
   setCurrentPage: (page: number) => void;
   currentPage: number;
 }
+
+export interface RegisterValuesType {
+  email: string;
+  username: string;
+  tag: string;
+  bio: string;
+  profilePic: { name: string };
+  password: string;
+  confirmPassword: string;
+}
+
+export interface LoginValuesType {
+  email: string;
+  password: string;
+}
+
+export interface OnsubmitPropsType {
+  resetForm: () => void;
+}

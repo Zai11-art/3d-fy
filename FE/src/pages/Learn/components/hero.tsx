@@ -45,7 +45,7 @@ const HeroSection = () => {
       <div
         // @ts-ignore
         ref={shouldScrollToProcess}
-        className={`m-5 md:h-full  h-full flex-wrap xl:py-[180px] lg:py-[50px] md:py-[150px] py-16 flex justify-center items-center gap-20  `}
+        className={`m-5 md:h-full  h-full flex-wrap xl:py-[150px] lg:py-[150px] md:py-[90px] py-16 flex justify-center items-center gap-20  `}
       >
         {sectionHero.map((card) => (
           <div className="flex flex-col items-center justify-center group">
