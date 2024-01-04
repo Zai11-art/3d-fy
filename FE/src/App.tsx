@@ -8,8 +8,10 @@ import Showcase from "./pages/Showcase/Showcase";
 import Learn from "./pages/Learn/Learn";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import UserProfile from "./pages/UserProfile/UserProfile";
-import Auth from "./pages/Auth/Auth";
+import Auth from "./pages/Auth/login";
 import About from "./pages/About/About";
+import Register from "./pages/Auth/register";
+import Login from "./pages/Auth/login";
 
 function App() {
   return (
@@ -23,8 +25,8 @@ function App() {
           <Route path="/learn" element={<Learn />}></Route>
           <Route path="/user/dashboard" element={<Dashboard />}></Route>
           <Route path="/user" element={<UserProfile />}></Route>
-          <Route path="/register" element={<Auth />}></Route>
-          <Route path="/login" element={<Auth />}></Route>
+          <Route path="/register" element={<Register />}></Route>
+          <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>
         </Route>
 

@@ -64,3 +64,11 @@ export interface LoginValuesType {
 export interface OnsubmitPropsType {
   resetForm: () => void;
 }
+
+// STATE
+export interface User {
+  username: string;
+  profilePic: string;
+  bio: string;
+  tag: string;
+}
