@@ -5,14 +5,12 @@ import { Link } from "react-router-dom";
 
 import { MdArrowForward, MdMenu } from "react-icons/md";
 import { useMediaQuery } from "../hooks/use-media-query";
-import toast from "react-hot-toast";
 import useMode from "../hooks/state";
 import Avatar from "./avatar";
 import Divider from "./divider";
 import { CgShapeHexagon } from "react-icons/cg";
 import { MdStarPurple500 } from "react-icons/md";
-import { FaReadme } from "react-icons/fa6";
-import { TbUserFilled } from "react-icons/tb";
+import UserDropdown from "./user-dropdown";
 
 const dummyUserData = {
   name: "Raygun",
@@ -48,7 +46,8 @@ const Navbar = () => {
   const setDarkMode = useMode((state) => state.setDarkMode);
   const [openMenuBar, setOpenMenuBar] = useState(false);
   const md = useMediaQuery("(max-width:768px)");
-  console.log(openMenuBar);
+  const isAuth = useMode((state) => state.isLoggedIn);
+  const user = useMode((state) => state.user);
 
   return (
     <nav
@@ -74,6 +73,21 @@ const Navbar = () => {
 
           {md ? null : (
             <div className="flex gap-2 mt-1">
+              <Link to={"/viewer"}>
+                <button
+                  type="button"
+                  className={`flex items-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+            ${
+              lightMode
+                ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+            }`}
+                >
+                  Viewer
+                  <MdArrowForward className="ml-1 h-5 " />
+                </button>
+              </Link>
+
               {navLinks.map((link) => (
                 <Link
                   className={`text-[13px] font-thin transition-all ease-in-out  p-1 active:bg-slate-800 ${
@@ -101,17 +115,41 @@ const Navbar = () => {
                   : "bg-[#0e1414] text-white"
               } h-screen transition-all ease-in-out  duration-300`}
             >
-              <div className="flex flex-col mt-16 p-4">
-                <div className=" flex items-center">
-                  <Avatar url="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
-                  <span className="ml-2 text-sm">{dummyUserData.name}</span>
+              <div className="flex flex-col mt-16 py-8 px-5">
+                <div className=" flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Avatar
+                      url={
+                        isAuth
+                          ? user?.profilePic
+                          : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                      }
+                    />
+
+                    <span className="ml-2 text-sm">
+                      {user ? user?.username : "Logged out"}
+                    </span>
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        user ? "bg-green-500" : "bg-red-500"
+                      } `}
+                    ></div>
+                    <span className="text-normal font-light text-sm">
+                      {user ? "online" : "offline"}
+                    </span>
+                  </div>
                 </div>
 
-                <button className="mt-5">
+                <div className="mt-5">
                   {navbarContent.map((lbl) => (
-                    <Link to={lbl.url}>
+                    <Link
+                      onClick={() => setOpenMenuBar(!openMenuBar)}
+                      to={lbl.url}
+                    >
                       <div
-                        className={`flex text-xl hover:text-3xl transition-all ease-in-out items-center py-2`}
+                        className={`flex  text-xl hover:text-3xl transition-all ease-in-out items-center py-2`}
                       >
                         <div className="mr-2 ">{lbl.icon}</div>
                         <span className="text-sm font-thin">{lbl.label}</span>
@@ -119,57 +157,55 @@ const Navbar = () => {
                       <Divider />
                     </Link>
                   ))}
-                </button>
-
-                <div className="mt-5">
-                  <button
-                    onClick={setDarkMode}
-                    className={`${
-                      lightMode
-                        ? "shadow-slate-900/60 text-white"
-                        : "shadow-amber-400/90 text-white"
-                    } w-8 h-8 flex items-center justify-center bg-amber-700 shadow-md rounded-full p-[2px]`}
-                  >
-                    {lightMode ? (
-                      <MdOutlineLightMode className="w-5 h-5 shadow-xl rounded-full hover:shadow-cyan-100/90 shadow-cyan-300/30 transition-all ease-in-out " />
-                    ) : (
-                      <MdOutlineDarkMode className="w-5 h-5 shadow-xl rounded-full hover:shadow-cyan-100/90 shadow-cyan-300/30 transition-all ease-in-out " />
-                    )}
-                  </button>
+                  {md && (
+                    <Link
+                      to={"/login"}
+                      type="button"
+                      className={`mt-5 text-white flex items-center justify-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+                      ${
+                        lightMode
+                          ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                          : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+                      }`}
+                    >
+                      login
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
-            <button
-              className="pr-4"
-              onClick={() => setOpenMenuBar(!openMenuBar)}
-            >
-              <MdMenu
-                className={`w-6 h-6 ${lightMode ? "text-black" : "text-white"}`}
-              />
-            </button>
+            <div className="flex  gap-2">
+              <button
+                onClick={setDarkMode}
+                className={`text-white ${
+                  lightMode ? "shadow-slate-900/60" : "shadow-amber-400/90"
+                } w-7 h-7 flex items-center justify-center bg-amber-700 shadow-md rounded-full p-[2px]`}
+              >
+                {lightMode ? (
+                  <MdOutlineLightMode className="w-5 h-5 shadow-xl rounded-full hover:shadow-cyan-100/90 shadow-cyan-300/30 transition-all ease-in-out " />
+                ) : (
+                  <MdOutlineDarkMode className="w-5 h-5 shadow-xl rounded-full hover:shadow-cyan-100/90 shadow-cyan-300/30 transition-all ease-in-out " />
+                )}
+              </button>
+              <button
+                className="pr-4"
+                onClick={() => setOpenMenuBar(!openMenuBar)}
+              >
+                <MdMenu
+                  className={`text-[30px] ${
+                    lightMode ? "text-black" : "text-white"
+                  }`}
+                />
+              </button>
+            </div>
           </>
         ) : (
-          <div className="flex items-center gap-2 pr-4">
-            <Link to={"/viewer"}>
-              <button
-                type="button"
-                className={`flex items-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
-            ${
-              lightMode
-                ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
-                : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
-            }`}
-              >
-                Viewer
-                <MdArrowForward className="ml-1 h-5 " />
-              </button>
-            </Link>
-
+          <div className="flex items-center justify-center pr-4 gap-2  ">
             <button
               onClick={setDarkMode}
-              className={`${
+              className={`text-white ${
                 lightMode ? "shadow-slate-900/60" : "shadow-amber-400/90"
-              } w-7 h-7 flex items-center justify-center bg-amber-700 shadow-md rounded-full p-[2px]`}
+              } w-8 h-8 flex items-center justify-center  bg-amber-700 shadow-md rounded-full`}
             >
               {lightMode ? (
                 <MdOutlineLightMode className="w-5 h-5 shadow-xl rounded-full hover:shadow-cyan-100/90 shadow-cyan-300/30 transition-all ease-in-out " />
@@ -177,9 +213,23 @@ const Navbar = () => {
                 <MdOutlineDarkMode className="w-5 h-5 shadow-xl rounded-full hover:shadow-cyan-100/90 shadow-cyan-300/30 transition-all ease-in-out " />
               )}
             </button>
-
             <Link to={"/user/dashboard"}>
-              <Avatar url="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
+              {isAuth ? (
+                <UserDropdown />
+              ) : (
+                <Link
+                  to={"/login"}
+                  type="button"
+                  className={`flex items-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+                ${
+                  lightMode
+                    ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                    : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+                }`}
+                >
+                  login
+                </Link>
+              )}
             </Link>
           </div>
         )}

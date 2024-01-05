@@ -28,6 +28,7 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 // ROUTES
 // app.use("/auth", authRoutes);
+
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", userRoutes);

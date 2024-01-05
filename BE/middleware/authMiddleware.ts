@@ -1,7 +1,12 @@
 import { ControllerPropsMW } from "../types/types";
 import jwt, { Secret } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 
-export const authMiddleware = async ({ req, res, next }: ControllerPropsMW) => {
+export const authMiddleware = async (
+  req: Request & { user: string },
+  res: Response,
+  next: NextFunction
+) => {
   try {
     let token = req.header("Authorization");
 

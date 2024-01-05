@@ -6,7 +6,7 @@ import { upload } from "../middleware/uploadImage.js";
 const router = express.Router();
 
 // auth routes
-router.post("/login", authMiddleware, login);
+router.post("/login", login);
 router.post(
   "/register",
   upload("user-profile-pic").single("profilePic"),

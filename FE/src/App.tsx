@@ -12,8 +12,13 @@ import Auth from "./pages/Auth/login";
 import About from "./pages/About/About";
 import Register from "./pages/Auth/register";
 import Login from "./pages/Auth/login";
+import useMode from "./hooks/state";
+import AuthedRoute from "./layout/protected-route";
 
 function App() {
+  const isAuth = useMode((state) => state.isLoggedIn);
+  const user = useMode((state) => state.user);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -23,8 +28,22 @@ function App() {
           <Route path="/models" element={<Models />}></Route>
           <Route path="/showcase" element={<Showcase />}></Route>
           <Route path="/learn" element={<Learn />}></Route>
-          <Route path="/user/dashboard" element={<Dashboard />}></Route>
-          <Route path="/user" element={<UserProfile />}></Route>
+          <Route
+            path="/user/dashboard"
+            element={
+              <AuthedRoute user={user}>
+                <Dashboard />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route
+            path="/user/profile"
+            element={
+              <AuthedRoute user={user}>
+                <UserProfile />
+              </AuthedRoute>
+            }
+          ></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>

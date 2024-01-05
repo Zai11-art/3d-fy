@@ -75,10 +75,7 @@ const data = [
 const Dashboard = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useConfirmationModal();
-
-  const tester = () => {
-    return "1";
-  };
+  const user = useMode((state) => state.user);
 
   const questionData = {
     title: "Save these changes?",
@@ -148,8 +145,8 @@ const Dashboard = () => {
                 <Avatar url="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
 
                 <div className="flex flex-col">
-                  <span className="text-sm">Brandon</span>
-                  <span className="text-xs">Damodeler</span>
+                  <span className="text-sm">{user?.username}</span>
+                  <span className="text-xs">{user?.tag}</span>
                 </div>
               </div>
 
@@ -240,12 +237,7 @@ const Dashboard = () => {
                     : "bg-black text-white"
                 }  p-2 rounded-lg text-sm w-full xl:h-[160px] h-full  border-[1px] border-zinc-500/80`}
               >
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid
-                quidem et voluptate at similique animi autem sed incidunt,
-                tempore vitae dicta nisi rem soluta numquam voluptas deleniti
-                modi quam explicabo! Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Facilis, eaque quia quisquam quas fugit esse
-                sapiente vel illum sunt eius fuga nihil tempora qui modi.
+                {user?.bio}
               </textarea>
               <p
                 className={`text-normal ${
@@ -281,7 +273,7 @@ const Dashboard = () => {
                             ? "bg-zinc-100 text-black font-normal shadow-inner shadow-zinc-500/40"
                             : "bg-black text-white"
                         } border-[1px] border-zinc-500/60 text-normal font-light py-2 px-2 text-sm w-full`}
-                        placeholder="Brandon"
+                        placeholder={user?.username}
                       />
                     </div>
                   </div>
@@ -302,7 +294,7 @@ const Dashboard = () => {
                             ? "bg-zinc-100 text-black font-normal shadow-inner shadow-zinc-500/40"
                             : "bg-black text-white"
                         } border-[1px] border-zinc-500/60 text-normal font-light py-2 px-2 text-sm w-full`}
-                        placeholder="Damodeller"
+                        placeholder={user?.tag}
                       />
                     </div>
                   </div>
@@ -317,7 +309,11 @@ const Dashboard = () => {
                   <div className="w-full h-full  border-[1px] border-zinc-500/50 rounded-lg flex items-center justify-center ">
                     <img
                       className="w-[120px] h-[120px] m-3"
-                      src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                      src={
+                        user?.profilePic
+                          ? user.profilePic
+                          : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                      }
                       alt="user"
                     />
                   </div>

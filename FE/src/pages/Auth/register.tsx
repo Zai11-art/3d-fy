@@ -3,17 +3,14 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useMode from "../../hooks/state";
 import Divider from "../../components/divider";
 import PageLayout from "../../layout/page-layout";
-import {
-  LoginValuesType,
-  OnsubmitPropsType,
-  RegisterValuesType,
-} from "../../types/types";
+import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
 import Dropzone from "react-dropzone";
+import toast from "react-hot-toast";
 
 const registerSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("required"),
@@ -41,7 +38,10 @@ const initialRegVal = {
 const Register = () => {
   const currRoute = useLocation().pathname;
   const lightmode = useMode((state) => state.isDarkMode);
+  const [isLoading, setIsloading] = useState(false);
   const [imagePath, setimagePath] = useState([]);
+  const mode = useMode();
+  const navigate = useNavigate();
 
   const register = async (
     values: RegisterValuesType,
@@ -55,16 +55,24 @@ const Register = () => {
     });
     formData.append("profilePic", values.profilePic.name);
 
+    setIsloading(true);
     const registerRes = await fetch("http://localhost:8080/auth/register", {
       method: "POST",
       body: formData,
     });
 
-    const registeredUser = await registerRes.json();
-
+    const data = await registerRes.json();
+    if (data) {
+      mode.setToken(data);
+      toast.success(`Registered. Please login.`);
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } else {
+      toast.error("Failed Registering.");
+    }
     onSubmitProps.resetForm();
-
-    console.log(registeredUser);
+    console.log(data);
   };
 
   const handleFormSubmitReg = async (
@@ -139,6 +147,7 @@ const Register = () => {
                             )}
                           </div>
                           <input
+                            disabled={isLoading}
                             required
                             type="email"
                             id="email"
@@ -154,7 +163,9 @@ const Register = () => {
                               lightmode
                                 ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                                 : "bg-black text-white"
-                            }  border-[1px] rounded-md`}
+                            } ${
+                              isLoading && "animate-pulse"
+                            } border-[1px] rounded-md`}
                           />
                         </div>
 
@@ -173,6 +184,7 @@ const Register = () => {
                               )}
                             </div>
                             <input
+                              disabled={isLoading}
                               required
                               type="username"
                               id="username"
@@ -188,7 +200,9 @@ const Register = () => {
                                 lightmode
                                   ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                                   : "bg-black text-white"
-                              }  rounded-md border-[1px] `}
+                              } ${
+                                isLoading && "animate-pulse"
+                              } rounded-md border-[1px] `}
                             />
                           </div>
 
@@ -206,6 +220,7 @@ const Register = () => {
                               )}
                             </div>
                             <input
+                              disabled={isLoading}
                               required
                               type="text"
                               id="tag"
@@ -221,7 +236,9 @@ const Register = () => {
                                 lightmode
                                   ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                                   : "bg-black text-white"
-                              }  rounded-md border-[1px] `}
+                              } ${
+                                isLoading && "animate-pulse"
+                              } rounded-md border-[1px] `}
                             />
                           </div>
                         </div>
@@ -240,6 +257,7 @@ const Register = () => {
                             )}
                           </div>
                           <textarea
+                            disabled={isLoading}
                             required
                             id="bio"
                             name="bio"
@@ -254,7 +272,9 @@ const Register = () => {
                               lightmode
                                 ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                                 : "bg-black text-white"
-                            }  rounded-md border-[1px] `}
+                            } ${
+                              isLoading && "animate-pulse"
+                            } rounded-md border-[1px] `}
                           />
                         </div>
                       </div>
@@ -274,6 +294,7 @@ const Register = () => {
                             )}
                           </div>
                           <input
+                            disabled={isLoading}
                             required
                             type="password"
                             id="password"
@@ -289,7 +310,9 @@ const Register = () => {
                               lightmode
                                 ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                                 : "bg-black text-white"
-                            }  rounded-md border-[1px] `}
+                            } ${
+                              isLoading && "animate-pulse"
+                            } rounded-md border-[1px] `}
                           />
                         </div>
 
@@ -311,6 +334,7 @@ const Register = () => {
                               )}
                           </div>
                           <input
+                            disabled={isLoading}
                             required
                             type="password"
                             id="confirmPassword"
@@ -326,7 +350,9 @@ const Register = () => {
                               lightmode
                                 ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                                 : "bg-black text-white"
-                            }  border-[1px]  rounded-md`}
+                            } ${
+                              isLoading && "animate-pulse"
+                            } border-[1px]  rounded-md`}
                           />
                         </div>
 
@@ -356,7 +382,9 @@ const Register = () => {
                                     lightmode
                                       ? "border-zinc-500/90 shadow-inner shadow-zinc-950/30 "
                                       : "border-zinc-500/90 hover:border-zinc-200 transition-all ease-in-out"
-                                  }  border-[1px] border-dashed rounded-md flex`}
+                                  } ${
+                                    isLoading && "animate-pulse"
+                                  } border-[1px] border-dashed rounded-md flex`}
                                 >
                                   <div className="w-full h-full gap-5 flex flex-col p-5 items-center justify-center ">
                                     <div className="flex gap-5 flex-col items-center justify-center rounded-full border-[2px] border-orange-700 hover:border-orange-500">

@@ -10,7 +10,7 @@ const s3Config: S3ClientConfig = {
   },
 };
 
-const s3 = new S3Client(s3Config);
+export const s3 = new S3Client(s3Config);
 
 export const upload = (path: string) =>
   multer({

@@ -1,8 +1,9 @@
-import axios from "axios";
 import * as yup from "yup";
 import { Formik } from "formik";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import useMode from "../../hooks/state";
 import Divider from "../../components/divider";
@@ -23,13 +24,16 @@ const loginSchema = yup.object().shape({
 
 const initialLogVal = {
   email: "",
-  username: "",
   password: "",
 };
 
 const Login = () => {
   const currRoute = useLocation().pathname;
   const lightmode = useMode((state) => state.isDarkMode);
+  const [isloading, setIsloading] = useState(false);
+  const navigate = useNavigate();
+  const mode = useMode();
+  console.log(mode);
 
   const login = async (
     values: LoginValuesType,
@@ -38,18 +42,34 @@ const Login = () => {
     console.log("triggered from login");
     console.log(values);
 
-    const loginRes = await axios.post("http://localhost:8080/login", values, {
-      headers: { "Content-Type": "application/json" },
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value);
     });
 
-    const loginRes2 = await fetch("http://localhost:8080/login", {
+    const loginRes2 = await fetch("http://localhost:8080/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
 
     const data = await loginRes2.json();
+    setIsloading(true);
+    if (
+      data.msg != "User does not exist." ||
+      data.msg != "Invalid credentials"
+    ) {
+      mode.setToken(data);
+      toast.success(`Login Successful, welcome ${data.user.username}`);
+      setTimeout(() => {
+        navigate("/models");
+      }, 2000);
+    } else {
+      toast.error("Wrong password or email.");
+    }
+
     console.log(data);
+    onSubmitProps.resetForm();
   };
 
   const handleFormSubmitLog = async (
@@ -122,6 +142,7 @@ const Login = () => {
                           )}
                         </div>
                         <input
+                          disabled={isloading}
                           required
                           type="email"
                           id="email"
@@ -137,7 +158,9 @@ const Login = () => {
                             lightmode
                               ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                               : "bg-black text-white"
-                          }  rounded-md border-[1px] focus:bg-black`}
+                          } ${
+                            isloading && "animate-pulse"
+                          } rounded-md border-[1px] focus:bg-black`}
                         />
                       </div>
 
@@ -155,6 +178,7 @@ const Login = () => {
                           )}
                         </div>
                         <input
+                          disabled={isloading}
                           required
                           type="password"
                           id="password"
@@ -170,18 +194,19 @@ const Login = () => {
                             lightmode
                               ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
                               : "bg-black text-white"
-                          }  border-[1px] rounded-md`}
+                          } ${
+                            isloading && "animate-pulse"
+                          } border-[1px] rounded-md`}
                         />
                       </div>
                     </div>
                   )}
 
                   <button
-                    id="hehe"
                     type="submit"
                     className="hehe w-full py-1 bg-orange-500 text-white rounded-md"
                   >
-                    {currRoute === "/login" ? "Login" : "Register"}
+                    Login
                   </button>
 
                   <div className="flex gap-2 w-full items-center">

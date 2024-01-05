@@ -12,11 +12,54 @@ datasource db {
 }
 
 model User {
-  id         String  @id @default(uuid())
-  email      String  @unique
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  email      String   @unique
   password   String
   username   String?
   tag        String
   bio        String
   profilePic String
+  posts      Post[]   @relation("UserToPost")
+}
+
+model Post {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String?
+  title       String
+  description String
+  filePath    String
+  User        User?     @relation("UserToPost", fields: [userId], references: [id])
+  tags        String[]
+  views       Int
+  likes       Int
+  comments    Comment[]
+
+  @@index([userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  postId    String
+  reples    Reply[]
+  Post      Post     @relation(fields: [postId], references: [id])
+
+  @@index([postId])
+}
+
+model Reply {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  commentId String?
+  content   String
+  Comment   Comment? @relation(fields: [commentId], references: [id])
+
+  @@index([commentId])
 }

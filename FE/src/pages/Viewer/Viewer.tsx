@@ -94,7 +94,8 @@ const Viewer = () => {
       <Canvas>
         <Suspense fallback={<Loader />}>
           <CameraControls makeDefault />
-          <Environment preset="sunset" background />
+          {/* APPLY FIX TO ENVIRONMENT: HDRI NOT WORKING */}
+          {/* <Environment preset="sunset" background /> */}
           <ContactShadows position-y={0.001} opacity={0.9} blur={3} />
           <Lights />
 
