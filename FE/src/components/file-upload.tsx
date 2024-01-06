@@ -33,7 +33,7 @@ const FileUpload = () => {
   return (
     <Dropzone onDrop={handleOnDrop}>
       {({ getRootProps, getInputProps }) => (
-        <div className="w-full flex justify-center px-5 ">
+        <div className="w-full flex justify-center  ">
           <div
             {...getRootProps()}
             className={`text-white ${
@@ -61,7 +61,9 @@ const FileUpload = () => {
                     <span className="text-xs ">
                       {file?.name.slice(0, 15) + "..."}
                     </span>
-                    <span className="text-xs">{Math.round(file?.size / 100000)} mb</span>
+                    <span className="text-xs">
+                      {Math.round(file?.size / 100000)} mb
+                    </span>
                   </div>
                 ))}
               </div>

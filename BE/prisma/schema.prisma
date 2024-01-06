@@ -16,6 +16,7 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   email      String   @unique
+  // banner     String
   password   String
   username   String?
   tag        String
@@ -33,7 +34,7 @@ model Post {
   description String
   filePath    String
   User        User?     @relation("UserToPost", fields: [userId], references: [id])
-  tags        String[]
+  tags        String
   views       Int
   likes       Int
   comments    Comment[]

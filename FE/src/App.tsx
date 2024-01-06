@@ -14,6 +14,7 @@ import Register from "./pages/Auth/register";
 import Login from "./pages/Auth/login";
 import useMode from "./hooks/state";
 import AuthedRoute from "./layout/protected-route";
+import Upload from "./pages/Upload/upload";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -44,6 +45,15 @@ function App() {
               </AuthedRoute>
             }
           ></Route>
+          <Route
+            path="/user/upload"
+            element={
+              <AuthedRoute user={user}>
+                <Upload />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route path="/feed" element={<Register />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>

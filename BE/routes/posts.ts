@@ -1,9 +1,16 @@
 import express from "express";
-import { getPosts } from "../controllers/posts";
+import { uploadPost } from "../controllers/posts";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { upload3d } from "../middleware/uploadImage";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getPosts);
+// CREATE POSTS
+router.post(
+  "/upload",
+  authMiddleware,
+  upload3d("post-3dfile").single("file"),
+  uploadPost
+);
 
 export default router;

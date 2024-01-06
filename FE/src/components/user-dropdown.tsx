@@ -51,7 +51,7 @@ const UserDropdown = () => {
       </button>
       {isOpen && (
         <div
-          className={`gap-2 mt-3 absolute right-5 rounded-lg flex flex-col ${
+          className={`gap-2 mt-12 absolute right-0 rounded-lg flex flex-col ${
             lightmode
               ? "bg-gradient-gray-light border-zinc-500/50 shadow-lg shadow-zinc-950/30"
               : "bg-gradient-gray border-zinc-500/50 shadow-lg shadow-zinc-200/20"
@@ -60,6 +60,7 @@ const UserDropdown = () => {
           {[
             { label: "Profile", route: "/user/profile" },
             { label: "Dashboard", route: "/user/dashboard" },
+            { label: "Upload", route: "/user/upload" },
           ].map((btn) => (
             <Link
               to={btn.route}

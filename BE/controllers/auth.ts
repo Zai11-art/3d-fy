@@ -67,7 +67,9 @@ export const login = async (req: Request, res: Response) => {
 export const register = async (req: Request, res: Response) => {
   try {
     const { email, username, tag, bio, password } = req.body;
-    const image = (req.file as Express.MulterS3.File).location;
+    const image = (req.file as Express.MulterS3.File)?.location;
+    console.log(email, username, tag, bio, password);
+
     const salt = await bcrypt.genSalt();
     const pwordHash = await bcrypt.hash(password, salt);
 

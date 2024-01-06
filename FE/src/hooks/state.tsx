@@ -8,6 +8,7 @@ interface ModeProps {
   isLoggedIn: boolean;
   user: User | null;
   token: string | null;
+
   setDarkMode: () => void;
   setToken: (data: TokenProps) => void;
   setLogout: () => void;

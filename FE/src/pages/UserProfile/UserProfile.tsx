@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CardList, { dummycardData } from "../../components/3d-sample-cardlist";
 import PageLayout from "../../layout/page-layout";
 import { useState } from "react";
 import Card from "../../components/card-sample";
 import Pagination from "../../components/pagination";
 import useMode from "../../hooks/state";
+import axios from "axios";
+import { User } from "../../types/types";
 
 const userData = {
   imageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
@@ -18,10 +20,25 @@ const userData = {
 };
 
 const tabs = ["All", "Models", "Render", "Likes"];
-
 const UserProfile = () => {
   const [clicked, setClicked] = useState("");
-  console.log(clicked);
+  const userId = useMode((state) => state.user?.id);
+  const [userPageData, setuserPageData] = useState<User>();
+
+  const fetchUser = async (userId: string) => {
+    try {
+      const getUser = await axios.get(`http://localhost:8080/users/${userId}`);
+      const userData = await getUser.data;
+
+      setuserPageData(userData);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    if (userId) {
+      fetchUser(userId);
+    }
+  }, []);
 
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
@@ -45,7 +62,7 @@ const UserProfile = () => {
                 lightmode ? "border-zinc-300" : " border-zinc-700"
               } border-[3px]`}
             >
-              <img src={userData.imageUrl} alt="userImage" />
+              <img src={userPageData?.profilePic} alt="userImage" />
             </div>
 
             <div
@@ -63,8 +80,8 @@ const UserProfile = () => {
                     : "border-zinc-500/30 bg-gradient-gray "
                 }   rounded-t-md `}
               >
-                <h1 className="text-xl ">{userData.userName}</h1>
-                <span className="text-xs">{userData.tag}</span>
+                <h1 className="text-xl ">{userPageData?.username}</h1>
+                <span className="text-xs">{userPageData?.tag}</span>
               </div>
 
               {/* CREDS */}
@@ -118,7 +135,9 @@ const UserProfile = () => {
         {/* TABS */}
         <div
           className={`items-center justify-center h-10 flex gap-4 px-2  shadow-inner ${
-            lightmode ? "bg-zinc-100 shadow-zinc-500/50" : "bg-zinc-900 shadow-orange-500/20"
+            lightmode
+              ? "bg-zinc-100 shadow-zinc-500/50"
+              : "bg-zinc-900 shadow-orange-500/20"
           }    rounded-full`}
         >
           {tabs.map((tab) => (

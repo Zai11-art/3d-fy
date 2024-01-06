@@ -28,3 +28,32 @@ export const upload = (path: string) =>
       contentType: multerS3.AUTO_CONTENT_TYPE,
     }),
   });
+
+export const upload3d = (path: string) =>
+  multer({
+    storage: multerS3({
+      s3,
+      bucket: `${process.env.BUCKET_NAME}`,
+      metadata: function (_, file, cb) {
+        cb(null, { fieldName: file.filename });
+      },
+      key: function (_, file, cb) {
+        const newFile = `3dFy-${file.originalname}-${Date.now()}.${
+          file.originalname.endsWith("glb")
+            ? "glb"
+            : file.originalname.endsWith("gltf")
+            ? "gltf"
+            : file.originalname.endsWith("png")
+            ? "png"
+            : file.originalname.endsWith("jpeg")
+            ? "jpeg"
+            : file.originalname.endsWith("jpg")
+            ? "jpg"
+            : null
+        }`;
+        const fullName = `${path}/${newFile}`;
+        cb(null, fullName);
+      },
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+    }),
+  });

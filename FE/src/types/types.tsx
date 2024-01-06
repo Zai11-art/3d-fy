@@ -46,14 +46,29 @@ export interface PaginationProps {
   currentPage: number;
 }
 
+//  REGISTER TYPES
 export interface RegisterValuesType {
   email: string;
   username: string;
   tag: string;
   bio: string;
   profilePic: { name: string };
+  banner: { name: string };
   password: string;
   confirmPassword: string;
+}
+
+export interface LoginValuesType {
+  email: string;
+  password: string;
+}
+
+// UPLOAD 3D FILE TYPES
+export interface Upload3dType {
+  title: string;
+  description: string;
+  file: { name: string };
+  tags: string;
 }
 
 export interface LoginValuesType {
@@ -71,4 +86,5 @@ export interface User {
   profilePic: string;
   bio: string;
   tag: string;
+  id: string;
 }

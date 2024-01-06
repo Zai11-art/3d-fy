@@ -1,9 +1,10 @@
 import { ControllerPropsMW } from "../types/types";
 import jwt, { Secret } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { User } from "@prisma/client";
 
 export const authMiddleware = async (
-  req: Request & { user: string },
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -15,7 +16,7 @@ export const authMiddleware = async (
     }
 
     if (token.startsWith("Bearer ")) {
-      token = token.slice(7, token.length).trimLeft();
+      token = token.slice(7, token.length).trimStart();
     }
 
     const verified = jwt.verify(
@@ -23,6 +24,7 @@ export const authMiddleware = async (
       process.env.JWT_SECRET as Secret
     ) as string;
 
+    // @ts-ignore
     req.user = verified;
     next();
   } catch (err) {
