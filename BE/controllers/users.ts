@@ -6,8 +6,11 @@ import { Request, Response } from "express";
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await prismadb.user.findMany();
-
-    res.status(200).json(users);
+    const parsedUsers = users.map((user) => {
+      // @ts-ignore
+      delete user?.password;
+    });
+    res.status(200).json(parsedUsers);
   } catch (err: any) {
     res.status(404).json({ message: err?.message });
   }
@@ -23,6 +26,7 @@ export const getUser = async (req: Request, res: Response) => {
       where: {
         id: userId,
       },
+      include: { posts: true, followers: true, following: true },
     });
 
     console.log(userId);

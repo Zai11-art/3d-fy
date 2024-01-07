@@ -1,17 +1,15 @@
 import {
-  Box,
   Environment,
   Float,
   OrbitControls,
-  Stats,
   useProgress,
 } from "@react-three/drei";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { useControls, folder, Leva } from "leva";
 import { Html } from "next/document";
-import { Suspense } from "react";
-import { CgSpinnerAlt, CgSpinnerTwoAlt } from "react-icons/cg";
+import { useControls, folder, Leva } from "leva";
+import { CgSpinnerTwoAlt } from "react-icons/cg";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
 
 interface ModelProps {
   scale: number;

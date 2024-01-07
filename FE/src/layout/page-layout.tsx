@@ -10,7 +10,7 @@ const PageLayout = ({ children }: { children: React.ReactNode }) => {
         lightmode
           ? "custom-bg-page-light text-black"
           : "custom-bg-page text-white"
-      }`}
+      } pb-[200px]`}
     >
       {children}
     </div>

@@ -1,9 +1,7 @@
 import useMode from "../hooks/state";
 import useModelModal from "../hooks/use-model-modal";
-import { dummycardData } from "./3d-sample-cardlist";
 import Avatar from "./avatar";
 import Divider from "./divider";
-import ModelViewer from "./model-viewer";
 import {
   MdOutlineRemoveRedEye,
   MdOutlineThumbUp,
@@ -59,13 +57,7 @@ const ModelModal = () => {
   const modalState = useModelModal((state) => state.isOpen);
   const useModal = useModelModal();
   const md = useMediaQuery("(max-width: 768px)");
-
-  console.log(modalState);
-  const data = dummycardData[0];
-
-  const test = () => {
-    console.log("clicked");
-  };
+  const data = useModelModal((state) => state.data);
 
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // event delegation
@@ -103,7 +95,22 @@ const ModelModal = () => {
                 <div className="p-4 w-full h-full flex flex-col">
                   <div className="flex gap-2 flex-col">
                     <div className="flex items-center justify-between">
-                      <span className="md:text-2xl text-xl">{data.title}</span>
+                      <div className="flex gap-3  items-center justify-center">
+                        <span className="md:text-2xl text-xl">
+                          {data?.title}
+                        </span>
+                        <Link
+                          onClick={() => useModal.onClose()}
+                          to={`/post/${data?.id}`}
+                          className={`text-xs flex items-center justify-center ${
+                            lightmode
+                              ? "bg-gradient-to-r from-amber-900/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md text-white"
+                              : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-300"
+                          } p-2 rounded-xl`}
+                        >
+                          View full details
+                        </Link>
+                      </div>
 
                       <button
                         onClick={useModal.onClose}
@@ -122,7 +129,7 @@ const ModelModal = () => {
 
                     <div className="flex items-center">
                       <div className="mr-2">
-                        <Avatar url={data.profileImage} />
+                        <Avatar url={data?.profileImage} />
                       </div>
                       <div className="flex flex-col">
                         <span
@@ -130,14 +137,14 @@ const ModelModal = () => {
                             lightmode ? "text-slate-800" : "text-slate-300"
                           } `}
                         >
-                          author: {data.author}
+                          author: {data?.username}
                         </span>
                         <span
                           className={`md:text-[12.5px] sm:text-[12px] text-xs ${
                             lightmode ? "text-slate-800" : "text-slate-300"
                           } text-slate-300`}
                         >
-                          date published: {data.date}
+                          date published: {data?.createdAt}
                         </span>
                       </div>
                     </div>
@@ -149,7 +156,7 @@ const ModelModal = () => {
                         Description:
                       </span>
                       <p className="md:text-sm sm:text-[12.5px] text-[11.5px] mt-2">
-                        {data.description}
+                        {data?.description}
                       </p>
                     </div>
 
@@ -167,7 +174,7 @@ const ModelModal = () => {
                           }`}
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
-                          {data.views}
+                          {`${data?.views}`}
                         </span>
                       </div>
                       <div
@@ -183,7 +190,7 @@ const ModelModal = () => {
                           }`}
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
-                          {data.likes}
+                          {`${data?.likes}`}
                         </span>
                       </div>
                       {/* PLACE NO. OF VIEWS HERE */}
@@ -198,13 +205,11 @@ const ModelModal = () => {
                       >
                         <span>Tags:</span>
                         <div className="w-full h-full flex gap-2 mt-2">
-                          {data.tags.map((tag) => (
-                            <button
-                              className={`text-[13px] text-normal rounded-full hover:underline`}
-                            >
-                              {tag}
-                            </button>
-                          ))}
+                          <button
+                            className={`text-[13px] text-normal rounded-full hover:underline`}
+                          >
+                            {data?.tags}
+                          </button>
                         </div>
                       </div>
                     </div>

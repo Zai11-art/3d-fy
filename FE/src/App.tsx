@@ -15,6 +15,8 @@ import Login from "./pages/Auth/login";
 import useMode from "./hooks/state";
 import AuthedRoute from "./layout/protected-route";
 import Upload from "./pages/Upload/upload";
+import Feed from "./pages/Feed/feed";
+import Post from "./pages/Post/post";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -30,7 +32,7 @@ function App() {
           <Route path="/showcase" element={<Showcase />}></Route>
           <Route path="/learn" element={<Learn />}></Route>
           <Route
-            path="/user/dashboard"
+            path="/:userId/dashboard"
             element={
               <AuthedRoute user={user}>
                 <Dashboard />
@@ -38,7 +40,7 @@ function App() {
             }
           ></Route>
           <Route
-            path="/user/profile"
+            path="/:userId/profile"
             element={
               <AuthedRoute user={user}>
                 <UserProfile />
@@ -46,14 +48,22 @@ function App() {
             }
           ></Route>
           <Route
-            path="/user/upload"
+            path="/:userId/upload"
             element={
               <AuthedRoute user={user}>
                 <Upload />
               </AuthedRoute>
             }
           ></Route>
-          <Route path="/feed" element={<Register />}></Route>
+          <Route
+            path="/post/:postId"
+            element={
+              <AuthedRoute user={user}>
+                <Post />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route path="/feed" element={<Feed />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>

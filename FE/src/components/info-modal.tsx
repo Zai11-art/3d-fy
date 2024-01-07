@@ -1,8 +1,8 @@
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { MdClose } from "react-icons/md";
 
-import useMode from "../hooks/state";
 import Divider from "./divider";
+import useMode from "../hooks/state";
 import useInfoModal from "../hooks/use-info-modal";
 
 const InfoModal = () => {
@@ -26,7 +26,11 @@ const InfoModal = () => {
   return (
     <>
       {modalState && (
-        <div onClick={handleModalClick} className="relative z-[200]">
+        <div
+          // @ts-ignore
+          onClick={handleModalClick}
+          className="relative z-[200]"
+        >
           {/* FILTER AND MAIN DIALOG */}
           <div className="fixed inset-0  w-screen overflow-y-auto flex z-10 items-center justify-center ">
             <div className="bg-black w-screen h-screen absolute z-[5] opacity-80"></div>

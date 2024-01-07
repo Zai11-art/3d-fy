@@ -1,16 +1,3 @@
-export interface ModelData {
-  title: string;
-  imgUrl: string;
-  description: string;
-  modelUrl: string;
-  author: string;
-  date: string;
-  profileImage: string;
-  views: number;
-  likes: number;
-  tags: string[];
-}
-
 export interface InfoData {
   title: string;
   description: string;
@@ -87,4 +74,37 @@ export interface User {
   bio: string;
   tag: string;
   id: string;
+  followers: string;
+  following: string;
+  likes: string;
+  posts: Post[];
+}
+
+export interface Post {
+  createdAt: string;
+  updatedAt: string;
+  id: string;
+  profileImage: string;
+  username: string;
+  tag: string;
+  title: string;
+  userId: string;
+  description: string;
+  filePath: string;
+  tags: string;
+  views: Number;
+  likes: Number;
+}
+
+export interface ModelData {
+  title: string;
+  imgUrl: string;
+  description: string;
+  modelUrl: string;
+  author: string;
+  date: string;
+  profileImage: string;
+  views: number;
+  likes: number;
+  tags: String;
 }

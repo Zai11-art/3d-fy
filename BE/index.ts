@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
+import feedRoutes from "./routes/feed.js";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
@@ -32,6 +33,7 @@ app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
+app.use("/feed", feedRoutes);
 
 // PORT LISTENER
 const port = process.env.PORT || 8080;

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import CardList, { dummycardData } from "../../components/3d-sample-cardlist";
 import PageLayout from "../../layout/page-layout";
 import { useState } from "react";
 import Card from "../../components/card-sample";
@@ -7,6 +6,9 @@ import Pagination from "../../components/pagination";
 import useMode from "../../hooks/state";
 import axios from "axios";
 import { User } from "../../types/types";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../../api/user";
+import { useParams } from "react-router-dom";
 
 const userData = {
   imageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
@@ -24,21 +26,35 @@ const UserProfile = () => {
   const [clicked, setClicked] = useState("");
   const userId = useMode((state) => state.user?.id);
   const [userPageData, setuserPageData] = useState<User>();
+  const idParam = useParams();
+  console.log(idParam.userId);
 
-  const fetchUser = async (userId: string) => {
-    try {
-      const getUser = await axios.get(`http://localhost:8080/users/${userId}`);
-      const userData = await getUser.data;
+  const {
+    isPending,
+    isError,
+    data: userData,
+    error,
+  } = useQuery({
+    queryKey: ["userData"],
+    queryFn: () => getUser(`${userId}`),
+  });
 
-      setuserPageData(userData);
-    } catch (error) {}
-  };
+  console.log(userData);
 
-  useEffect(() => {
-    if (userId) {
-      fetchUser(userId);
-    }
-  }, []);
+  // const fetchUser = async (userId: string) => {
+  //   try {
+  //     const getUser = await axios.get(`http://localhost:8080/users/${userId}`);
+  //     const userData = await getUser.data;
+
+  //     setuserPageData(userData);
+  //   } catch (error) {}
+  // };
+
+  // useEffect(() => {
+  //   if (userId) {
+  //     fetchUser(userId);
+  //   }
+  // }, []);
 
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
@@ -50,7 +66,7 @@ const UserProfile = () => {
 
   return (
     <PageLayout>
-      <div className="w-full h-full flex flex-col gap-5 items-center">
+      <div className="w-full h-full flex flex-col gap-5 items-center pb-[100px]">
         {/* BANNER */}
         <div className="w-full md:h-[350px] h-[325px]  flex flex-col gap-4 justify-center items-center relative">
           <div
@@ -62,7 +78,7 @@ const UserProfile = () => {
                 lightmode ? "border-zinc-300" : " border-zinc-700"
               } border-[3px]`}
             >
-              <img src={userPageData?.profilePic} alt="userImage" />
+              <img src={userData?.profilePic} alt="userImage" />
             </div>
 
             <div
@@ -80,8 +96,8 @@ const UserProfile = () => {
                     : "border-zinc-500/30 bg-gradient-gray "
                 }   rounded-t-md `}
               >
-                <h1 className="text-xl ">{userPageData?.username}</h1>
-                <span className="text-xs">{userPageData?.tag}</span>
+                <h1 className="text-xl ">{userData?.username}</h1>
+                <span className="text-xs">{userData?.tag}</span>
               </div>
 
               {/* CREDS */}
@@ -97,7 +113,7 @@ const UserProfile = () => {
                   <span
                     className={`${lightmode ? "font-normal" : "font-light"} `}
                   >
-                    {userData?.following}
+                    {userData?.following?.length}
                   </span>
                 </div>
                 <div className="flex flex-col items-center">
@@ -113,7 +129,7 @@ const UserProfile = () => {
                   <span
                     className={`${lightmode ? "font-normal" : "font-light"} `}
                   >
-                    {userData?.followers}
+                    {userData?.followers?.length}
                   </span>
                 </div>
               </div>
@@ -121,7 +137,7 @@ const UserProfile = () => {
           </div>
           <div className="w-full h-full top-0 bottom-0 left-0 right-0 absolute z-[2] ">
             <img
-              src={userData.bannerUrl}
+              // src={userData.bannerUrl}
               className="w-full h-full bg-no-repeat object-cover"
             />
             <div
@@ -159,15 +175,13 @@ const UserProfile = () => {
           <div className={`  w-full h-full p-2`}>
             <div className={`flex  w-full pb-5`}>
               <div className="flex flex-wrap justify-center gap-10 p-5">
-                {dummycardData
+                {userData?.posts
                   .slice(firstPostIndex, lastPostIndex)
-                  .map((card, idx) => (
-                    <Card data={card} key={idx} />
-                  ))}
+                  .map((card, idx) => <Card data={card} key={idx} />)}
               </div>
             </div>
             <Pagination
-              totalPosts={dummycardData?.length}
+              totalPosts={userData?.posts.length || 0}
               postsPerPage={postsPerPage}
               setCurrentPage={setcurrentPage}
               currentPage={currentPage}

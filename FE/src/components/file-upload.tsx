@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { MdDriveFolderUpload } from "react-icons/md";
-import useMode from "../hooks/state";
-import Dropzone from "react-dropzone";
 import toast from "react-hot-toast";
+import Dropzone from "react-dropzone";
 import { FaFile } from "react-icons/fa6";
+import { MdDriveFolderUpload } from "react-icons/md";
+
+import useMode from "../hooks/state";
 
 const FileUpload = () => {
   const lightmode = useMode((state) => state.isDarkMode);

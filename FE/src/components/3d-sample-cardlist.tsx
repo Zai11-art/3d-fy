@@ -1,63 +1,22 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import useMode from "../hooks/state";
 import Card from "./card-sample";
+import useMode from "../hooks/state";
 import Pagination from "./pagination";
-import apple from "../assets/apple.png";
-
-export const dummycardData = [
-  {
-    title: "Apple",
-    profileImage: "https://cdn-icons-png.flaticon.com/512/5987/5987424.png",
-    imgUrl: apple,
-    modelUrl: "/food_apple_01_4k.glb",
-    description: "A simple realistic apple. With 4k textures and maps.",
-    author: "Brandon",
-    date: "01/02/2023",
-    views: 1256,
-    likes: 503,
-    tags: ["model", "textured"],
-  },
-  {
-    title: "Apple",
-    profileImage: "https://cdn-icons-png.flaticon.com/512/5987/5987424.png",
-    imgUrl: apple,
-    modelUrl: "/food_apple_01_4k.glb",
-    description: "A simple realistic apple. With 4k textures and maps.",
-    author: "Brandon",
-    date: "01/02/2023",
-    views: 1256,
-    likes: 503,
-    tags: ["model", "textured"],
-  },
-  {
-    title: "Apple",
-    profileImage: "https://cdn-icons-png.flaticon.com/512/5987/5987424.png",
-    imgUrl: apple,
-    modelUrl: "/food_apple_01_4k.glb",
-    description: "A simple realistic apple. With 4k textures and maps.",
-    author: "Brandon",
-    date: "01/02/2023",
-    views: 1256,
-    likes: 503,
-    tags: ["model", "textured"],
-  },
-  {
-    title: "Apple",
-    profileImage: "https://cdn-icons-png.flaticon.com/512/5987/5987424.png",
-    imgUrl: apple,
-    modelUrl: "/food_apple_01_4k.glb",
-    description: "A simple realistic apple. With 4k textures and maps.",
-    author: "Brandon",
-    date: "01/02/2023",
-    views: 1256,
-    likes: 503,
-    tags: ["model", "textured"],
-  },
-];
+import { getFeed } from "../api/post";
 
 const CardList = () => {
   const lightmode = useMode((state) => state.isDarkMode);
+  const {
+    isPending,
+    isError,
+    data: feedData,
+    error,
+  } = useQuery({
+    queryKey: ["feed"],
+    queryFn: getFeed,
+  });
 
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
@@ -87,15 +46,13 @@ const CardList = () => {
         }  flex justify-between mt-5 md:w-[760px] w-full`}
       >
         <div className="flex flex-wrap items-center justify-around gap-12">
-          {dummycardData
-            .slice(firstPostIndex, lastPostIndex)
-            .map((card, idx) => (
-              <Card data={card} key={idx} />
-            ))}
+          {feedData
+            ?.slice(firstPostIndex, lastPostIndex)
+            .map((card, idx) => <Card data={card} key={idx} />)}
         </div>
       </div>
       <Pagination
-        totalPosts={dummycardData?.length}
+        totalPosts={feedData?.length || 0}
         postsPerPage={postsPerPage}
         setCurrentPage={setcurrentPage}
         currentPage={currentPage}

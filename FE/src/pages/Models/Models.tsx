@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import Divider from "../../components/divider";
-import useMode from "../../hooks/state";
-import { useMediaQuery } from "../../hooks/use-media-query";
-import PageLayout from "../../layout/page-layout";
-import { dummycardData } from "../../components/3d-sample-cardlist";
-import Card from "../../components/card-sample";
-import Pagination from "../../components/pagination";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
+import useMode from "../../hooks/state";
+import { getFeed } from "../../api/post";
+import Divider from "../../components/divider";
+import Card from "../../components/card-sample";
 import Carousel from "../../components/carousel";
+import PageLayout from "../../layout/page-layout";
+import Pagination from "../../components/pagination";
 
 // const categories = ["models", "low-poly", "high-poly", "rendered"];
 const categoriesTwo = [
   { label: "models", isToggled: false },
-  { label: "low-poly", isToggled: false },  
+  { label: "low-poly", isToggled: false },
   { label: "high-poly", isToggled: false },
   { label: "rendered", isToggled: false },
 ];
@@ -41,12 +41,15 @@ const images = [
 
 const Models = () => {
   const lightmode = useMode((state) => state.isDarkMode);
-
-  // solution for toggling 1
-  // const [toggleModels, setToggleModels] = useState(false);
-  // const [toggleLowPoly, setToggleLowPoly] = useState(false);
-  // const [toggleHighPoly, setToggleHighPoly] = useState(false);
-  // const [toggleRendered, setToggleRendered] = useState(false);
+  const {
+    isPending,
+    isError,
+    data: feedData,
+    error,
+  } = useQuery({
+    queryKey: ["feed"],
+    queryFn: getFeed,
+  });
 
   // solution for toggling 2
   const [toggle, setToggle] = useState(categoriesTwo);
@@ -133,6 +136,7 @@ const Models = () => {
                     type="checkbox"
                     name={cat.label}
                     id={cat.label}
+                    // @ts-ignore
                     value={cat?.isToggled}
                     onClick={() => onToggleTwo(cat.label)}
                   />
@@ -150,15 +154,13 @@ const Models = () => {
         <div className={` md:w-[80%]  w-full h-full p-2`}>
           <div className={`flex h-full w-full pb-5 `}>
             <div className="flex flex-wrap justify-center gap-12 p-5">
-              {dummycardData
-                .slice(firstPostIndex, lastPostIndex)
-                .map((card, idx) => (
-                  <Card data={card} key={idx} />
-                ))}
+              {feedData
+                ?.slice(firstPostIndex, lastPostIndex)
+                .map((card, idx) => <Card data={card} key={idx} />)}
             </div>
           </div>
           <Pagination
-            totalPosts={dummycardData?.length}
+            totalPosts={feedData?.length || 0}
             postsPerPage={postsPerPage}
             setCurrentPage={setcurrentPage}
             currentPage={currentPage}

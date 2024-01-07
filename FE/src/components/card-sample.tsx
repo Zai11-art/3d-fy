@@ -1,12 +1,13 @@
 import Avatar from "./avatar";
-import Divider from "./divider";
 import useMode from "../hooks/state";
-import { ModelData } from "../types/types";
+import { Post } from "../types/types";
 import useModelModal from "../hooks/use-model-modal";
 
-const Card = ({ data }: { data: ModelData }) => {
+const Card = ({ data }: { data: Post }) => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useModelModal();
+  console.log("test here");
+  console.log(data);
 
   return (
     <div
@@ -19,7 +20,11 @@ const Card = ({ data }: { data: ModelData }) => {
       } border-[1px] `}
     >
       <div className="">
-        <img src={data?.imgUrl} alt={data.title} className="w-full h-full" />
+        <img
+          src={data?.filePath}
+          alt={data?.username}
+          className="w-full h-full"
+        />
       </div>
 
       <div
@@ -28,15 +33,15 @@ const Card = ({ data }: { data: ModelData }) => {
         } `}
       >
         <div className=" flex items-center gap-2">
-          <Avatar url={data.profileImage} />
+          <Avatar url={data?.profileImage} />
           <div className="py-2">
-            <span className="font-semibold text-md">{data.title}</span>
+            <span className="font-semibold text-md">{data?.title}</span>
             <span
               className={`font-thin block  text-[12px] ${
                 lightmode ? "text-slate-500" : "text-slate-300"
               } `}
             >
-              author: {data.author}
+              author: {data?.username}
             </span>
           </div>
         </div>

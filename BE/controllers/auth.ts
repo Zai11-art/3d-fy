@@ -80,6 +80,7 @@ export const register = async (req: Request, res: Response) => {
       bio,
       password: pwordHash,
       profilePic: image,
+      likes: 0,
     };
 
     const newlyRegUser = await prismadb.user.create({ data: registerUser });

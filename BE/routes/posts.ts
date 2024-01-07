@@ -1,5 +1,6 @@
 import express from "express";
-import { uploadPost } from "../controllers/posts";
+import { getPost, uploadPost } from "../controllers/posts";
+import { getUser } from "../controllers/users";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { upload3d } from "../middleware/uploadImage";
 
@@ -12,5 +13,7 @@ router.post(
   upload3d("post-3dfile").single("file"),
   uploadPost
 );
+
+router.get("/:id", getPost);
 
 export default router;

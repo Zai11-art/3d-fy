@@ -19,6 +19,8 @@ const ViewContainer = ({
   normalTexture,
 }: ViewContainerProps) => {
   const modelUrl = useModelModal((state) => state.data?.modelUrl);
+  console.log("from view container");
+  console.log(scale);
 
   return (
     <>
@@ -46,7 +48,7 @@ const Tweaker = () => {
   } = useControls("Model", {
     transform: folder({
       scale: { value: 5, max: 5, min: 4 },
-      position: [0, 0, 0],
+      position: [0, -0.18, 0],
     }),
     material: folder({
       color: "red",
@@ -70,6 +72,19 @@ const Tweaker = () => {
   );
 };
 
+const Tweaker2 = () => {
+  return (
+    <ViewContainer
+      scale={5}
+      color={"red"}
+      wireframe={false}
+      position={[0, 0, 0]}
+      wireframeThickness={0}
+      normalTexture={false}
+    ></ViewContainer>
+  );
+};
+
 function Loader() {
   const { progress } = useProgress();
   return (
@@ -86,21 +101,33 @@ function Loader() {
   );
 }
 
-const Viewer = () => {
+const Viewer = ({ showLeva = true }: { showLeva: boolean }) => {
+  console.log(showLeva);
   return (
-    <div className="w-full h-screen bg-black">
-      <Leva />
-
-      <Canvas>
+    <div
+      className={`${showLeva ? "w-full h-screen" : "w-full h-full flex "}  `}
+    >
+      <Canvas className={`${!showLeva && "rounded-lg"}`}>
         <Suspense fallback={<Loader />}>
           <CameraControls makeDefault />
           {/* APPLY FIX TO ENVIRONMENT: HDRI NOT WORKING */}
-          {/* <Environment preset="sunset" background /> */}
+          <Environment preset="sunset" background />
           <ContactShadows position-y={0.001} opacity={0.9} blur={3} />
           <Lights />
 
           {/* <BackDrop /> */}
-          <Tweaker />
+          {showLeva ? (
+            <Tweaker />
+          ) : (
+            <Model
+              scale={6}
+              color={"red"}
+              wireframe={false}
+              position={[0, -0.18, 0]}
+              wireframeThickness={false}
+              normalTexture={false}
+            />
+          )}
         </Suspense>
       </Canvas>
     </div>

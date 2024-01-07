@@ -38,7 +38,7 @@ const Upload = () => {
   const [fileName, setFileName] = useState("");
   const mode = useMode();
   const token = useMode((state) => state.token);
-  const userid = useMode((state) => state.user);
+  const userid = useMode((state) => state.user?.id);
   const navigate = useNavigate();
 
   console.log("img path here");
@@ -57,7 +57,7 @@ const Upload = () => {
 
     console.log(formData);
     formData.append("file", values.file?.name);
-    formData.append("userId", userid?.id || "");
+    formData.append("userId", `${userid}`);
 
     setIsloading(true);
     const registerRes = await fetch("http://localhost:8080/posts/upload", {
