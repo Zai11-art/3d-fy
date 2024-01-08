@@ -74,8 +74,8 @@ export interface User {
   bio: string;
   tag: string;
   id: string;
-  followers: string;
-  following: string;
+  followers: User[];
+  following: User[];
   likes: string;
   posts: Post[];
 }

@@ -76,6 +76,7 @@ const Dashboard = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useConfirmationModal();
   const user = useMode((state) => state.user);
+  console.log(user?.posts);
 
   const questionData = {
     title: "Save these changes?",
@@ -159,7 +160,7 @@ const Dashboard = () => {
             <div className="flex gap-5 w-full xl:flex-wrap no-wrap  items-center justify-center">
               {[
                 { label: "Views", data: 20323, icon: <FaEye /> },
-                { label: "Likes", data: 2423, icon: <BiSolidLike /> },
+                { label: "Likes", data: user?.likes, icon: <BiSolidLike /> },
                 {
                   label: "Impressions",
                   data: 22426,
@@ -167,7 +168,7 @@ const Dashboard = () => {
                 },
                 {
                   label: "Posts",
-                  data: 10,
+                  data: user?.posts?.length,
                   icon: <BsFilePostFill />,
                 },
               ].map((stat) => (
@@ -181,7 +182,7 @@ const Dashboard = () => {
                   <span className="text-xl">{stat.icon}</span>
                   <span className="text-xs ">{stat.label}</span>
                   <div className="text-sm font-bold">
-                    {stat.data.toLocaleString()}
+                    {stat?.data?.toLocaleString()}
                   </div>
                 </div>
               ))}

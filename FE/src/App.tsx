@@ -17,6 +17,8 @@ import AuthedRoute from "./layout/protected-route";
 import Upload from "./pages/Upload/upload";
 import Feed from "./pages/Feed/feed";
 import Post from "./pages/Post/post";
+import Followers from "./pages/UserProfile/followers";
+import Following from "./pages/UserProfile/following";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -56,6 +58,22 @@ function App() {
             }
           ></Route>
           <Route
+            path="/:userId/followers"
+            element={
+              <AuthedRoute user={user}>
+                <Followers />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route
+            path="/:userId/following"
+            element={
+              <AuthedRoute user={user}>
+                <Following />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route
             path="/post/:postId"
             element={
               <AuthedRoute user={user}>
@@ -71,7 +89,7 @@ function App() {
 
         {/* WITHOUT NAV */}
         <Route element={<NoNav />}>
-          <Route path="/viewer" element={<Viewer />}></Route>
+          <Route path="/viewer" element={<Viewer showLeva={true} />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

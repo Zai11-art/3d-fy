@@ -6,8 +6,6 @@ import useModelModal from "../hooks/use-model-modal";
 const Card = ({ data }: { data: Post }) => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useModelModal();
-  console.log("test here");
-  console.log(data);
 
   return (
     <div

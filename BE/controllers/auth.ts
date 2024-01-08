@@ -19,11 +19,14 @@ export const login = async (req: Request, res: Response) => {
       password: string;
       profilePic: string;
       imageUrl: string;
-    }> | null = await prismadb.user.findFirst({
+    }> | null = await prismadb.user.findUnique({
       where: {
         email: email,
       },
+      include: { posts: true },
     });
+
+    console.log(user);
 
     if (!user) return res.status(404).json({ msg: "User does not exist." });
     console.log(user.password);

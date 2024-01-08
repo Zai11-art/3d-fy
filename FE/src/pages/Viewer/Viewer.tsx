@@ -18,6 +18,7 @@ const ViewContainer = ({
   wireframeThickness,
   normalTexture,
 }: ViewContainerProps) => {
+  // @ts-ignore
   const modelUrl = useModelModal((state) => state.data?.modelUrl);
   console.log("from view container");
   console.log(scale);

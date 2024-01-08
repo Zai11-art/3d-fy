@@ -1,60 +1,74 @@
 import React, { useEffect } from "react";
 import PageLayout from "../../layout/page-layout";
 import { useState } from "react";
-import Card from "../../components/card-sample";
-import Pagination from "../../components/pagination";
-import useMode from "../../hooks/state";
-import axios from "axios";
-import { User } from "../../types/types";
-import { useQuery } from "@tanstack/react-query";
-import { getUser } from "../../api/user";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { SlUserFollow, SlUserUnfollow } from "react-icons/sl";
 
-const userData = {
-  imageUrl: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-  bannerUrl:
-    "https://png.pngtree.com/thumb_back/fh260/background/20230617/pngtree-modern-blue-networking-tech-wallpaper-with-golden-hexagons-in-3d-render-image_3618505.jpg",
-  userName: "Brandon",
-  tag: "Damodeller",
-  followers: 22,
-  following: 50,
-  likes: 2500,
-};
+import useMode from "../../hooks/state";
+import { User } from "../../types/types";
+import { follow, getUser } from "../../api/user";
+import Card from "../../components/card-sample";
+import { useQuery } from "@tanstack/react-query";
+import Pagination from "../../components/pagination";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Loader from "../../components/loader";
 
 const tabs = ["All", "Models", "Render", "Likes"];
+
 const UserProfile = () => {
   const [clicked, setClicked] = useState("");
-  const userId = useMode((state) => state.user?.id);
-  const [userPageData, setuserPageData] = useState<User>();
-  const idParam = useParams();
-  console.log(idParam.userId);
+  const { userId: paramId } = useParams();
 
-  const {
-    isPending,
-    isError,
-    data: userData,
-    error,
-  } = useQuery({
-    queryKey: ["userData"],
-    queryFn: () => getUser(`${userId}`),
-  });
+  const token = useMode((state) => state.token);
+  const user = useMode((state) => state.user);
+  const lightmode = useMode((state) => state.isDarkMode);
+
+  const [userData, setUserData] = useState<User>();
+
+  // const { data: userData } = useQuery({
+  //   queryKey: ["userData"],
+  //   queryFn: () => getUser(`${paramId}`),
+  // });
 
   console.log(userData);
 
-  // const fetchUser = async (userId: string) => {
-  //   try {
-  //     const getUser = await axios.get(`http://localhost:8080/users/${userId}`);
-  //     const userData = await getUser.data;
+  useEffect(() => {
+    getUser2();
+  }, []);
 
-  //     setuserPageData(userData);
-  //   } catch (error) {}
-  // };
+  const getUser2 = async () => {
+    const user = await axios
+      .get(`http://localhost:8080/users/${paramId}`)
+      .then((res) => res.data);
 
-  // useEffect(() => {
-  //   if (userId) {
-  //     fetchUser(userId);
-  //   }
-  // }, []);
+    setUserData(user);
+  };
+
+  const isFollowed = userData?.followers.some(
+    (follower) => follower.id === user?.id
+  );
+
+  const patchFollow = async () => {
+    try {
+      const data = await axios
+        .patch(`http://localhost:8080/users/${user?.id}/${paramId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => res.data);
+
+      // refetch again to update state
+      getUser2();
+    } catch (error) {
+      toast.error("Following failed. please try again.");
+      console.log(error);
+    }
+  };
+
+  console.log(userData);
 
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
@@ -62,13 +76,11 @@ const UserProfile = () => {
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
 
-  const lightmode = useMode((state) => state.isDarkMode);
-
   return (
     <PageLayout>
       <div className="w-full h-full flex flex-col gap-5 items-center pb-[100px]">
         {/* BANNER */}
-        <div className="w-full md:h-[350px] h-[325px]  flex flex-col gap-4 justify-center items-center relative">
+        <div className="w-full md:h-[400px] h-[380px]  flex flex-col gap-4 justify-center items-center relative">
           <div
             className={`px-3 py-5 flex flex-col gap-5 justify-center items-center z-[3] rounded-xl`}
           >
@@ -109,7 +121,7 @@ const UserProfile = () => {
                 } text-sm`}
               >
                 <div className="flex flex-col items-center">
-                  <h1>Following</h1>
+                  <Link to={`/${paramId}/following`}>Following</Link>
                   <span
                     className={`${lightmode ? "font-normal" : "font-light"} `}
                   >
@@ -125,7 +137,7 @@ const UserProfile = () => {
                   </span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <h1>Followers</h1>
+                  <Link to={`/${paramId}/followers`}>Followers</Link>
                   <span
                     className={`${lightmode ? "font-normal" : "font-light"} `}
                   >
@@ -133,6 +145,34 @@ const UserProfile = () => {
                   </span>
                 </div>
               </div>
+
+              {/* ADD FOLLOW */}
+              {user?.id !== paramId && (
+                <div>
+                  <button
+                    onClick={() => {
+                      patchFollow();
+                      !isFollowed && toast.success("Followed");
+                      isFollowed && toast.success("Unfollowed");
+                    }}
+                    className={`mt-3 transition-all ease-in-out hover:bg-orange-400 w-full gap-1 bg-orange-500 flex items-center justify-center px-1 py-[3px]  rounded-lg`}
+                  >
+                    <>
+                      {isFollowed ? (
+                        <>
+                          <SlUserUnfollow />
+                          <span>Unfollow</span>
+                        </>
+                      ) : (
+                        <>
+                          <SlUserFollow />
+                          <span>Follow</span>
+                        </>
+                      )}
+                    </>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           <div className="w-full h-full top-0 bottom-0 left-0 right-0 absolute z-[2] ">

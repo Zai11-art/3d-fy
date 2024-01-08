@@ -1,5 +1,5 @@
-import useMode from "../hooks/state";
-import useModelModal from "../hooks/use-model-modal";
+import { Link } from "react-router-dom";
+
 import Avatar from "./avatar";
 import Divider from "./divider";
 import {
@@ -8,10 +8,10 @@ import {
   MdClose,
   MdArrowForward,
 } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { useMediaQuery } from "../hooks/use-media-query";
-import Viewer from "../pages/Viewer/Viewer";
+import useMode from "../hooks/state";
+import useModelModal from "../hooks/use-model-modal";
 import ViewerComponent from "./for-3d/viewer-component";
+import { useMediaQuery } from "../hooks/use-media-query";
 
 const relatedPostsImages = [
   {
@@ -66,6 +66,9 @@ const ModelModal = () => {
     useModal.onClose();
   };
 
+  console.log("debug here");
+  console.log(data);
+
   return (
     <>
       {modalState && (
@@ -106,9 +109,9 @@ const ModelModal = () => {
                             lightmode
                               ? "bg-gradient-to-r from-amber-900/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md text-white"
                               : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-300"
-                          } p-2 rounded-xl`}
+                          } px-[5px] py-[6px] rounded-xl`}
                         >
-                          View full details
+                          View more
                         </Link>
                       </div>
 
@@ -128,9 +131,13 @@ const ModelModal = () => {
                     <Divider />
 
                     <div className="flex items-center">
-                      <div className="mr-2">
+                      <Link
+                        onClick={useModal.onClose}
+                        to={`/${data?.userId}/profile`}
+                        className="mr-2"
+                      >
                         <Avatar url={data?.profileImage} />
-                      </div>
+                      </Link>
                       <div className="flex flex-col">
                         <span
                           className={`md:text-[12.5px] sm:text-[12px] text-xs ${

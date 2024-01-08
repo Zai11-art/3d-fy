@@ -9,6 +9,7 @@ import useMode from "../../hooks/state";
 import Divider from "../../components/divider";
 import PageLayout from "../../layout/page-layout";
 import { LoginValuesType, OnsubmitPropsType } from "../../types/types";
+import { useQuery } from "@tanstack/react-query";
 
 const loginSchema = yup.object().shape({
   email: yup
@@ -54,18 +55,20 @@ const Login = () => {
     });
 
     const data = await loginRes2.json();
+    console.log(data.msg);
     setIsloading(true);
     if (
-      data.msg != "User does not exist." ||
-      data.msg != "Invalid credentials"
+      data.msg !== "User does not exist." ||
+      data.msg !== "Invalid credentials"
     ) {
+      setIsloading(false);
+      toast.error("Wrong password or email.");
+    } else {
       mode.setToken(data);
       toast.success(`Login Successful, welcome ${data.user.username}`);
       setTimeout(() => {
         navigate("/models");
       }, 2000);
-    } else {
-      toast.error("Wrong password or email.");
     }
 
     console.log(data);

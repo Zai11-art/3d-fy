@@ -8,6 +8,7 @@ import useMode from "../hooks/state";
 const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const lightmode = useMode((state) => state.isDarkMode);
+  const userId = useMode((state) => state.user?.id);
   const mode = useMode();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -58,9 +59,9 @@ const UserDropdown = () => {
           } border-[1px] items-center justify-center p-5`}
         >
           {[
-            { label: "Profile", route: "/user/profile" },
-            { label: "Dashboard", route: "/user/dashboard" },
-            { label: "Upload", route: "/user/upload" },
+            { label: "Profile", route: `/${userId}/profile` },
+            { label: "Dashboard", route: `/${userId}/dashboard` },
+            { label: "Upload", route: `/${userId}/upload` },
           ].map((btn) => (
             <Link
               to={btn.route}
