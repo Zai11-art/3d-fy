@@ -2,13 +2,14 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useControls, folder, Leva } from "leva";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
-import { Html, useProgress } from "@react-three/drei";
+import { Html, Stage, useProgress } from "@react-three/drei";
 import { CameraControls, ContactShadows, Environment } from "@react-three/drei";
 
 import Lights from "../../components/for-3d/Lights";
 import useModelModal from "../../hooks/use-model-modal";
 import { Model } from "../../components/for-3d/Model";
 import { ViewContainerProps } from "../../types/types";
+// import daPic from "../../../public/brown_photostudio_04_8k.hdr";
 
 const ViewContainer = ({
   scale,
@@ -112,7 +113,9 @@ const Viewer = ({ showLeva = true }: { showLeva: boolean }) => {
         <Suspense fallback={<Loader />}>
           <CameraControls makeDefault />
           {/* APPLY FIX TO ENVIRONMENT: HDRI NOT WORKING */}
-          <Environment preset="sunset" background />
+
+          <Environment background files="/brown_photostudio_04_8k.hdr" />
+
           <ContactShadows position-y={0.001} opacity={0.9} blur={3} />
           <Lights />
 

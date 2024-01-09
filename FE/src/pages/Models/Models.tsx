@@ -8,6 +8,7 @@ import Card from "../../components/card-sample";
 import Carousel from "../../components/carousel";
 import PageLayout from "../../layout/page-layout";
 import Pagination from "../../components/pagination";
+import Loader from "../../components/loader";
 
 // const categories = ["models", "low-poly", "high-poly", "rendered"];
 const categoriesTwo = [
@@ -154,9 +155,17 @@ const Models = () => {
         <div className={` md:w-[80%]  w-full h-full p-2`}>
           <div className={`flex h-full w-full pb-5 `}>
             <div className="flex flex-wrap justify-center gap-12 p-5">
-              {feedData
-                ?.slice(firstPostIndex, lastPostIndex)
-                .map((card, idx) => <Card data={card} key={idx} />)}
+              {!feedData ? (
+                <div className="w-full h-full">
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  {feedData
+                    ?.slice(firstPostIndex, lastPostIndex)
+                    .map((card, idx) => <Card data={card} key={idx} />)}
+                </>
+              )}
             </div>
           </div>
           <Pagination

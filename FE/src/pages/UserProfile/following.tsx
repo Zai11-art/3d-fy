@@ -33,9 +33,6 @@ const Following = () => {
 
   const [userData, setUserData] = useState<User>();
 
-  const [daset, setDaset] = useState("");
-  console.log(daset);
-
   // const { data: userData } = useQuery({
   //   queryKey: ["userData"],
   //   queryFn: () => getUser(`${paramId}`),
@@ -111,52 +108,60 @@ const Following = () => {
 
               {/* MAIN SECTION */}
               <div className="w-full">
-                {userData?.following.length &&
-                  userData?.following.map((following: User, i: number) => (
-                    <>
-                      <div
-                        className={`border-[1px] p-3 rounded-lg border-zinc-500/50 ${
-                          lightmode
-                            ? "bg-gradient-gray-light text-black shadow-zinc-950/30 shadow-2xl"
-                            : "bg-gradient-gray text-white shadow-orange-500/10 shadow-2xl"
-                        } flex items-center justify-between`}
-                        // to={`/${following.id}/profile`}
-                        key={i}
-                      >
-                        <div>{following.id}</div>
-                        <div className="flex items-center justify-center gap-2">
-                          <Link to={`/${following.id}/profile`}>
-                            <Avatar url={following.profilePic} />
-                          </Link>
-                          <div className="flex-col flex">
-                            <span>{following.username}</span>
-                            <span className="text-sm">{following.tag}</span>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={() => {
-                            patchFollow(following.id);
-                            !isFollowed && toast.success("Followed");
-                            isFollowed && toast.success("Unfollowed");
-                          }}
-                          className={` text-sm transition-all ease-in-out hover:bg-orange-400 w- gap-1 bg-orange-500 flex items-center justify-center px-1 py-[3px]  rounded-md`}
+                {userData?.following.length > 0 ? (
+                  <>
+                    {userData?.following.map((following: User, i: number) => (
+                      <>
+                        <div
+                          className={`border-[1px] p-3 rounded-lg border-zinc-500/50 ${
+                            lightmode
+                              ? "bg-gradient-gray-light text-black shadow-zinc-950/30 shadow-2xl"
+                              : "bg-gradient-gray text-white shadow-orange-500/10 shadow-2xl"
+                          } flex items-center justify-between`}
+                          // to={`/${following.id}/profile`}
+                          key={i}
                         >
-                          <>
-                            {isFollowed ? (
-                              <>
-                                <span>Unfollow</span>
-                              </>
-                            ) : (
-                              <>
-                                <span>Follow</span>
-                              </>
-                            )}
-                          </>
-                        </button>
-                      </div>
-                    </>
-                  ))}
+                          <div className="flex items-center justify-center gap-2">
+                            <Link to={`/${following.id}/profile`}>
+                              <Avatar url={following.profilePic} />
+                            </Link>
+                            <div className="flex-col flex">
+                              <span>{following.username}</span>
+                              <span className="text-sm">{following.tag}</span>
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => {
+                              patchFollow(following.id);
+                              !isFollowed && toast.success("Followed");
+                              isFollowed && toast.success("Unfollowed");
+                            }}
+                            className={` text-sm transition-all ease-in-out hover:bg-orange-400 w- gap-1 bg-orange-500 flex items-center justify-center px-1 py-[3px]  rounded-md`}
+                          >
+                            <>
+                              {!isFollowed ? (
+                                <>
+                                  <span>Unfollow</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>Follow</span>
+                                </>
+                              )}
+                            </>
+                          </button>
+                        </div>
+                      </>
+                    ))}
+                  </>
+                ) : (
+                  <div className="w-full mt-5 text-center ">
+                    <h1 className="text-sm font-light text-normal">
+                      Nothing to see here.
+                    </h1>
+                  </div>
+                )}
               </div>
             </>
           )}

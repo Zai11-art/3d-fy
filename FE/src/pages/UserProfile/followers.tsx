@@ -98,28 +98,38 @@ const Following = () => {
                     : "bg-zinc-950  border-zinc-500/50 text-white"
                 }  p-1 rounded-md focus:outline-none focus:border-orange-500 focus:ring-[1.5px] focus:ring-orange-500`}
               />
-              {/* CONTENT SECTION */}
-              {userData?.map((following: User, i: number) => (
-                <div
-                  className={`border-[1px] p-3 rounded-lg border-zinc-500/50 ${
-                    lightmode
-                      ? "bg-gradient-gray-light text-black shadow-zinc-950/30 shadow-2xl"
-                      : "bg-gradient-gray text-white shadow-orange-500/10 shadow-2xl"
-                  } flex items-center justify-between w-full`}
-                  // to={`/${following.id}/profile`}
-                  key={i}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    <Link to={`/${following.id}/profile`}>
-                      <Avatar url={following.profilePic} />
-                    </Link>
-                    <div className="flex-col flex">
-                      <span>{following.username}</span>
-                      <span className="text-sm">{following.tag}</span>
+              {userData?.length && userData?.length > 0 ? (
+                <>
+                  {/* CONTENT SECTION */}
+                  {userData?.map((following: User, i: number) => (
+                    <div
+                      className={`border-[1px] p-3 rounded-lg border-zinc-500/50 ${
+                        lightmode
+                          ? "bg-gradient-gray-light text-black shadow-zinc-950/30 shadow-2xl"
+                          : "bg-gradient-gray text-white shadow-orange-500/10 shadow-2xl"
+                      } flex items-center justify-between w-full`}
+                      // to={`/${following.id}/profile`}
+                      key={i}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Link to={`/${following.id}/profile`}>
+                          <Avatar url={following.profilePic} />
+                        </Link>
+                        <div className="flex-col flex">
+                          <span>{following.username}</span>
+                          <span className="text-sm">{following.tag}</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
+                </>
+              ) : (
+                <div className="w-full text-center">
+                  <h1 className="text-sm font-light text-normal">
+                    Nothing to see here.
+                  </h1>
                 </div>
-              ))}
+              )}
             </>
           )}
         </div>

@@ -13,45 +13,6 @@ import useModelModal from "../hooks/use-model-modal";
 import ViewerComponent from "./for-3d/viewer-component";
 import { useMediaQuery } from "../hooks/use-media-query";
 
-const relatedPostsImages = [
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-  {
-    imageUrl:
-      "https://cdn.britannica.com/78/43678-050-F4DC8D93/Starry-Night-canvas-Vincent-van-Gogh-New-1889.jpg",
-  },
-];
-
 const ModelModal = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modalState = useModelModal((state) => state.isOpen);
@@ -222,55 +183,6 @@ const ModelModal = () => {
                     </div>
 
                     <Divider />
-
-                    {/* RELATED POSTS SECTION */}
-                    <div className="flex md:justify-none justify-between md:flex-col flex-row gap-2 mb-2">
-                      <h1 className="md:text-lg sm:text-md text-sm ">
-                        Related Posts
-                      </h1>
-
-                      {md ? (
-                        <Link className="md:hidden block" to={"/"}>
-                          <button
-                            className={`text-xs px-1 flex items-center border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
-                            ${
-                              lightmode
-                                ? "bg-gradient-to-r from-amber-900/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md text-white"
-                                : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-300"
-                            }`}
-                          >
-                            Check out
-                            <MdArrowForward className="ml-1 h-5 " />
-                          </button>
-                        </Link>
-                      ) : (
-                        <div className="relative">
-                          <div
-                            className={` hidden w-full overflow-x-auto md:flex  gap-1  p-3 ${
-                              lightmode
-                                ? "bg-slate-200 shadow-inner shadow-slate-900/40 "
-                                : "bg-black shadow-inner "
-                            }  rounded-lg shadow-inner `}
-                          >
-                            {relatedPostsImages.map((img, i) => (
-                              <img
-                                className="w-24 h-24 rounded-lg"
-                                key={i}
-                                src={img.imageUrl}
-                                alt=""
-                              />
-                            ))}
-                          </div>
-                          <div
-                            className={`absolute top-0 right-0 w-[30%] h-full flex ${
-                              lightmode
-                                ? "gradient-carousel-light"
-                                : "gradient-carousel"
-                            } `}
-                          ></div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
               </div>

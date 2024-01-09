@@ -12,7 +12,7 @@
   "dependencies": {
     "@nivo/core": "^0.84.0",
     "@nivo/line": "^0.84.0",
-    "@react-three/drei": "^9.88.13",
+    "@react-three/drei": "^9.93.0",
     "@react-three/fiber": "^8.15.11",
     "@tanstack/react-query": "^5.17.7",
     "@vitejs/plugin-react": "^4.2.1",

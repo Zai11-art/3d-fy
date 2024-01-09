@@ -18,7 +18,7 @@ const Carousel = ({ images }: { images: CarouselProps[] }) => {
   };
 
   return (
-    <div className="relative w-full">
+    <div className="w-full h-full">
       <div className="overflow-hidden ">
         <div
           className="flex transition-transform duration-300 ease-in-out transform translate-x-full"
@@ -55,7 +55,7 @@ const Carousel = ({ images }: { images: CarouselProps[] }) => {
           lightmode
             ? "shadow-slate-900/50 hover:shadow-slate-800"
             : "shadow-amber-900/50 hover:shadow-amber-400"
-        } bg-amber-600 text-white px-2 py-1 w-8 h-8 rounded-full`}
+        } bg-amber-600 text-white p-2 rounded-full`}
         onClick={prevSlide}
       >
         <MdArrowBack />
@@ -66,7 +66,7 @@ const Carousel = ({ images }: { images: CarouselProps[] }) => {
           lightmode
             ? "shadow-slate-900/50 hover:shadow-slate-800"
             : "shadow-amber-900/50 hover:shadow-amber-400"
-        } bg-amber-600 text-white px-2 py-1 w-8 h-8 rounded-full`}
+        } bg-amber-600 text-white p-2  rounded-full`}
         onClick={nextSlide}
       >
         <MdArrowForward />
