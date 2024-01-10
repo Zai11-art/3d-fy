@@ -133,7 +133,7 @@ const UserProfile = () => {
                   <span
                     className={`${lightmode ? "font-normal" : "font-light"} `}
                   >
-                    {userData?.likes}
+                    {userData?.likes.length}
                   </span>
                 </div>
                 <div className="flex flex-col items-center">

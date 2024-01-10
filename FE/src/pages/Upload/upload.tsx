@@ -15,6 +15,7 @@ import {
 import Divider from "../../components/divider";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "next/navigation";
 
 const registerSchema = yup.object().shape({
   title: yup.string().required("required"),
@@ -40,6 +41,7 @@ const Upload = () => {
   const token = useMode((state) => state.token);
   const userid = useMode((state) => state.user?.id);
   const navigate = useNavigate();
+
 
   console.log("img path here");
   console.log(imagePath);
@@ -71,7 +73,7 @@ const Upload = () => {
     if (data) {
       toast.success(`Post uploaded.`);
       setTimeout(() => {
-        navigate("/user/profile");
+        navigate(`/${userid}/profile`);
       }, 2000);
     } else {
       toast.error("Failed uploading.");

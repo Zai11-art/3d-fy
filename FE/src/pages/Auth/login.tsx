@@ -55,11 +55,11 @@ const Login = () => {
     });
 
     const data = await loginRes2.json();
-    console.log(data.msg);
+    console.log(data);
     setIsloading(true);
     if (
-      data.msg !== "User does not exist." ||
-      data.msg !== "Invalid credentials"
+      data.msg === "User does not exist." ||
+      data.msg === "Invalid credentials"
     ) {
       setIsloading(false);
       toast.error("Wrong password or email.");

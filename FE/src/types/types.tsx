@@ -63,6 +63,10 @@ export interface LoginValuesType {
   password: string;
 }
 
+export interface CommentType {
+  content: string;
+}
+
 export interface OnsubmitPropsType {
   resetForm: () => void;
 }
@@ -93,7 +97,18 @@ export interface Post {
   filePath: string;
   tags: string;
   views: Number;
-  likes: Number;
+  likes: User[];
+  comments: Comment[];
+}
+
+export interface Comment {
+  content: string;
+  createdAt: string;
+  userId: string;
+  userImage: string;
+  username: string;
+  tag: string;
+  postId: string;
 }
 
 export interface ModelData {

@@ -26,7 +26,20 @@ export const getUser = async (req: Request, res: Response) => {
       where: {
         id: userId,
       },
-      include: { posts: true, followers: true, following: true },
+      include: {
+        posts: {
+          include: {
+            likes: true,
+          },
+        },
+        followers: true,
+        following: true,
+        likes: {
+          include: {
+            likes: true,
+          },
+        },
+      },
     });
 
     console.log(user);

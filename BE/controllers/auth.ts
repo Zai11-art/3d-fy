@@ -23,7 +23,7 @@ export const login = async (req: Request, res: Response) => {
       where: {
         email: email,
       },
-      include: { posts: true },
+      include: { posts: { include: { likes: true } }, likes: true },
     });
 
     console.log(user);
@@ -83,7 +83,6 @@ export const register = async (req: Request, res: Response) => {
       bio,
       password: pwordHash,
       profilePic: image,
-      likes: 0,
     };
 
     const newlyRegUser = await prismadb.user.create({ data: registerUser });

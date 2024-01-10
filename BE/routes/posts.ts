@@ -1,5 +1,5 @@
 import express from "express";
-import { getPost, uploadPost } from "../controllers/posts";
+import { getPost, getPosts, patchLike, postComment, uploadPost } from "../controllers/posts";
 import { getUser } from "../controllers/users";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { upload3d } from "../middleware/uploadImage";
@@ -14,6 +14,13 @@ router.post(
   uploadPost
 );
 
+// GET POSTS
 router.get("/:id", getPost);
+router.get("/:id/all", getPosts);
+
+// LIKE POSTS
+router.patch("/:postId/:userId", patchLike);
+
+router.post("/comment/:postId/:userId", postComment);
 
 export default router;

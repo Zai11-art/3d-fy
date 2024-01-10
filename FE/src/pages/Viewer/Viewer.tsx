@@ -9,6 +9,7 @@ import Lights from "../../components/for-3d/Lights";
 import useModelModal from "../../hooks/use-model-modal";
 import { Model } from "../../components/for-3d/Model";
 import { ViewContainerProps } from "../../types/types";
+import { Scene } from "three";
 // import daPic from "../../../public/brown_photostudio_04_8k.hdr";
 
 const ViewContainer = ({
@@ -21,8 +22,8 @@ const ViewContainer = ({
 }: ViewContainerProps) => {
   // @ts-ignore
   const modelUrl = useModelModal((state) => state.data?.modelUrl);
-  console.log("from view container");
-  console.log(scale);
+  // console.log("from view container");
+  // console.log(scale);
 
   return (
     <>
@@ -59,8 +60,6 @@ const Tweaker = () => {
       wireframeThickness: { value: 0.05, max: 0.25, min: 0.01 },
     }),
   });
-
-  console.log(wireframeThickness);
 
   return (
     <ViewContainer
@@ -103,18 +102,37 @@ function Loader() {
   );
 }
 
-const Viewer = ({ showLeva = true }: { showLeva: boolean }) => {
-  console.log(showLeva);
+const Viewer = ({
+  showLeva = true,
+  wireframe = false,
+  normal = false,
+  color,
+  hdri,
+}: {
+  showLeva: boolean;
+  wireframe: boolean;
+  normal: boolean;
+  color: string;
+  hdri: string;
+}) => {
+  console.log(color);
+
   return (
     <div
-      className={`${showLeva ? "w-full h-screen" : "w-full h-full flex "}  `}
+      className={`${
+        showLeva ? "w-full h-screen" : "w-full h-full flex "
+      } relative `}
     >
       <Canvas className={`${!showLeva && "rounded-lg"}`}>
         <Suspense fallback={<Loader />}>
           <CameraControls makeDefault />
           {/* APPLY FIX TO ENVIRONMENT: HDRI NOT WORKING */}
 
-          <Environment background files="/brown_photostudio_04_8k.hdr" />
+          <Environment
+            background
+            // files="/brown_photostudio_04_8k.hdr"
+            preset={hdri}
+          />
 
           <ContactShadows position-y={0.001} opacity={0.9} blur={3} />
           <Lights />
@@ -125,15 +143,16 @@ const Viewer = ({ showLeva = true }: { showLeva: boolean }) => {
           ) : (
             <Model
               scale={6}
-              color={"red"}
-              wireframe={false}
+              color={color}
+              wireframe={wireframe}
               position={[0, -0.18, 0]}
-              wireframeThickness={false}
-              normalTexture={false}
+              wireframeThickness={0.08}
+              normalTexture={normal}
             />
           )}
         </Suspense>
       </Canvas>
+      <div className="absolute bottom-0 right-0 "></div>
     </div>
   );
 };

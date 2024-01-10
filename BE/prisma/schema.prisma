@@ -22,7 +22,7 @@ model User {
   tag        String
   bio        String
   profilePic String
-  likes      Int
+  likes      Post[]   @relation("UserLiked")
   followers  User[]   @relation("UserFollows")
   following  User[]   @relation("UserFollows")
   posts      Post[]   @relation("UserToPost")
@@ -41,7 +41,7 @@ model Post {
   filePath    String
   tags        String
   views       Int
-  likes       Int
+  likes       User[]    @relation("UserLiked")
   User        User?     @relation("UserToPost", fields: [userId], references: [id])
   comments    Comment[]
 
@@ -55,6 +55,10 @@ model Comment {
   content   String
   postId    String
   reples    Reply[]
+  userId    String?
+  userImage String?
+  username  String?
+  tag       String?
   Post      Post     @relation(fields: [postId], references: [id])
 
   @@index([postId])

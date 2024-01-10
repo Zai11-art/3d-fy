@@ -12,6 +12,7 @@ import useMode from "../hooks/state";
 import useModelModal from "../hooks/use-model-modal";
 import ViewerComponent from "./for-3d/viewer-component";
 import { useMediaQuery } from "../hooks/use-media-query";
+import { FaCommentAlt } from "react-icons/fa";
 
 const ModelModal = () => {
   const lightmode = useMode((state) => state.isDarkMode);
@@ -145,6 +146,7 @@ const ModelModal = () => {
                           {`${data?.views}`}
                         </span>
                       </div>
+
                       <div
                         className={`flex ${
                           lightmode
@@ -158,9 +160,10 @@ const ModelModal = () => {
                           }`}
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
-                          {`${data?.likes}`}
+                          {`${data?.likes.length}`}
                         </span>
                       </div>
+
                       {/* PLACE NO. OF VIEWS HERE */}
                     </div>
 

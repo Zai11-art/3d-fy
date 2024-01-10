@@ -1,9 +1,18 @@
 import { useGLTF, Wireframe } from "@react-three/drei";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
+type GLTFResult = GLTF & {
+  nodes: {
+    food_apple_01: THREE.Mesh;
+  };
+  materials: {
+    food_apple_01: THREE.MeshStandardMaterial;
+  };
+};
 export function Model(props) {
   const { nodes, materials } = useGLTF(
     props.modelUrl ? props.modelUrl : "/food_apple_01_4k.glb"
-  );
+  ) as unknown as GLTFResult;
   console.log(nodes);
   console.log(materials);
 

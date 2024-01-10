@@ -3,17 +3,32 @@ import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import useMode from "../hooks/state";
 import { CarouselProps } from "../types/types";
 
-const TextCarousel = ({ data }: { data: string[] }) => {
+const TextCarousel = ({
+  data,
+  setHdri,
+}: {
+  data: string[];
+  setHdri: (data: string) => void;
+}) => {
   const [current, setcurrent] = useState(0);
   const lightmode = useMode((state) => state.isDarkMode);
-  console.log(current);
+
+  // 5 len, 6 prev
 
   const nextSlide = () => {
-    setcurrent((prevIndex) => (prevIndex + 1) % data.length);
+    setcurrent((prevIndex: number) => {
+      const nextI = (prevIndex + 1) % data.length;
+      setHdri(data[nextI]);
+      return nextI;
+    });
   };
 
   const prevSlide = () => {
-    setcurrent((prevIndex) => (prevIndex - 1 + data.length) % data.length);
+    setcurrent((prevIndex: number) => {
+      const prevI = (prevIndex - 1 + data.length) % data.length;
+      setHdri(data[prevI]);
+      return prevI;
+    });
   };
 
   return (
