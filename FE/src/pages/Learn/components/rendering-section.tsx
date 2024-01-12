@@ -42,8 +42,8 @@ const RenderingSection = () => {
         className={`h-full w-full flex xl:flex-col lg:flex-col md:flex-col flex-col items-center justify-around gap-16 py-[100px]  `}
       >
         <div className=" flex-col xl:w-[1100px] md:w-[100%] px-5 w-full h-full flex items-center justify-around gap-12">
-          {sectionRendering.map((content) => (
-            <div className="w-full h-full my-3">
+          {sectionRendering.map((content, i) => (
+            <div key={i} className="w-full h-full my-3">
               <div
                 className={`w-full flex items-center justify-center ${
                   lightmode
@@ -76,8 +76,9 @@ const RenderingSection = () => {
                     }  rounded-3xl border-[1px] shadow-inner `}
                   >
                     <div className="w-full h-full flex flex-wrap px-3 py-5 ">
-                      {content?.settings.map((btn) => (
+                      {content?.settings.map((btn, i) => (
                         <button
+                          key={i}
                           onClick={() => {
                             modal.onOpen(btn.details);
                           }}

@@ -1,5 +1,14 @@
 import express from "express";
-import { getPost, getPosts, patchLike, postComment, uploadPost } from "../controllers/posts";
+import {
+  getAllUserPost,
+  getModelUserPost,
+  getPost,
+  getPosts,
+  getRenderUserPost,
+  patchLike,
+  postComment,
+  uploadPost,
+} from "../controllers/posts";
 import { getUser } from "../controllers/users";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { upload3d } from "../middleware/uploadImage";
@@ -16,11 +25,14 @@ router.post(
 
 // GET POSTS
 router.get("/:id", getPost);
-router.get("/:id/all", getPosts);
+
+// GET POSTS FOR TABBING
+router.get("/:id/all", getAllUserPost);
+router.get("/:id/models", getModelUserPost);
+router.get("/:id/render", getRenderUserPost);
 
 // LIKE POSTS
 router.patch("/:postId/:userId", patchLike);
-
 router.post("/comment/:postId/:userId", postComment);
 
 export default router;

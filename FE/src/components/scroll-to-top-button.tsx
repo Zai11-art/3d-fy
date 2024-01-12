@@ -9,7 +9,6 @@ const ScrollToTop = () => {
   useEffect(() => {
     const scrollHeightChecker = () => {
       if (!showButton && window.pageYOffset > 200) {
-        console.log(showButton);
         setshowButton(true);
       } else if (showButton && window.pageYOffset <= 200) {
         setshowButton(false);

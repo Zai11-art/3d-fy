@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { SetStateAction, useEffect } from "react";
 import PageLayout from "../../layout/page-layout";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { SlUserFollow, SlUserUnfollow } from "react-icons/sl";
 
 import useMode from "../../hooks/state";
-import { User } from "../../types/types";
+import { Post, User } from "../../types/types";
 import { follow, getUser } from "../../api/user";
 import Card from "../../components/card-sample";
 import { useQuery } from "@tanstack/react-query";
@@ -13,11 +13,14 @@ import Pagination from "../../components/pagination";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Loader from "../../components/loader";
-
-const tabs = ["All", "Models", "Render", "Likes"];
+import {
+  getAllUserPost,
+  getModelUserPost,
+  getRenderUserPost,
+} from "../../api/post";
 
 const UserProfile = () => {
-  const [clicked, setClicked] = useState("");
+  const [clicked, setClicked] = useState("All");
   const { userId: paramId } = useParams();
 
   const token = useMode((state) => state.token);
@@ -25,29 +28,51 @@ const UserProfile = () => {
   const lightmode = useMode((state) => state.isDarkMode);
 
   const [userData, setUserData] = useState<User>();
+  const [posts, setPosts] = useState<Post[]>();
+
+  // tabs
+  const [toggleAll, setToggleAll] = useState(true);
+  const [toggleRender, setToggleRender] = useState(false);
+  const [toggleModels, setToggleModels] = useState(false);
+  console.log(toggleAll);
+  console.log(posts);
 
   // const { data: userData } = useQuery({
   //   queryKey: ["userData"],
   //   queryFn: () => getUser(`${paramId}`),
   // });
 
-  console.log(userData);
-
   useEffect(() => {
-    getUser2();
-  }, []);
+    fetcher();
+    getUser();
+  }, [toggleAll, toggleRender, toggleModels]);
 
-  const getUser2 = async () => {
-    const user = await axios
-      .get(`http://localhost:8080/users/${paramId}`)
-      .then((res) => res.data);
-
-    setUserData(user);
+  const fetcher = async () => {
+    let data: React.SetStateAction<Post[]> = [];
+    if (toggleAll) {
+      data = await getAllUserPost(paramId as string);
+    } else if (toggleModels) {
+      data = await getModelUserPost(paramId as string);
+    } else if (toggleRender) {
+      data = await getRenderUserPost(paramId as string);
+    }
+    setPosts(data);
   };
 
-  const isFollowed = userData?.followers.some(
-    (follower) => follower.id === user?.id
-  );
+  const getUser = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/users/${paramId}`
+      );
+
+      const user = response.data;
+      console.log(user);
+      setUserData(user);
+      fetcher();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const patchFollow = async () => {
     try {
@@ -64,11 +89,12 @@ const UserProfile = () => {
       getUser2();
     } catch (error) {
       toast.error("Following failed. please try again.");
-      console.log(error);
     }
   };
 
-  console.log(userData);
+  const isFollowed = userData?.followers.some(
+    (follower) => follower.id === user?.id
+  );
 
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
@@ -189,25 +215,45 @@ const UserProfile = () => {
         </div>
 
         {/* TABS */}
-        <div
-          className={`items-center justify-center h-10 flex gap-4 px-2  shadow-inner ${
-            lightmode
-              ? "bg-zinc-100 shadow-zinc-500/50"
-              : "bg-zinc-900 shadow-orange-500/20"
-          }    rounded-full`}
-        >
-          {tabs.map((tab) => (
+        <div className="flex gap-2 ">
+          <div
+            className={`items-center justify-center h-10 flex gap-4 px-2  shadow-inner ${
+              lightmode
+                ? "bg-zinc-100 shadow-zinc-500/50"
+                : "bg-zinc-900 shadow-orange-500/20"
+            }    rounded-full`}
+          >
             <button
               onClick={() => {
-                setClicked(tab);
+                setToggleAll(!toggleAll);
               }}
               className={`hover:bg-orange-500 text-sm px-2 py-1 rounded-full transition-all ease-in-out ${
-                clicked === tab ? "bg-orange-500" : null
+                toggleAll && "bg-orange-500"
               }`}
             >
-              {tab}
+              All
             </button>
-          ))}
+            <button
+              onClick={() => {
+                setToggleModels(!toggleModels);
+              }}
+              className={`hover:bg-orange-500 text-sm px-2 py-1 rounded-full transition-all ease-in-out ${
+                toggleModels && "bg-orange-500"
+              }`}
+            >
+              Models
+            </button>
+            <button
+              onClick={() => {
+                setToggleRender(!toggleRender);
+              }}
+              className={`hover:bg-orange-500 text-sm px-2 py-1 rounded-full transition-all ease-in-out ${
+                toggleRender && "bg-orange-500"
+              }`}
+            >
+              Render
+            </button>
+          </div>
         </div>
 
         {/* POSTS SECTION */}
@@ -215,13 +261,19 @@ const UserProfile = () => {
           <div className={`  w-full h-full p-2`}>
             <div className={`flex  w-full pb-5`}>
               <div className="flex flex-wrap justify-center gap-10 p-5">
-                {userData?.posts
-                  .slice(firstPostIndex, lastPostIndex)
-                  .map((card, idx) => <Card data={card} key={idx} />)}
+                {!posts ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {posts
+                      ?.slice(firstPostIndex, lastPostIndex)
+                      .map((card, idx) => <Card data={card} key={idx} />)}
+                  </>
+                )}
               </div>
             </div>
             <Pagination
-              totalPosts={userData?.posts.length || 0}
+              totalPosts={posts?.length || 0}
               postsPerPage={postsPerPage}
               setCurrentPage={setcurrentPage}
               currentPage={currentPage}

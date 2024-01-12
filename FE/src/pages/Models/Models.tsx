@@ -1,22 +1,16 @@
-import { useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import useMode from "../../hooks/state";
-import { getFeed } from "../../api/post";
+import { getFeed, getModels, getRenders } from "../../api/post";
 import Divider from "../../components/divider";
 import Card from "../../components/card-sample";
 import Carousel from "../../components/carousel";
 import PageLayout from "../../layout/page-layout";
 import Pagination from "../../components/pagination";
 import Loader from "../../components/loader";
-
-// const categories = ["models", "low-poly", "high-poly", "rendered"];
-const categoriesTwo = [
-  { label: "models", isToggled: false },
-  { label: "low-poly", isToggled: false },
-  { label: "high-poly", isToggled: false },
-  { label: "rendered", isToggled: false },
-];
+import { Post } from "../../types/types";
+import { FaCheck } from "react-icons/fa";
 
 const images = [
   {
@@ -42,19 +36,60 @@ const images = [
 
 const Models = () => {
   const lightmode = useMode((state) => state.isDarkMode);
-  const {
-    isPending,
-    isError,
-    data: feedData,
-    error,
-  } = useQuery({
-    queryKey: ["feed"],
-    queryFn: getFeed,
-  });
+  const [toggleAll, setToggleAll] = useState(true);
+
+  const [toggleRender, setToggleRender] = useState(false);
+
+  const [toggleModels, setToggleModels] = useState(false);
+
+  const [feedData, setFeedData] = useState<Post[]>([]);
+
+  // const {
+  //   isPending,
+  //   isError,
+  //   data: feedData,
+  //   error,
+  // } = useQuery({
+  //   queryKey: ["feed"],
+  //   queryFn: getFeed,
+  // });
+
+  const fetcher = async () => {
+    let data: SetStateAction<Post[]> = [];
+    if (toggleAll) {
+      data = await getFeed();
+    } else if (toggleModels) {
+      data = await getModels();
+    } else if (toggleRender) {
+      data = await getRenders();
+    }
+    setFeedData(data);
+
+    // if (toggleModels) {
+    //   const data = await getModels();
+    //   console.log("toggled models");
+    //   console.log(data);
+    //   setFeedData(data);
+    // }
+    // if (toggleRender) {
+    //   const data = await getRenders();
+    //   console.log("toggled renders");
+    //   console.log(data);
+    //   setFeedData(data);
+    // }
+    // if (!toggleAll && !toggleModels && !toggleRender) {
+    //   setFeedData([]);
+    // }
+  };
+
+  // const toggler
+
+  useEffect(() => {
+    fetcher();
+  }, [toggleAll, toggleModels, toggleRender]);
 
   // solution for toggling 2
-  const [toggle, setToggle] = useState(categoriesTwo);
-  console.log(toggle);
+  // console.log(toggle);
 
   // pagination logic/controls
   const [currentPage, setcurrentPage] = useState(1);
@@ -62,43 +97,6 @@ const Models = () => {
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
 
-  const onToggleTwo = (cat: string) => {
-    if (cat === "models") {
-      setToggle((prev) =>
-        prev.map((cat) => {
-          console.log(cat);
-          return cat.label === "models" ? { ...cat, isToggled: true } : cat;
-        })
-      );
-    }
-
-    if (cat === "high-poly") {
-      setToggle((prev) =>
-        prev.map((cat) => {
-          console.log(cat);
-          return cat.label === "high-poly" ? { ...cat, isToggled: true } : cat;
-        })
-      );
-    }
-
-    if (cat === "low-poly") {
-      setToggle((prev) =>
-        prev.map((cat) => {
-          console.log(cat);
-          return cat.label === "low-poly" ? { ...cat, isToggled: true } : cat;
-        })
-      );
-    }
-
-    if (cat === "rendered") {
-      setToggle((prev) =>
-        prev.map((cat) => {
-          console.log(cat);
-          return cat.label === "rendered" ? { ...cat, isToggled: true } : cat;
-        })
-      );
-    }
-  };
   return (
     <PageLayout>
       <header className="h-[450px] flex py-5 items-center justify-center">
@@ -119,33 +117,75 @@ const Models = () => {
               }  p-1 rounded-md focus:outline-none focus:border-amber-500 focus:ring-[1.5px] focus:ring-amber-500`}
             />
             <Divider />
+
             <h1 className="text-md">Filters / Tags</h1>
 
             <Divider />
 
             <div className="md:mt-0 mt-2 flex flex-wrap flex-row w-full">
-              {categoriesTwo.map((cat, i) => (
+              <button
+                onClick={() => {
+                  setToggleAll(!toggleAll);
+                }}
+                className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
+                  lightmode
+                    ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
+                    : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
+                } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
+              >
                 <div
-                  key={i}
-                  className={`group cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
+                  className={`flex items-center w-4 h-4 rounded-md ${
                     lightmode
-                      ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
-                      : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
-                  } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
+                      ? "bg-zinc-800 text-orange-200"
+                      : "bg-black text-white"
+                  } justify-center`}
                 >
-                  <input
-                    type="checkbox"
-                    name={cat.label}
-                    id={cat.label}
-                    // @ts-ignore
-                    value={cat?.isToggled}
-                    onClick={() => onToggleTwo(cat.label)}
-                  />
-                  <label htmlFor={cat.label} className="text-xs">
-                    {cat.label}
-                  </label>
+                  {toggleAll && <FaCheck className="text-[10px]" />}
                 </div>
-              ))}
+                <span>All</span>
+              </button>
+              <button
+                onClick={() => {
+                  setToggleModels(!toggleModels);
+                }}
+                className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
+                  lightmode
+                    ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
+                    : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
+                } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
+              >
+                <div
+                  className={`flex items-center w-4 h-4 rounded-md ${
+                    lightmode
+                      ? "bg-zinc-800 text-orange-200"
+                      : "bg-black text-white"
+                  } justify-center`}
+                >
+                  {toggleModels ? <FaCheck className="text-[10px]" /> : ""}
+                </div>
+                <span>Model</span>
+              </button>
+              <button
+                onClick={() => {
+                  setToggleRender(!toggleRender);
+                }}
+                className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
+                  lightmode
+                    ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
+                    : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
+                } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
+              >
+                <div
+                  className={`flex items-center w-4 h-4 rounded-md ${
+                    lightmode
+                      ? "bg-zinc-800 text-orange-200"
+                      : "bg-black text-white"
+                  } justify-center`}
+                >
+                  {toggleRender ? <FaCheck className="text-[10px]" /> : ""}
+                </div>
+                <span>Render</span>
+              </button>
 
               <div className="flex w-full bg-[red] flex-col"></div>
             </div>

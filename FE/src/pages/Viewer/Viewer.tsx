@@ -22,8 +22,6 @@ const ViewContainer = ({
 }: ViewContainerProps) => {
   // @ts-ignore
   const modelUrl = useModelModal((state) => state.data?.modelUrl);
-  // console.log("from view container");
-  // console.log(scale);
 
   return (
     <>
@@ -115,8 +113,6 @@ const Viewer = ({
   color: string;
   hdri: string;
 }) => {
-  console.log(color);
-
   return (
     <div
       className={`${
@@ -131,6 +127,7 @@ const Viewer = ({
           <Environment
             background
             // files="/brown_photostudio_04_8k.hdr"
+            // @ts-ignore
             preset={hdri}
           />
 

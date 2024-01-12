@@ -76,7 +76,7 @@ const Dashboard = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useConfirmationModal();
   const user = useMode((state) => state.user);
-  console.log(user?.posts);
+  console.log(user);
 
   const questionData = {
     title: "Save these changes?",
@@ -143,7 +143,7 @@ const Dashboard = () => {
             {/* USER CREDENTIALS */}
             <div className="h-12 w-full flex items-center justify-between">
               <div className="flex gap-2">
-                <Avatar url="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
+                <Avatar url={user?.profilePic} />
 
                 <div className="flex flex-col">
                   <span className="text-sm">{user?.username}</span>
@@ -160,7 +160,11 @@ const Dashboard = () => {
             <div className="flex gap-5 w-full xl:flex-wrap no-wrap  items-center justify-center">
               {[
                 { label: "Views", data: 20323, icon: <FaEye /> },
-                { label: "Likes", data: user?.likes, icon: <BiSolidLike /> },
+                {
+                  label: "Likes",
+                  data: user?.likes.length,
+                  icon: <BiSolidLike />,
+                },
                 {
                   label: "Impressions",
                   data: 22426,

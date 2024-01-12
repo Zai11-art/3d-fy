@@ -84,8 +84,9 @@ const ModellingSection = () => {
                   : "glassmorphism  shadow-amber-300/30"
               }  rounded-xl flex shadow-inner flex-col items-center justify-around `}
             >
-              {sectionModellingFileTypes.map((slug) => (
+              {sectionModellingFileTypes.map((slug, i) => (
                 <button
+                  key={i}
                   onClick={() => modal.onOpen(slug?.details)}
                   className={`cursor-pointer hover:scale-[1.05] flex w-[70%] h-6 ${
                     lightmode
@@ -174,8 +175,9 @@ const ModellingSection = () => {
           </div>
         </div>
         <div className="p-2 flex flex-col gap-5">
-          {sectionModelling.map((card) => (
+          {sectionModelling.map((card, i) => (
             <div
+              key={i}
               onClick={() => modal.onOpen(card.details)}
               className={`cursor-pointer group ${
                 card.cardStyle
@@ -262,8 +264,9 @@ const ModellingSection = () => {
                     }  rounded-md`}
                   >
                     <div className="flex md:gap-5 gap-3 md:justify-start justify-center">
-                      {sectionModellingPrimitives.map((icon) => (
+                      {sectionModellingPrimitives.map((icon, i) => (
                         <button
+                          key={i}
                           onClick={() => modal.onOpen(icon?.details)}
                           className={`flex flex-col items-center border-[1px] w-12 px-7 py-2 rounded-md ${
                             lightmode
@@ -283,8 +286,9 @@ const ModellingSection = () => {
                       ))}
                     </div>
                     <div className="flex md:gap-5 gap-3 flex-wrap md:justify-start justify-center">
-                      {sectionModellingMeshStructure.map((icon) => (
+                      {sectionModellingMeshStructure.map((icon, i) => (
                         <button
+                          key={i}
                           onClick={() => modal.onOpen(icon.details)}
                           className={`flex flex-col items-center border-[1px] w-12 px-7 py-2 rounded-md ${
                             lightmode
@@ -363,8 +367,9 @@ const ModellingSection = () => {
                   } rounded-md xl:w-[30%] md:w-[40%] `}
                 >
                   <div className="flex flex-wrap w-full h-full gap-5 items-center justify-center">
-                    {sectionModellingTransformations.map((icon) => (
+                    {sectionModellingTransformations.map((icon, i) => (
                       <button
+                        key={i}
                         onClick={() => modal.onOpen(icon?.details)}
                         className={`flex flex-col items-center border-[1px] w-12 px-8 py-2 rounded-md ${
                           lightmode
@@ -410,8 +415,9 @@ const ModellingSection = () => {
                     }  rounded-md `}
                   >
                     <div className="flex gap-5 flex-wrap w-full h-full items-center justify-center">
-                      {sectionModellingModifiers.map((icon) => (
+                      {sectionModellingModifiers.map((icon, i) => (
                         <button
+                          key={i}
                           onClick={() => modal.onOpen(icon?.details)}
                           className={`flex flex-col items-center border-[1px] w-12 px-9 py-2 rounded-md ${
                             lightmode
@@ -478,8 +484,9 @@ const ModellingSection = () => {
                       }  rounded-md `}
                     >
                       <div className="flex gap-5 flex-col  w-full h-full items-center justify-center">
-                        {sectionModellingSurfaceTypes.map((icon) => (
+                        {sectionModellingSurfaceTypes.map((icon, i) => (
                           <button
+                            key={i}
                             onClick={() => modal.onOpen(icon?.details)}
                             className={`flex items-center justify-between border-[1px] w-full h-full px-5 py-4 rounded-md ${
                               lightmode
@@ -527,8 +534,9 @@ const ModellingSection = () => {
                         }  rounded-md `}
                       >
                         <div className="flex gap-5 flex-col  w-full h-full items-center justify-center">
-                          {sectionModellingTopology.map((icon) => (
+                          {sectionModellingTopology.map((icon, i) => (
                             <button
+                              key={i}
                               onClick={() => modal.onOpen(icon?.details)}
                               className={`flex items-center justify-between border-[1px] w-full h-full px-5 py-2 rounded-md ${
                                 lightmode
@@ -575,8 +583,9 @@ const ModellingSection = () => {
                         }  rounded-md `}
                       >
                         <div className="flex gap-5 flex-col  w-full h-full items-center justify-center">
-                          {sectionModellingCAD.map((icon) => (
+                          {sectionModellingCAD.map((icon, i) => (
                             <button
+                              key={i}
                               onClick={() => modal.onOpen(icon?.details)}
                               className={`flex items-center justify-between border-[1px] w-full h-full px-5 py-2 rounded-md ${
                                 lightmode

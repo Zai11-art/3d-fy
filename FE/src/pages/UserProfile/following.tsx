@@ -53,7 +53,6 @@ const Following = () => {
     (follower) => follower.id === paramId
   );
 
-  console.log(isFollowed);
 
   const patchFollow = async (followingId: string) => {
     try {
@@ -70,7 +69,7 @@ const Following = () => {
       getUser2();
     } catch (error) {
       toast.error("Following failed. please try again.");
-      console.log(error);
+
     }
   };
 

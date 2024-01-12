@@ -13,6 +13,8 @@ import useModelModal from "../hooks/use-model-modal";
 import ViewerComponent from "./for-3d/viewer-component";
 import { useMediaQuery } from "../hooks/use-media-query";
 import { FaCommentAlt } from "react-icons/fa";
+import { BiSolidComment } from "react-icons/bi";
+import { Comment } from "../types/types";
 
 const ModelModal = () => {
   const lightmode = useMode((state) => state.isDarkMode);
@@ -28,9 +30,6 @@ const ModelModal = () => {
     useModal.onClose();
   };
 
-  console.log("debug here");
-  console.log(data);
-
   return (
     <>
       {modalState && (
@@ -40,15 +39,28 @@ const ModelModal = () => {
             <div className="bg-black w-screen h-screen absolute z-[5] opacity-80"></div>
 
             <div
-              className={`modal-content md:w-[1200px] w-full p-4 md:h-[600px] h-[500px]  z-10 ${
+              className={`modal-content xl:w-[1200px] lg:w-[90%] w-full md:h-[600px] h-[500px]  z-10 ${
                 lightmode
                   ? "bg-gradient-gray-light text-black shadow-2xl shadow-black"
                   : "bg-gradient-gray text-white shadow-lg shadow-zinc-200/20 border-zinc-100/20"
               }  rounded-2xl gap-2 flex p-2 md:flex-row flex-col border-[1px] md:mt-[90px] mt-16`}
             >
               {/* MODEL VIEWER */}
-              <div className="border-[1px] rounded-xl border-zinc-100/40 flex md:w-[60%] w-full md:h-full h-[300px] items-center justify-center ">
+              <div className="relative border-[1px] rounded-xl border-zinc-100/40 flex md:w-[60%] w-full md:h-full h-[300px] items-center justify-center ">
                 <ViewerComponent />
+                <div className="bottom-5 inset-x-0 absolute w-full flex items-center justify-center z-[200]">
+                  <Link
+                    onClick={() => useModal.onClose()}
+                    to={`/post/${data?.id}`}
+                    className={`py-2 px-5 rounded-full ${
+                      lightmode
+                        ? "bg-gradient-to-r from-orange-500/70 to-orange-500 hover:bg-orange-500 shadow-slate-500/40 shadow-md text-white"
+                        : "bg-gradient-to-r from-orange-500/50 to-orange-500 hover:bg-orange-300 border-[1px] border-orange-300"
+                    }`}
+                  >
+                    View details Here
+                  </Link>
+                </div>
               </div>
 
               {/* MAIN DIALOG */}
@@ -61,20 +73,11 @@ const ModelModal = () => {
                   <div className="flex gap-2 flex-col">
                     <div className="flex items-center justify-between">
                       <div className="flex gap-3  items-center justify-center">
-                        <span className="md:text-2xl text-xl">
-                          {data?.title}
-                        </span>
-                        <Link
-                          onClick={() => useModal.onClose()}
-                          to={`/post/${data?.id}`}
-                          className={`text-xs flex items-center justify-center ${
-                            lightmode
-                              ? "bg-gradient-to-r from-amber-900/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md text-white"
-                              : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-300"
-                          } px-[5px] py-[6px] rounded-xl`}
-                        >
-                          View more
-                        </Link>
+                        <div className="flex flex-col gap-2">
+                          <span className="md:text-2xl text-xl">
+                            {data?.title}
+                          </span>
+                        </div>
                       </div>
 
                       <button
@@ -130,23 +133,7 @@ const ModelModal = () => {
                     </div>
 
                     <div className="gap-2 flex items-center md:mt-5 mt-2 ">
-                      <div
-                        className={`flex ${
-                          lightmode
-                            ? "bg-slate-200 shadow-inner shadow-slate-900/40"
-                            : "bg-black"
-                        } px-2 md:p-1 p-[3px]  gap-1 rounded-md`}
-                      >
-                        <MdOutlineRemoveRedEye
-                          className={`md:w-5 md:h-5 sm:w-4 sm:h-4 ${
-                            lightmode ? "text-slate-900" : "text-slate-300"
-                          }`}
-                        />
-                        <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
-                          {`${data?.views}`}
-                        </span>
-                      </div>
-
+                      {/* LIKES */}
                       <div
                         className={`flex ${
                           lightmode
@@ -161,6 +148,42 @@ const ModelModal = () => {
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
                           {`${data?.likes.length}`}
+                        </span>
+                      </div>
+
+                      {/* COMMENT */}
+                      <div
+                        className={`flex ${
+                          lightmode
+                            ? "bg-slate-200 shadow-inner shadow-slate-900/40"
+                            : "bg-black"
+                        } px-3 py-1 gap-1 rounded-md`}
+                      >
+                        <BiSolidComment
+                          className={`md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                            lightmode ? "text-slate-900" : "text-slate-300"
+                          } `}
+                        />
+                        <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
+                          {`${data?.comments.length}`}
+                        </span>
+                      </div>
+
+                      {/* VIEWS */}
+                      <div
+                        className={`flex ${
+                          lightmode
+                            ? "bg-slate-200 shadow-inner shadow-slate-900/40"
+                            : "bg-black"
+                        } px-2 md:p-1 p-[3px]  gap-1 rounded-md`}
+                      >
+                        <MdOutlineRemoveRedEye
+                          className={`md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                            lightmode ? "text-slate-900" : "text-slate-300"
+                          }`}
+                        />
+                        <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
+                          {`${data?.views}`}
                         </span>
                       </div>
 
@@ -186,6 +209,44 @@ const ModelModal = () => {
                     </div>
 
                     <Divider />
+                    <div className="gap-2 overflow-y-auto flex flex-col h-full">
+                      {data?.comments.map((comment: Comment, i: number) => (
+                        <div
+                          key={i}
+                          className={`flex  h-full p-1 mt-2 text-normal `}
+                        >
+                          <div
+                            className={`flex h-full border-zinc-500/50 border-[1px] ${
+                              lightmode
+                                ? "bg-zinc-100 shadow-lg shadow-zinc-950/20"
+                                : "bg-zinc-950 shadow-lg shadow-black"
+                            }  p-4  justify-center rounded-xl gap-2 
+                        `}
+                          >
+                            <Avatar url={comment.userImage} />
+                            <div className={` flex flex-col  gap-2 `}>
+                              <div className="flex items-center gap-2 ">
+                                <span className="text-[14.5px]">
+                                  {comment.username}
+                                </span>
+                                <span className="text-xs ">
+                                  {comment.createdAt}
+                                  {/* {comment.content.length} */}
+                                </span>
+                              </div>
+                              <p
+                                style={{ overflowWrap: "anywhere" }}
+                                className={`${
+                                  lightmode ? "font-normal" : "font-light"
+                                } flex text-sm  `}
+                              >
+                                {comment.content}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

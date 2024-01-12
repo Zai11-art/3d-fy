@@ -88,8 +88,9 @@ const Navbar = () => {
                 </button>
               </Link>
 
-              {navLinks.map((link) => (
+              {navLinks.map((link, i) => (
                 <Link
+                  key={i}
                   className={`text-[13px] font-thin transition-all ease-in-out  p-1 active:bg-slate-800 ${
                     lightMode
                       ? "text-slate-800 hover:text-slate-700"
@@ -143,8 +144,9 @@ const Navbar = () => {
                 </div>
 
                 <div className="mt-5">
-                  {navbarContent.map((lbl) => (
+                  {navbarContent.map((lbl, i) => (
                     <Link
+                      key={i}
                       onClick={() => setOpenMenuBar(!openMenuBar)}
                       to={lbl.url}
                     >

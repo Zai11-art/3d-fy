@@ -10,8 +10,6 @@ const ConfirmationModal = () => {
   const useModal = useConfirmationModal();
   const infoData = useConfirmationModal().data;
 
-  console.log(modalState);
-
   const handleModalClick = (e: {
     target: { closest: (arg0: string) => any };
     stopPropagation: () => void;

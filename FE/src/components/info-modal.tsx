@@ -11,8 +11,6 @@ const InfoModal = () => {
   const useModal = useInfoModal();
   const infoData = useInfoModal().data;
 
-  console.log(modalState);
-
   const handleModalClick = (e: {
     target: { closest: (arg0: string) => any };
     stopPropagation: () => void;

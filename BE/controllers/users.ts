@@ -29,6 +29,7 @@ export const getUser = async (req: Request, res: Response) => {
       include: {
         posts: {
           include: {
+            comments: true,
             likes: true,
           },
         },

@@ -78,8 +78,9 @@ const LightingSection = () => {
                 lightmode ? "bg-fuchsia-500 h-[2px]" : "bg-fuchsia-300 h-[1px]"
               }  xl:w-[100px] lg:w-[100px] md:w-[50px] w-[30px] flex items-center justify-center relative `}
             >
-              {durationInterval.map((dot) => (
+              {durationInterval.map((dot, i) => (
                 <div
+                  key={i}
                   className={`w-2 h-2 ${
                     lightmode ? "bg-fuchsia-500" : "bg-fuchsia-300"
                   }   rounded-full transition-all ease-in-out ${dot} absolute group-hover:right-full right-0 group-hover:opacity-100 opacity-0`}
@@ -166,8 +167,9 @@ const LightingSection = () => {
                 lightmode ? "bg-fuchsia-500 h-[2px]" : "bg-fuchsia-300 h-[1px]"
               } xl:w-[100px] lg:w-[100px] md:w-[50px] w-[30px] flex items-center justify-center relative `}
             >
-              {durationInterval.map((dot) => (
+              {durationInterval.map((dot, i) => (
                 <div
+                  key={i}
                   className={`w-2 h-2 ${
                     lightmode ? "bg-fuchsia-500" : "bg-fuchsia-300"
                   }  rounded-full transition-all ease-in-out ${dot} absolute group-hover:left-full left-0 group-hover:opacity-100 opacity-0`}
@@ -272,8 +274,9 @@ const LightingSection = () => {
               {/* TOP LINE */}
               <div className="h-[470px] bottom-0 xl:h-[250px] lg:h-[250px] md:h-[300px]  w-[2px] absolute flex items-center justify-center z-[1]  bg-purple-600 animate-pulse">
                 {/* pulsation dots */}
-                {durationInterval.map((dot) => (
+                {durationInterval.map((dot, i) => (
                   <div
+                    key={i}
                     className={`w-2 h-2 ${
                       lightmode ? "bg-purple-600" : "bg-purple-300"
                     }  z-[10] absolute rounded-full transition-all ease ${dot} group-hover:bottom-full  bottom-0`}
@@ -284,8 +287,9 @@ const LightingSection = () => {
               {/* BOTTOM LINE */}
               <div className="h-[470px] top-0 xl:h-[250px] lg:h-[250px] md:h-[300px]  w-[2px] absolute flex items-center justify-center z-[1]  bg-yellow-600 animate-pulse">
                 {/* GOES DOWN */}
-                {durationInterval.map((dot) => (
+                {durationInterval.map((dot, i) => (
                   <div
+                    key={i}
                     className={`w-2 h-2 ${
                       lightmode ? "bg-yellow-600" : "bg-yellow-300"
                     }  z-[10] absolute rounded-full transition-all ease ${dot} group-hover:top-full top-0`}
@@ -299,8 +303,9 @@ const LightingSection = () => {
                   md ? "top-0" : "left-0"
                 }  xl:h-[2px] lg:h-[2px] md:h-[2px] h-[200px] xl:w-[300px] lg:w-[200px] md:w-[175px] w-[2px] absolute flex items-center justify-center z-[1]  bg-blue-500  animate-pulse`}
               >
-                {durationInterval.map((dot) => (
+                {durationInterval.map((dot, i) => (
                   <div
+                    key={i}
                     className={`w-2 h-2  ${
                       lightmode ? "bg-blue-600" : "bg-blue-300"
                     } z-[10] absolute rounded-full transition-all ease ${dot} group-hover:left-full  left-0`}
@@ -314,8 +319,9 @@ const LightingSection = () => {
                   md ? "bottom-0" : "right-0"
                 } md:right-0  xl:h-[2px] lg:h-[2px] md:h-[2px] h-[200px] xl:w-[300px] lg:w-[200px] md:w-[175px] w-[2px] absolute flex items-center justify-center z-[1]  bg-green-500  animate-pulse`}
               >
-                {durationInterval.map((dot) => (
+                {durationInterval.map((dot, i) => (
                   <div
+                    key={i}
                     className={`w-2 h-2 ${
                       lightmode ? "bg-green-600" : "bg-green-300"
                     }  z-[10] absolute rounded-full transition-all ease ${dot} group-hover:right-full  right-0`}
@@ -413,8 +419,9 @@ const LightingSection = () => {
                 lightmode ? "bg-yellow-600 h-[2px]" : "bg-yellow-300 h-[1px]"
               }  xl:w-[100px] lg:w-[100px] md:w-[50px] w-[30px] flex items-center justify-center relative `}
             >
-              {durationInterval.map((dot) => (
+              {durationInterval.map((dot, i) => (
                 <div
+                  key={i}
                   className={`w-2 h-2 bg-yellow-500  rounded-full transition-all ease ${dot} absolute group-hover:right-full right-0 group-hover:opacity-100 opacity-0`}
                 ></div>
               ))}
@@ -499,8 +506,9 @@ const LightingSection = () => {
                 lightmode ? "bg-yellow-600 h-[2px]" : "bg-yellow-300 h-[1px]"
               } xl:w-[100px] lg:w-[100px] md:w-[50px] w-[30px] flex items-center justify-center relative `}
             >
-              {durationInterval.map((dot) => (
+              {durationInterval.map((dot, i) => (
                 <div
+                  key={i}
                   className={`w-2 h-2 ${
                     lightmode ? "bg-yellow-600" : "bg-yellow-300"
                   } rounded-full transition-all ease ${dot} absolute group-hover:left-full left-0 group-hover:opacity-100 opacity-0`}
@@ -624,8 +632,9 @@ const LightingSection = () => {
                           videoUrl: "",
                         },
                       },
-                    ].map((num) => (
+                    ].map((num, i) => (
                       <button
+                        key={i}
                         onClick={() => modal.onOpen(num.details)}
                         className={`flex gap-1 border-[1px] justify-center py-2 flex-col items-center w-full rounded-lg ${
                           lightmode
@@ -722,8 +731,9 @@ const LightingSection = () => {
                           videoUrl: "",
                         },
                       },
-                    ].map((num) => (
+                    ].map((num, i) => (
                       <button
+                        key={i}
                         onClick={() => modal.onOpen(num.details)}
                         className={`flex gap-1 border-[1px] justify-center py-2 flex-col items-center w-full rounded-lg ${
                           lightmode
@@ -912,8 +922,9 @@ const LightingSection = () => {
                         videoUrl: "",
                       },
                     },
-                  ].map((num) => (
+                  ].map((num, i) => (
                     <button
+                      key={i}
                       onClick={() => modal.onOpen(num.details)}
                       className={`flex gap-1 border-[1px] justify-center py-2 flex-col items-center w-full rounded-lg ${
                         lightmode

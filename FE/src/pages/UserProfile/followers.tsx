@@ -38,8 +38,6 @@ const Following = () => {
   //   queryFn: () => getUser(`${paramId}`),
   // });
 
-  console.log(userData);
-
   useEffect(() => {
     getTobeFollwed();
     getUser();

@@ -24,9 +24,6 @@ const CardList = () => {
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
 
-  console.log(`last index: ${lastPostIndex}`);
-  console.log(`first index: ${firstPostIndex}`);
-
   return (
     <div className="mt-12 w-full flex justify-center items-center px-5 flex-col">
       <div>

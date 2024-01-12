@@ -37,7 +37,77 @@ export const uploadPost = async (req: Request, res: Response) => {
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    const posts = await prismadb.post.findMany({ include: { likes: true } });
+    const posts = await prismadb.post.findMany({
+      include: { likes: true, comments: true },
+    });
+
+    const parsedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const user = await prismadb.user.findFirst({
+          where: {
+            // @ts-ignore
+            id: post?.userId,
+          },
+        });
+
+        const parsedPostData = {
+          ...post,
+          profileImage: user?.profilePic,
+          author: user?.username,
+        };
+
+        return parsedPostData;
+      })
+    );
+
+    console.log(parsedPosts);
+
+    res.status(200).json(parsedPosts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getModelsPost = async (req: Request, res: Response) => {
+  try {
+    const posts = await prismadb.post.findMany({
+      include: { likes: true, comments: true },
+      where: { tags: "model" },
+    });
+
+    const parsedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const user = await prismadb.user.findFirst({
+          where: {
+            // @ts-ignore
+            id: post?.userId,
+          },
+        });
+
+        const parsedPostData = {
+          ...post,
+          profileImage: user?.profilePic,
+          author: user?.username,
+        };
+
+        return parsedPostData;
+      })
+    );
+
+    console.log(parsedPosts);
+
+    res.status(200).json(parsedPosts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getRendersPost = async (req: Request, res: Response) => {
+  try {
+    const posts = await prismadb.post.findMany({
+      include: { likes: true, comments: true },
+      where: { tags: "render" },
+    });
 
     const parsedPosts = await Promise.all(
       posts.map(async (post) => {
@@ -146,6 +216,118 @@ export const patchLike = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ post });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// GET FOR USER POSTS AND CATEGORIES
+export const getAllUserPost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(401).json({ msg: "Unauthorized Access." });
+
+    const posts = await prismadb.post.findMany({
+      where: { userId: id },
+      include: { likes: true, comments: true },
+    });
+
+    const parsedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const user = await prismadb.user.findFirst({
+          where: {
+            // @ts-ignore
+            id: post?.userId,
+          },
+        });
+
+        const parsedPostData = {
+          ...post,
+          profileImage: user?.profilePic,
+          author: user?.username,
+        };
+
+        return parsedPostData;
+      })
+    );
+
+    console.log(parsedPosts);
+
+    res.status(200).json(parsedPosts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getModelUserPost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(401).json({ msg: "Unauthorized Access." });
+
+    const posts = await prismadb.post.findMany({
+      where: { userId: id, tags: "model" },
+      include: { likes: true, comments: true },
+    });
+
+    const parsedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const user = await prismadb.user.findFirst({
+          where: {
+            // @ts-ignore
+            id: post?.userId,
+          },
+        });
+
+        const parsedPostData = {
+          ...post,
+          profileImage: user?.profilePic,
+          author: user?.username,
+        };
+
+        return parsedPostData;
+      })
+    );
+
+    console.log(parsedPosts);
+
+    res.status(200).json(parsedPosts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getRenderUserPost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    if (!id) return res.status(401).json({ msg: "Unauthorized Access." });
+
+    const posts = await prismadb.post.findMany({
+      where: { userId: id, tags: "render" },
+      include: { likes: true, comments: true },
+    });
+
+    const parsedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const user = await prismadb.user.findFirst({
+          where: {
+            // @ts-ignore
+            id: post?.userId,
+          },
+        });
+
+        const parsedPostData = {
+          ...post,
+          profileImage: user?.profilePic,
+          author: user?.username,
+        };
+
+        return parsedPostData;
+      })
+    );
+
+    console.log(parsedPosts);
+
+    res.status(200).json(parsedPosts);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -47,8 +47,11 @@ const HeroSection = () => {
         ref={shouldScrollToProcess}
         className={`m-5 md:h-full  h-full flex-wrap xl:py-[150px] lg:py-[150px] md:py-[90px] py-16 flex justify-center items-center gap-20  `}
       >
-        {sectionHero.map((card) => (
-          <div className="flex flex-col items-center justify-center group">
+        {sectionHero.map((card, i) => (
+          <div
+            key={i}
+            className="flex flex-col items-center justify-center group"
+          >
             <div
               className={` ${
                 card.cardStyle
@@ -90,8 +93,9 @@ const HeroSection = () => {
               } animate-pulse`}
             >
               {/* pulsation dots */}
-              {durationInterval.map((dot) => (
+              {durationInterval.map((dot, i) => (
                 <div
+                  key={i}
                   className={`w-2 h-2 ${
                     lightmode ? card.lineLight : card.lineDark
                   }  z-[-1] absolute rounded-full transition-all duration-[1000ms] ${dot} group-hover:top-full top-0`}

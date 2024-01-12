@@ -61,8 +61,9 @@ const TexturingSection = () => {
                 : "bg-[#0a0a0a] rounded-2xl shadow-inner shadow-orange-400/20"
             }  px-5 py-5 mx-12`}
           >
-            {sectionTexturing.map((card) => (
+            {sectionTexturing.map((card, i) => (
               <div
+                key={i}
                 onClick={() => modal.onOpen(card.details)}
                 className={`flex cursor-pointer hover:scale-[1.01] transition-all ease-in-out items-center justify-center ${
                   lightmode
@@ -184,8 +185,9 @@ const TexturingSection = () => {
                   "Roughness",
                   "Displacement",
                   "Normal",
-                ].map((box) => (
+                ].map((box, i) => (
                   <button
+                    key={i}
                     className={`md:w-[150px] w-[100%] px-2 h-[25px] ${
                       lightmode ? "border-[1px] border-neutral-400/50" : ""
                     }  text-xs glassmorphism flex items-center justify-center`}
@@ -206,9 +208,9 @@ const TexturingSection = () => {
           >
             <h1 className="md:text-lg text-[14px]">Recommended softwares</h1>
             <div className=" flex items-center justify-center gap-4 w-full flex-wrap ">
-           
-              {sectionTexturingSoftware.map((icon) => (
+              {sectionTexturingSoftware.map((icon, i) => (
                 <div
+                  key={i}
                   className={`relative group cursor-pointer hover:rotate-[360deg] duration-300 transition-all ease-in-out ${
                     lightmode
                       ? "bg-neutral-200 border-[1px] border-neutral-400 "

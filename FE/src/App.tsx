@@ -19,6 +19,7 @@ import Feed from "./pages/Feed/feed";
 import Post from "./pages/Post/post";
 import Followers from "./pages/UserProfile/followers";
 import Following from "./pages/UserProfile/following";
+import Playground from "./pages/playground/playground";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -85,6 +86,7 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>
+          <Route path="/playground" element={<Playground />}></Route>
         </Route>
 
         {/* WITHOUT NAV */}

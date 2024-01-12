@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { MdArrowBack, MdArrowForward } from "react-icons/md"
-;
+import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import useMode from "../hooks/state";
 import { CarouselProps } from "../types/types";
 
 const Carousel = ({ images }: { images: CarouselProps[] }) => {
   const [current, setcurrent] = useState(0);
   const lightmode = useMode((state) => state.isDarkMode);
-  console.log(current);
 
   const nextSlide = () => {
     setcurrent((prevIndex) => (prevIndex + 1) % images.length);
