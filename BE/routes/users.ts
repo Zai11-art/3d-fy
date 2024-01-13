@@ -10,13 +10,12 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", getUsers);
-router.get("/:userId", getUser);
+router.get("/", authMiddleware, getUsers);
+router.get("/:userId", authMiddleware, getUser);
 
-router.get("/:userId/following", getFollowing);
-router.get("/:userId/followers", getFollowers);
+router.get("/:userId/following", authMiddleware, getFollowing);
+router.get("/:userId/followers", authMiddleware, getFollowers);
 
-
-router.patch('/:userId/:followId', patchFollow)
+router.patch("/:userId/:followId", authMiddleware, patchFollow);
 
 export default router;

@@ -86,7 +86,7 @@ const UserProfile = () => {
         .then((res) => res.data);
 
       // refetch again to update state
-      getUser2();
+      getUser();
     } catch (error) {
       toast.error("Following failed. please try again.");
     }

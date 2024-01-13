@@ -5,12 +5,19 @@ import { FaFile } from "react-icons/fa6";
 import { MdDriveFolderUpload } from "react-icons/md";
 
 import useMode from "../hooks/state";
+import useViewer from "../hooks/use-viewer";
+import { Link } from "react-router-dom";
 
 const FileUpload = () => {
   const lightmode = useMode((state) => state.isDarkMode);
-  const [fileName, setfileName] = useState([]);
+  const [fileName, setfileName] = useState<any>([]);
+  const view = useViewer();
+  const fileToView = useViewer((state) => state.data);
 
-  const handleOnDrop = (acceptedFiles) => {
+  // const url = fileToView ? URL.createObjectURL(fileToView[0]) : null;
+  // console.log(url);
+
+  const handleOnDrop = (acceptedFiles: any) => {
     console.log(acceptedFiles);
 
     if (
@@ -18,6 +25,7 @@ const FileUpload = () => {
       acceptedFiles[0].name.split(".").slice(-1)[0] === "glb"
     ) {
       setfileName(acceptedFiles);
+      view.onOpen(acceptedFiles);
       toast.success(`${acceptedFiles[0].name} uploaded successfully`);
     } else {
       toast.error(
@@ -47,7 +55,7 @@ const FileUpload = () => {
 
             {fileName.length > 0 ? (
               <div className="w-full justify-center items-center flex-wrap gap-5 flex p-10">
-                {fileName.map((file) => (
+                {fileName.map((file: { name: string; size: number }) => (
                   <div
                     className={`flex items-center justify-center flex-col p-4 border-[1px] rounded-xl ${
                       lightmode
@@ -85,8 +93,11 @@ const FileUpload = () => {
 
             <div className="w-full flex items-center justify-center ">
               {fileName.length > 0 && (
-                <button
-                  onClick={(e) => e.stopPropagation()}
+                <Link
+                  to={"/view-3d"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
                   className={`mt-2 flex items-center p-1 px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
             ${
               lightmode
@@ -95,7 +106,7 @@ const FileUpload = () => {
             }`}
                 >
                   View This Model
-                </button>
+                </Link>
               )}
             </div>
           </div>

@@ -10,21 +10,23 @@ type GLTFResult = GLTF & {
   };
 };
 export function Model(props) {
-  const { nodes, materials } = useGLTF(
-    props.modelUrl ? props.modelUrl : "/food_apple_01_4k.glb"
-  ) as unknown as GLTFResult;
+  const { nodes, materials } = useGLTF(props.modelUrl) as unknown as GLTFResult;
   console.log(nodes);
-  console.log(materials);
 
-  console.log(props.color);
-  console.log(props.wireframeThickness);
-  console.log(props.normalTexture);
+  const newValues = Object.entries(nodes).map(([key, value]) => ({
+    [key]: value,
+  }));
+  console.log(newValues);
+
+  // console.log(props.color);
+  // console.log(props.wireframeThickness);
+  // console.log(props.normalTexture);
 
   // CHECK POLYCOUNT HERE
-  console.log(nodes.food_apple_01.geometry.attributes.normal.count);
+  // console.log(nodes.food_apple_01.geometry.attributes.normal.count);
   return (
     <group {...props} dispose={null}>
-      <mesh
+      {/* <mesh
         castShadow
         receiveShadow
         geometry={nodes.food_apple_01.geometry}
@@ -43,7 +45,7 @@ export function Model(props) {
             backfaceStroke={"#0000ff"} // Color of the lines that are facing away from the camera
           />
         )}
-      </mesh>
+      </mesh> */}
     </group>
   );
 }

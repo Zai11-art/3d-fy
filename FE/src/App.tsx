@@ -20,6 +20,7 @@ import Post from "./pages/Post/post";
 import Followers from "./pages/UserProfile/followers";
 import Following from "./pages/UserProfile/following";
 import Playground from "./pages/playground/playground";
+import MainViewer from "./components/main-viewer";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -86,12 +87,27 @@ function App() {
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>
-          <Route path="/playground" element={<Playground />}></Route>
+          <Route
+            path="/view-3d"
+            element={<MainViewer showLeva={true} hdri={"sunset"} />}
+          ></Route>
+          {/* <Route path="/playground" element={<MainViewer />}></Route> */}
         </Route>
 
         {/* WITHOUT NAV */}
         <Route element={<NoNav />}>
-          <Route path="/viewer" element={<Viewer showLeva={true} />}></Route>
+          <Route
+            path="/viewer"
+            element={
+              <Viewer
+                showLeva={true}
+                wireframe={false}
+                normal={false}
+                color={""}
+                hdri={""}
+              />
+            }
+          ></Route>
         </Route>
       </Routes>
     </BrowserRouter>

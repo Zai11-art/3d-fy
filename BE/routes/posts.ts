@@ -32,7 +32,7 @@ router.get("/:id/models", getModelUserPost);
 router.get("/:id/render", getRenderUserPost);
 
 // LIKE POSTS
-router.patch("/:postId/:userId", patchLike);
-router.post("/comment/:postId/:userId", postComment);
+router.patch("/:postId/:userId", authMiddleware, patchLike);
+router.post("/comment/:postId/:userId", authMiddleware, postComment);
 
 export default router;

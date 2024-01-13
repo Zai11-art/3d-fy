@@ -81,27 +81,6 @@ const Post = () => {
   // open comment section
   const [toggleComment, setToggleComment] = useState(false);
 
-  const [topPos, setTopPos] = useState("50%");
-
-  const handleScroll = () => {
-    const divHeight = document.getElementById("container")?.clientHeight;
-    const viewerHeight = document.getElementById("viewer")?.clientHeight;
-
-    // @ts-ignore
-    const newTopPos = (divHeight - viewerHeight) / 2 + window.scrollY;
-
-    setTopPos(`${newTopPos}`);
-  };
-
-  useEffect(() => {
-    getPost(postId);
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
   const getPost = async (postId: string | undefined) => {
     const post = await axios
       .get(`http://localhost:8080/posts/${postId}`)
