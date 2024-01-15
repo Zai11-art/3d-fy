@@ -14,7 +14,10 @@ import ViewerComponent from "./for-3d/viewer-component";
 import { useMediaQuery } from "../hooks/use-media-query";
 import { FaCommentAlt } from "react-icons/fa";
 import { BiSolidComment } from "react-icons/bi";
-import { Comment } from "../types/types";
+import { Comment, Post } from "../types/types";
+import CommentSection from "./comment-section";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const ModelModal = () => {
   const lightmode = useMode((state) => state.isDarkMode);
@@ -46,7 +49,7 @@ const ModelModal = () => {
               }  rounded-2xl gap-2 flex p-2 md:flex-row flex-col border-[1px] md:mt-[90px] mt-16`}
             >
               {/* MODEL VIEWER */}
-              <div className="relative border-[1px] rounded-xl border-zinc-100/40 flex md:w-[60%] w-full md:h-full h-[300px] items-center justify-center ">
+              <div className="relative border-[1px] rounded-xl border-zinc-100/40 flex md:w-[70%] w-full md:h-full h-[300px] items-center justify-center ">
                 <ViewerComponent />
                 <div className="bottom-5 inset-x-0 absolute w-full flex items-center justify-center z-[200]">
                   <Link
@@ -134,58 +137,64 @@ const ModelModal = () => {
 
                     <div className="gap-2 flex items-center md:mt-5 mt-2 ">
                       {/* LIKES */}
-                      <div
-                        className={`flex ${
+                      <Link
+                        onClick={useModal.onClose}
+                        to={`/post/${data?.id}`}
+                        className={`group flex ${
                           lightmode
                             ? "bg-slate-200 shadow-inner shadow-slate-900/40"
                             : "bg-black"
                         } px-2 md:p-1 p-[3px]  gap-1 rounded-md`}
                       >
                         <MdOutlineThumbUp
-                          className={`md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                          className={`group-hover:text-orange-500 md:w-5 md:h-5 sm:w-4 sm:h-4 ${
                             lightmode ? "text-slate-900" : "text-slate-300"
                           }`}
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
                           {`${data?.likes.length}`}
                         </span>
-                      </div>
+                      </Link>
 
                       {/* COMMENT */}
-                      <div
-                        className={`flex ${
+                      <Link
+                        onClick={useModal.onClose}
+                        to={`/post/${data?.id}`}
+                        className={`group flex ${
                           lightmode
                             ? "bg-slate-200 shadow-inner shadow-slate-900/40"
                             : "bg-black"
                         } px-3 py-1 gap-1 rounded-md`}
                       >
                         <BiSolidComment
-                          className={`md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                          className={`group-hover:text-orange-500 md:w-5 md:h-5 sm:w-4 sm:h-4 ${
                             lightmode ? "text-slate-900" : "text-slate-300"
                           } `}
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
                           {`${data?.comments.length}`}
                         </span>
-                      </div>
+                      </Link>
 
                       {/* VIEWS */}
-                      <div
-                        className={`flex ${
+                      <Link
+                        onClick={useModal.onClose}
+                        to={`/post/${data?.id}`}
+                        className={`group flex ${
                           lightmode
                             ? "bg-slate-200 shadow-inner shadow-slate-900/40"
                             : "bg-black"
                         } px-2 md:p-1 p-[3px]  gap-1 rounded-md`}
                       >
                         <MdOutlineRemoveRedEye
-                          className={`md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                          className={`group-hover:text-orange-500 md:w-5 md:h-5 sm:w-4 sm:h-4 ${
                             lightmode ? "text-slate-900" : "text-slate-300"
                           }`}
                         />
                         <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
                           {`${data?.views}`}
                         </span>
-                      </div>
+                      </Link>
 
                       {/* PLACE NO. OF VIEWS HERE */}
                     </div>
@@ -209,43 +218,12 @@ const ModelModal = () => {
                     </div>
 
                     <Divider />
-                    <div className="gap-2 overflow-y-auto flex flex-col h-full">
-                      {data?.comments.map((comment: Comment, i: number) => (
-                        <div
-                          key={i}
-                          className={`flex  h-full p-1 mt-2 text-normal `}
-                        >
-                          <div
-                            className={`flex h-full border-zinc-500/50 border-[1px] ${
-                              lightmode
-                                ? "bg-zinc-100 shadow-lg shadow-zinc-950/20"
-                                : "bg-zinc-950 shadow-lg shadow-black"
-                            }  p-4  justify-center rounded-xl gap-2 
-                        `}
-                          >
-                            <Avatar url={comment.userImage} />
-                            <div className={` flex flex-col  gap-2 `}>
-                              <div className="flex items-center gap-2 ">
-                                <span className="text-[14.5px]">
-                                  {comment.username}
-                                </span>
-                                <span className="text-xs ">
-                                  {comment.createdAt}
-                                  {/* {comment.content.length} */}
-                                </span>
-                              </div>
-                              <p
-                                style={{ overflowWrap: "anywhere" }}
-                                className={`${
-                                  lightmode ? "font-normal" : "font-light"
-                                } flex text-sm  `}
-                              >
-                                {comment.content}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+                    {/* COMMENTS */}
+
+                    <div className="w-full h-[160px] flex items-center justify-center bg-black/40">
+                      <button className="px-1 py-1 text-xs bg-orange-600 text-white rounded-full border-[1px] border-orange-200">
+                        View details for comments
+                      </button>
                     </div>
                   </div>
                 </div>

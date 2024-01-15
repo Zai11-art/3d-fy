@@ -1,6 +1,9 @@
 import express from "express";
 import {
+  deleteComment,
+  deletePost,
   getAllUserPost,
+  getComments,
   getModelUserPost,
   getPost,
   getPosts,
@@ -23,8 +26,9 @@ router.post(
   uploadPost
 );
 
-// GET POSTS
-router.get("/:id", getPost);
+// POST
+router.get("/:id", authMiddleware, getPost);
+router.delete("/:id", authMiddleware, deletePost);
 
 // GET POSTS FOR TABBING
 router.get("/:id/all", getAllUserPost);
@@ -32,7 +36,15 @@ router.get("/:id/models", getModelUserPost);
 router.get("/:id/render", getRenderUserPost);
 
 // LIKE POSTS
-router.patch("/:postId/:userId", authMiddleware, patchLike);
+router.patch("/:postId", authMiddleware, patchLike);
+
+// GET COMMENTS
+router.get("/:postId/comments", authMiddleware, getComments);
+
+// CREATE COMMENT
 router.post("/comment/:postId/:userId", authMiddleware, postComment);
+
+// DELETE COMMENT
+router.delete("/comment/:commentId", authMiddleware, deleteComment);
 
 export default router;

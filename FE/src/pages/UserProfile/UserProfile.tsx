@@ -34,7 +34,7 @@ const UserProfile = () => {
   const [toggleAll, setToggleAll] = useState(true);
   const [toggleRender, setToggleRender] = useState(false);
   const [toggleModels, setToggleModels] = useState(false);
-  console.log(toggleAll);
+  console.log(userData);
   console.log(posts);
 
   // const { data: userData } = useQuery({
@@ -62,7 +62,8 @@ const UserProfile = () => {
   const getUser = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/users/${paramId}`
+        `http://localhost:8080/users/${paramId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       const user = response.data;

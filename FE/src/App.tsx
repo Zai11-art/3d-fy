@@ -21,6 +21,7 @@ import Followers from "./pages/UserProfile/followers";
 import Following from "./pages/UserProfile/following";
 import Playground from "./pages/playground/playground";
 import MainViewer from "./components/main-viewer";
+import Settings from "./pages/Settings/settings";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -56,6 +57,14 @@ function App() {
             element={
               <AuthedRoute user={user}>
                 <Upload />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route
+            path="/:userId/settings"
+            element={
+              <AuthedRoute user={user}>
+                <Settings />
               </AuthedRoute>
             }
           ></Route>

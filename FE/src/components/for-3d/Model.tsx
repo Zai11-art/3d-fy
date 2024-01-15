@@ -1,32 +1,38 @@
+// import { useGLTF, Wireframe } from "@react-three/drei";
+// import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+// import { useLoader } from "@react-three/fiber";
+// import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
+// export function Model(props) {
+//   const gltf = useLoader(GLTFLoader, props.modelUrl);
+//   console.log(gltf);
+
+//   return <primitive object={gltf.scene} />;
+// }
+
+// useGLTF.preload(props.modelUrl);
+
 import { useGLTF, Wireframe } from "@react-three/drei";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+import { useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-type GLTFResult = GLTF & {
-  nodes: {
-    food_apple_01: THREE.Mesh;
-  };
-  materials: {
-    food_apple_01: THREE.MeshStandardMaterial;
-  };
-};
 export function Model(props) {
-  const { nodes, materials } = useGLTF(props.modelUrl) as unknown as GLTFResult;
+  const { nodes, materials } = useGLTF(
+    props.modelUrl ? props.modelUrl : "/food_apple_01_4k.glb"
+  ) as any;
   console.log(nodes);
+  console.log(materials);
 
-  const newValues = Object.entries(nodes).map(([key, value]) => ({
-    [key]: value,
-  }));
-  console.log(newValues);
-
-  // console.log(props.color);
-  // console.log(props.wireframeThickness);
-  // console.log(props.normalTexture);
+  console.log(props.color);
+  console.log(props.wireframeThickness);
+  console.log(props.normalTexture);
 
   // CHECK POLYCOUNT HERE
-  // console.log(nodes.food_apple_01.geometry.attributes.normal.count);
+  console.log(nodes.food_apple_01.geometry.attributes.normal.count);
   return (
     <group {...props} dispose={null}>
-      {/* <mesh
+      <mesh
         castShadow
         receiveShadow
         geometry={nodes.food_apple_01.geometry}
@@ -45,7 +51,7 @@ export function Model(props) {
             backfaceStroke={"#0000ff"} // Color of the lines that are facing away from the camera
           />
         )}
-      </mesh> */}
+      </mesh>
     </group>
   );
 }

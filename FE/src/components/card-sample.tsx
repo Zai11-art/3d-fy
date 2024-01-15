@@ -2,6 +2,8 @@ import Avatar from "./avatar";
 import useMode from "../hooks/state";
 import { Post } from "../types/types";
 import useModelModal from "../hooks/use-model-modal";
+import { MdOutlineThumbUp } from "react-icons/md";
+import { BiSolidComment } from "react-icons/bi";
 
 const Card = ({ data }: { data: Post }) => {
   const lightmode = useMode((state) => state.isDarkMode);
@@ -30,17 +32,53 @@ const Card = ({ data }: { data: Post }) => {
           lightmode ? "text-black" : "text-white"
         } `}
       >
-        <div className=" flex items-center gap-2">
-          <Avatar url={data?.profileImage} />
-          <div className="py-2">
-            <span className="font-semibold text-md">{data?.title}</span>
-            <span
-              className={`font-thin block  text-[12px] ${
-                lightmode ? "text-slate-500" : "text-slate-300"
-              } `}
+        <div className=" flex items-center gap-2 w-full justify-between ">
+          <div className="flex items-center gap-2">
+            <Avatar url={data?.profileImage} />
+            <div className="py-2">
+              <span className="font-semibold text-md">{data?.title}</span>
+              <span
+                className={`font-thin block  text-[12px] ${
+                  lightmode ? "text-slate-500" : "text-slate-300"
+                } `}
+              >
+                author: {data?.username}
+              </span>
+            </div>
+          </div>
+          <div className=" flex gap-2">
+            <div
+              className={`border-[1px] border-orange-500/20 flex ${
+                lightmode
+                  ? "bg-slate-200 shadow-inner shadow-slate-900/40"
+                  : "bg-zinc-800"
+              } px-2 md:p-1 p-[3px]  gap-1 rounded-md`}
             >
-              author: {data?.username}
-            </span>
+              <MdOutlineThumbUp
+                className={` md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                  lightmode ? "text-slate-900" : "text-slate-300"
+                }`}
+              />
+              <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
+                {`${data?.likes.length}`}
+              </span>
+            </div>
+            <div
+              className={`border-[1px] border-orange-500/20 flex ${
+                lightmode
+                  ? "bg-slate-200 shadow-inner shadow-slate-900/40"
+                  : "bg-zinc-800"
+              } px-2 md:p-1 p-[3px]  gap-1 rounded-md`}
+            >
+              <BiSolidComment
+                className={` md:w-5 md:h-5 sm:w-4 sm:h-4 ${
+                  lightmode ? "text-slate-900" : "text-slate-300"
+                }`}
+              />
+              <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
+                {`${data?.comments.length}`}
+              </span>
+            </div>
           </div>
         </div>
       </div>

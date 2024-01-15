@@ -18,6 +18,8 @@ const CardList = () => {
     queryFn: getFeed,
   });
 
+  console.log(feedData);
+
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
   const [postsPerPage, setpostsPerPage] = useState(10);

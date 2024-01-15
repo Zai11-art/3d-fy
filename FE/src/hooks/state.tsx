@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import { User } from "../types/types";
 import { shared } from "use-broadcast-ts";
 
-interface ModeProps {
+export interface ModeProps {
   isDarkMode: boolean;
   isLoggedIn: boolean;
   user: User | null;

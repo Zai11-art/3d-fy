@@ -16,7 +16,7 @@ const Carousel = ({ images }: { images: CarouselProps[] }) => {
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <div className="overflow-hidden ">
         <div
           className="flex transition-transform duration-300 ease-in-out transform translate-x-full"

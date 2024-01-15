@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { FaCog, FaCommentAlt, FaExpandArrowsAlt } from "react-icons/fa";
+import { FaCog, FaTrashAlt, FaExpandArrowsAlt } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import Avatar from "../../components/avatar";
 import Divider from "../../components/divider";
@@ -19,27 +19,13 @@ import {
   MdOutlineThumbUp,
   MdThumbUpAlt,
 } from "react-icons/md";
-import { BiSend, BiSolidComment } from "react-icons/bi";
-import { RiSendPlane2Fill } from "react-icons/ri";
+import { BiSolidComment } from "react-icons/bi";
+
 import toast from "react-hot-toast";
-import * as yup from "yup";
-import { Formik } from "formik";
 import Loader from "../../components/loader";
-
-const commentSchema = yup.object().shape({
-  content: yup.string().notRequired().max(100),
-});
-
-const initialCommVal = {
-  content: "",
-};
-
-// helpers
-const textareaExtend = (e: React.FormEvent<HTMLTextAreaElement>) => {
-  const target = e.target as HTMLTextAreaElement;
-  target.style.height = "auto";
-  target.style.height = `${target.scrollHeight}px`;
-};
+import CommentSection from "../../components/comment-section";
+import { IoMdTrash } from "react-icons/io";
+import useConfirmationModal from "../../hooks/use-confirmation-modal";
 
 const hdris = [
   "apartment",
@@ -81,24 +67,56 @@ const Post = () => {
   // open comment section
   const [toggleComment, setToggleComment] = useState(false);
 
-  const getPost = async (postId: string | undefined) => {
-    const post = await axios
-      .get(`http://localhost:8080/posts/${postId}`)
-      .then((res) => res.data);
+  // deleting state
+  const mode = useConfirmationModal();
 
+  const getPost = async (postId: string | undefined) => {
+    const res = await axios.get(`http://localhost:8080/posts/${postId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const post = res.data;
     setPostdata(post);
   };
+
+  const deletePost = async (postId: string | undefined) => {
+    try {
+      const res = await axios.delete(`http://localhost:8080/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const post = res.data;
+
+      if (post) {
+        toast.success("Post deleted successfuly.");
+        navigate(`/${postData?.userId}/profile`);
+      }
+    } catch (err) {
+      toast.error("Failed deleting post.");
+    }
+  };
+
+  useEffect(() => {
+    getPost(postId);
+  }, []);
+
   const patchLike = async () => {
     try {
-      const patchLike = await axios
-        .patch(`http://localhost:8080/posts/${postId}/${user?.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        })
+      const res = await axios
+        .patch(
+          `http://localhost:8080/posts/${postId}`,
+          { userId: user?.id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => res.data);
+      const patchLike = res;
 
+      console.log(patchLike);
       if (patchLike) {
         getPost(postId);
       }
@@ -106,49 +124,8 @@ const Post = () => {
       toast.error("Liking post failed.");
     }
   };
+
   const isLiked = postData?.likes.some((liker) => liker.id === user?.id);
-
-  const comment = async (
-    values: CommentType,
-    onSubmitProps: OnsubmitPropsType
-  ) => {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    const comment = await axios.post(
-      `http://localhost:8080/posts/comment/${postId}/${user?.id}`,
-      values,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    getPost(postId);
-    console.log(comment);
-    setIsloading(true);
-
-    if (!comment) {
-      setIsloading(false);
-      toast.error("Failed commenting.");
-    } else {
-      toast.success(`Commented.`);
-    }
-
-    onSubmitProps.resetForm();
-  };
-
-  const handleFormSubmitComm = async (
-    values: CommentType,
-    onSubmitProps: OnsubmitPropsType
-  ) => {
-    console.log(values);
-    await comment(values, onSubmitProps);
-  };
 
   // const {
   //   isError,
@@ -472,8 +449,22 @@ const Post = () => {
               <Loader />
             ) : (
               <>
-                <div>
+                <div className="w-full flex items-center justify-between">
                   <h1 className="text-2xl">{postData?.title}</h1>
+
+                  <button
+                    onClick={() =>
+                      mode.onOpen({
+                        title: "Delete this post?",
+                        description: "This action is irreversible.",
+                        method: () => deletePost(postData.id),
+                      })
+                    }
+                    className=" px-2 py-1 text-sm bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
+                  >
+                    <IoMdTrash className="text-lg" />
+                    <span>delete</span>
+                  </button>
                 </div>
                 <Divider />
 
@@ -608,103 +599,70 @@ const Post = () => {
                 <Divider />
 
                 {toggleComment && (
-                  <div className="flex flex-col gap-4 text-normal w-full">
-                    <div className="w-full h-full relative overflow-y-auto">
-                      <Formik
-                        //@ts-ignore
-                        initialValues={initialCommVal}
-                        onSubmit={handleFormSubmitComm}
-                        validationSchema={commentSchema}
-                      >
-                        {({
-                          values,
-                          handleBlur,
-                          handleChange,
-                          handleSubmit,
-                          resetForm,
-                          errors,
-                          touched,
-                        }) => (
-                          <form
-                            onSubmit={handleSubmit}
-                            className="w-full flex flex-col gap-2"
-                          >
-                            <div className="w-full items-center justify-between">
-                              <h1 className="text-lg">Comments</h1>
-                              {errors.content && touched.content && (
-                                <div className="text-red-500 text-xs">
-                                  {errors.content}
-                                </div>
-                              )}
-                            </div>
+                  <CommentSection postId={postData.id} getPost={getPost} />
+                  // <div className="flex flex-col gap-4 text-normal w-full">
+                  //   <div className="w-full h-full relative overflow-y-auto">
+                  //     <Formik
+                  //       //@ts-ignore
+                  //       initialValues={initialCommVal}
+                  //       onSubmit={handleFormSubmitComm}
+                  //       validationSchema={commentSchema}
+                  //     >
+                  //       {({
+                  //         values,
+                  //         handleBlur,
+                  //         handleChange,
+                  //         handleSubmit,
+                  //         resetForm,
+                  //         errors,
+                  //         touched,
+                  //       }) => (
+                  //         <form
+                  //           onSubmit={handleSubmit}
+                  //           className="w-full flex flex-col gap-2"
+                  //         >
+                  //           <div className="w-full items-center justify-between">
+                  //             <h1 className="text-lg">Comments</h1>
+                  //             {errors.content && touched.content && (
+                  //               <div className="text-red-500 text-xs">
+                  //                 {errors.content}
+                  //               </div>
+                  //             )}
+                  //           </div>
 
-                            <div className="w-full flex gap-4">
-                              <textarea
-                                id="content"
-                                name="content"
-                                placeholder="Comment here..."
-                                rows={2}
-                                onInput={textareaExtend}
-                                value={values.content}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                className={`w-full h-full flex p-2 rounded-md focus:outline-none focus:border-amber-500 focus:ring-[1.5px] focus:ring-amber-500 ${
-                                  lightmode
-                                    ? "bg-zinc-100 border-zinc-500/50 border-[1px]"
-                                    : "bg-zinc-950 border-zinc-500/50 border-[1px]"
-                                }`}
-                              />
-                              <button
-                                type="submit"
-                                className=" right-2 inset-y-0"
-                              >
-                                <RiSendPlane2Fill
-                                  className={`text-2xl text-orange-500 hover:opacity-60 transition-all ease-in-out`}
-                                />
-                              </button>
-                            </div>
-                          </form>
-                        )}
-                      </Formik>
+                  //           <div className="w-full flex gap-4">
+                  //             <textarea
+                  //               id="content"
+                  //               name="content"
+                  //               placeholder="Comment here..."
+                  //               rows={2}
+                  //               onInput={textareaExtend}
+                  //               value={values.content}
+                  //               onChange={handleChange}
+                  //               onBlur={handleBlur}
+                  //               className={`w-full h-full flex p-2 rounded-md focus:outline-none focus:border-amber-500 focus:ring-[1.5px] focus:ring-amber-500 ${
+                  //                 lightmode
+                  //                   ? "bg-zinc-100 border-zinc-500/50 border-[1px]"
+                  //                   : "bg-zinc-950 border-zinc-500/50 border-[1px]"
+                  //               }`}
+                  //             />
+                  //             <button
+                  //               type="submit"
+                  //               className=" right-2 inset-y-0"
+                  //             >
+                  //               <RiSendPlane2Fill
+                  //                 className={`text-2xl text-orange-500 hover:opacity-60 transition-all ease-in-out`}
+                  //               />
+                  //             </button>
+                  //           </div>
+                  //         </form>
+                  //       )}
+                  //     </Formik>
 
-                      <Divider />
-                      <div className="gap-2 overflow-y-auto flex flex-col h-full">
-                        {postData?.comments.map((comment, i) => (
-                          <div key={i} className={`flex  h-full p-1 mt-2 `}>
-                            <div
-                              className={`flex h-full border-zinc-500/50 border-[1px] ${
-                                lightmode
-                                  ? "bg-zinc-100 shadow-md"
-                                  : "bg-zinc-950 shadow-lg shadow-black"
-                              }  p-4  justify-center rounded-xl gap-2 
-                        `}
-                            >
-                              <Avatar url={comment.userImage} />
-                              <div className={` flex flex-col  gap-2 `}>
-                                <div className="flex items-center gap-2 ">
-                                  <span className="text-[14.5px]">
-                                    {comment.username}
-                                  </span>
-                                  <span className="text-xs ">
-                                    {comment.createdAt}
-                                    {/* {comment.content.length} */}
-                                  </span>
-                                </div>
-                                <p
-                                  style={{ overflowWrap: "anywhere" }}
-                                  className={`${
-                                    lightmode ? "font-normal" : "font-light"
-                                  } flex text-sm  `}
-                                >
-                                  {comment.content}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  //     <Divider />
+                  //     <CommentSection postId={postData?.id} />
+                  //   </div>
+                  // </div>
                 )}
               </>
             )}

@@ -8,7 +8,7 @@ export interface InfoData {
 export interface ConfirmationData {
   title: string;
   description: string;
-  // method: () => void;
+  method: () => void;
 }
 
 export interface ViewContainerProps {
@@ -102,6 +102,7 @@ export interface Post {
 }
 
 export interface Comment {
+  id: string;
   content: string;
   createdAt: string;
   userId: string;

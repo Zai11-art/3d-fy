@@ -1,7 +1,7 @@
 import { useState } from "react";
 import reactLogo from "../assets/react.svg";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { MdArrowForward, MdMenu } from "react-icons/md";
 import { useMediaQuery } from "../hooks/use-media-query";
@@ -11,6 +11,8 @@ import Divider from "./divider";
 import { CgShapeHexagon } from "react-icons/cg";
 import { MdStarPurple500 } from "react-icons/md";
 import UserDropdown from "./user-dropdown";
+import toast from "react-hot-toast";
+import { FaPlus } from "react-icons/fa";
 
 const dummyUserData = {
   name: "Raygun",
@@ -48,6 +50,16 @@ const Navbar = () => {
   const md = useMediaQuery("(max-width:768px)");
   const isAuth = useMode((state) => state.isLoggedIn);
   const user = useMode((state) => state.user);
+  const mode = useMode();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    mode.setLogout();
+    setTimeout(() => {
+      toast.dismiss();
+      toast.success("Logged out.");
+    }, 1);
+  };
 
   return (
     <nav
@@ -72,15 +84,15 @@ const Navbar = () => {
           </Link>
 
           {md ? null : (
-            <div className="flex gap-2 mt-1">
+            <div className="flex gap-2 mt-1 items-center">
               <Link to={"/viewer"}>
                 <button
                   type="button"
-                  className={`flex items-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+                  className={`flex border-[1px] border-orange-500/50 items-center px-2 py-1 rounded-md font-normal transition-all ease-in-out
             ${
               lightMode
-                ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
-                : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+                ? " hover:border-orange-500 shadow-slate-900/20 shadow-inner text-black"
+                : "hover:border-orange-500 shadow-orange-500/30 shadow-inner text-white"
             }`}
                 >
                   Viewer
@@ -160,23 +172,58 @@ const Navbar = () => {
                     </Link>
                   ))}
                   {md && (
-                    <Link
-                      to={"/login"}
-                      type="button"
-                      className={`mt-5 text-white flex items-center justify-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+                    <div className="w-full">
+                      {isAuth ? (
+                        <button
+                          onClick={() => {
+                            logout();
+                            setOpenMenuBar(!openMenuBar);
+                            navigate("/");
+                          }}
+                          className={`w-full mt-5 text-white flex items-center justify-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+                        ${
+                          lightMode
+                            ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                            : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+                        }`}
+                        >
+                          logout
+                        </button>
+                      ) : (
+                        <Link
+                          onClick={() => setOpenMenuBar(!openMenuBar)}
+                          to={"/login"}
+                          type="button"
+                          className={`w-full mt-5 text-white flex items-center justify-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
                       ${
                         lightMode
                           ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
                           : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
                       }`}
-                    >
-                      login
-                    </Link>
+                        >
+                          login
+                        </Link>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
             </div>
             <div className="flex  gap-2">
+              <Link to={`/${user?.id}/upload`}>
+                <button
+                  type="button"
+                  className={`flex gap-1 items-center justify-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+            ${
+              lightMode
+                ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+            }`}
+                >
+                  <FaPlus className="text-sm " />
+                  Publish
+                </button>
+              </Link>
               <button
                 onClick={setDarkMode}
                 className={`text-white ${
@@ -203,6 +250,20 @@ const Navbar = () => {
           </>
         ) : (
           <div className="flex items-center justify-center pr-4 gap-2  ">
+            <Link to={`/${user?.id}/upload`}>
+              <button
+                type="button"
+                className={`flex gap-1 items-center justify-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+            ${
+              lightMode
+                ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+            }`}
+              >
+                <FaPlus className="text-sm " />
+                Publish
+              </button>
+            </Link>
             <button
               onClick={setDarkMode}
               className={`text-white ${
@@ -219,18 +280,20 @@ const Navbar = () => {
               {isAuth ? (
                 <UserDropdown />
               ) : (
-                <Link
-                  to={"/login"}
-                  type="button"
-                  className={`flex items-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
-                ${
-                  lightMode
-                    ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
-                    : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
-                }`}
-                >
-                  login
-                </Link>
+                <>
+                  <Link
+                    to={"/login"}
+                    type="button"
+                    className={`flex items-center p-[2px] py-1 px-4 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+                      ${
+                        lightMode
+                          ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
+                          : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
+                      }`}
+                  >
+                    login
+                  </Link>
+                </>
               )}
             </Link>
           </div>

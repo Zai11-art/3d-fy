@@ -2,7 +2,13 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { useControls, folder, Leva } from "leva";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
-import { Html, Stage, useProgress } from "@react-three/drei";
+import {
+  Html,
+  OrthographicCamera,
+  PerspectiveCamera,
+  Stage,
+  useProgress,
+} from "@react-three/drei";
 import { CameraControls, ContactShadows, Environment } from "@react-three/drei";
 
 import useModelModal from "../hooks/use-model-modal";
@@ -73,19 +79,6 @@ const Tweaker = () => {
   );
 };
 
-const Tweaker2 = () => {
-  return (
-    <ViewContainer
-      scale={5}
-      color={"red"}
-      wireframe={false}
-      position={[0, 0, 0]}
-      wireframeThickness={0}
-      normalTexture={false}
-    ></ViewContainer>
-  );
-};
-
 function Loader() {
   const { progress } = useProgress();
   return (
@@ -128,9 +121,7 @@ const MainViewer = ({
           />
 
           <ContactShadows position-y={0.001} opacity={0.9} blur={3} />
-
-          {/* <BackDrop /> */}
-
+          <PerspectiveCamera makeDefault position={[0, 0, 10]} />
           <Tweaker />
         </Suspense>
       </Canvas>

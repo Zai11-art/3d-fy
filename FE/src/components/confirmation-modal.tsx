@@ -88,6 +88,10 @@ const ConfirmationModal = () => {
                         Cancel
                       </button>
                       <button
+                        onClick={() => {
+                          useModal.onClose();
+                          infoData?.method();
+                        }}
                         className={`px-3 py-2 flex rounded-full ${
                           lightmode
                             ? "bg-green-500 hover:bg-green-400 shadow-md shadow-zinc-950/20"

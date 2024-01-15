@@ -136,6 +136,7 @@ export const getRendersPost = async (req: Request, res: Response) => {
   }
 };
 
+//  POSTS
 export const getPost = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -153,9 +154,29 @@ export const getPost = async (req: Request, res: Response) => {
   }
 };
 
+export const deletePost = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+
+    if (!id) return res.status(404).json("Unauthorized access.");
+
+    const post = await prismadb.post.delete({
+      where: { id: id },
+      include: { likes: true, comments: true },
+    });
+
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const patchLike = async (req: Request, res: Response) => {
   try {
-    const { postId, userId } = req.params;
+    const { userId } = req.body;
+    const { postId } = req.params;
+    console.log(postId, userId);
 
     if (!userId) return res.status(404).json({ msg: "Unauthorized" });
     const user = await prismadb.user.findFirst({
@@ -335,6 +356,22 @@ export const getRenderUserPost = async (req: Request, res: Response) => {
 
 // COMMENT
 
+export const getComments = async (req: Request, res: Response) => {
+  try {
+    const { postId } = req.params;
+
+    if (!postId) return res.status(202).json({ msg: "Post does not exist!" });
+    const postComments = await prismadb.post.findUnique({
+      where: { id: postId },
+      include: { comments: true },
+    });
+
+    res.status(202).json(postComments?.comments);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
 export const postComment = async (req: Request, res: Response) => {
   try {
     const { postId, userId } = req.params;
@@ -361,6 +398,22 @@ export const postComment = async (req: Request, res: Response) => {
 
     console.log("comment here");
     console.log(comment);
+
+    res.status(200).json(comment);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};
+
+export const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    console.log(commentId);
+
+    if (!commentId)
+      return res.status(404).json({ msg: "Unauthorized access." });
+
+    const comment = await prismadb.comment.delete({ where: { id: commentId } });
 
     res.status(200).json(comment);
   } catch (err) {
