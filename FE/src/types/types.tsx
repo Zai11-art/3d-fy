@@ -11,6 +11,15 @@ export interface ConfirmationData {
   method: () => void;
 }
 
+export interface InputModalProps {
+  title: string;
+  description: string;
+  content: string;
+  commentId: string;
+  method: () => void;
+  refetcher: () => void;
+}
+
 export interface ViewContainerProps {
   scale: Object;
   position: number[];
@@ -41,6 +50,7 @@ export interface RegisterValuesType {
   bio: string;
   profilePic: { name: string };
   banner: { name: string };
+  currentPassword: string;
   password: string;
   confirmPassword: string;
 }
@@ -74,6 +84,7 @@ export interface OnsubmitPropsType {
 // STATE
 export interface User {
   username: string;
+  email: string;
   profilePic: string;
   bio: string;
   tag: string;

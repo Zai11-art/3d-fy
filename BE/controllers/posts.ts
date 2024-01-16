@@ -420,3 +420,21 @@ export const deleteComment = async (req: Request, res: Response) => {
     res.status(500).json({ msg: err.message });
   }
 };
+
+export const updateComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const { content } = req.body;
+
+    if (!commentId) return res.status(401).json({ msg: "Comment not found!" });
+
+    const comment = await prismadb.comment.update({
+      where: { id: commentId },
+      data: { content: content },
+    });
+
+    res.status(200).json(comment);
+  } catch (err) {
+    res.status(500).json({ msg: err.message });
+  }
+};

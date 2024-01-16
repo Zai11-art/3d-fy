@@ -5,6 +5,7 @@ import {
   getUser,
   getUsers,
   patchFollow,
+  updateUserSettings,
 } from "../controllers/users.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
@@ -17,5 +18,7 @@ router.get("/:userId/following", authMiddleware, getFollowing);
 router.get("/:userId/followers", authMiddleware, getFollowers);
 
 router.patch("/:userId/:followId", authMiddleware, patchFollow);
+
+router.put("/:userId/update", updateUserSettings);
 
 export default router;

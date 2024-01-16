@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import prismadb from "../prisma/prismadb.js";
 import { ControllerProps } from "../types/types";
 import { Request, Response } from "express";
+import bcrypt from "bcrypt";
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
@@ -101,8 +102,6 @@ export const getFollowers = async (req: Request, res: Response) => {
 export const patchFollow = async (req: Request, res: Response) => {
   try {
     const { userId, followId } = req?.params;
-    console.log("receive here");
-    console.log(userId, followId);
 
     if (!userId) return res.status(404).json({ msg: "Unauthorized access." });
 
@@ -147,5 +146,35 @@ export const patchFollow = async (req: Request, res: Response) => {
     res.status(200).json({ toFollow });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateUserSettings = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req?.params;
+    const { email, username, tag, bio, profilePic } = req.body;
+
+    if (!userId) return res.status(401).json({ msg: "Unauthorizezd Access." });
+    const foundUser = await prismadb.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!foundUser) return res.status(401).json({ msg: "User Not Found." });
+
+    const user = await prismadb.user.update({
+      where: { id: userId },
+      data: {
+        email: email,
+        username: username,
+        tag: tag,
+        bio: bio,
+
+        profilePic: profilePic,
+      },
+    });
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(505).json({ error: err.message });
   }
 };

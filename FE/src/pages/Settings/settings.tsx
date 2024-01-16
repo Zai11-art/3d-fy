@@ -6,77 +6,66 @@ import PageLayout from "../../layout/page-layout";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import Dropzone from "react-dropzone";
+import axios from "axios";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 const registerSchema = yup.object().shape({
-  email: yup.string().email("Invalid email").required("required"),
-  username: yup.string().required("required"),
-  tag: yup.string().required("required"),
-  bio: yup.string().required("required"),
-  profilePic: yup.string().required("required"),
-  // banner: yup.string().required("required"),
-  password: yup.string().required("required"),
-  confirmPassword: yup
-    .string()
-    .required("required")
-    .oneOf([yup.ref("password")], `Passwords don't match.`),
+  email: yup.string().email("Invalid email"),
+  username: yup.string(),
+  tag: yup.string(),
+  bio: yup.string(),
+  profilePic: yup.string(),
 });
-
-const initialRegVal = {
-  email: "",
-  username: "",
-  tag: "",
-  bio: "",
-  password: "",
-  confirmPassword: "",
-  profilePic: "",
-  // banner: "",
-};
 
 const Settings = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const mode = useMode();
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(false);
-  const [imagePath, setimagePath] = useState([]);
   const user = useMode((state) => state.user);
+  const token = useMode((state) => state.token);
+  const [imagePath, setimagePath] = useState([]);
 
-  const register = async (
+  const update = async (
     values: RegisterValuesType,
     onSubmitProps: OnsubmitPropsType
   ) => {
     try {
       console.log("values here");
       console.log(values);
-      const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-      formData.append("profilePic", values.profilePic.name);
+
+      // const formData = new FormData();
+      // Object.entries(values).forEach(([key, value]) => {
+      //   formData.append(key, value);
+      // });
+      // formData.append("profilePic", values.profilePic.name);
 
       setIsloading(true);
-      const registerRes = await fetch("http://localhost:8080/auth/register", {
-        method: "POST",
-        body: formData,
-      });
 
-      console.log(registerRes);
-
-      const data = await registerRes.json();
-
-      if (registerRes.ok) {
-        mode.setToken(data);
-        toast.success(`Registered. Please login.`);
+      const response = await axios.put(
+        `http://localhost:8080/users/${user?.id}/update`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      if (response.statusText === "OK") {
+        toast.success("User info updated.");
         setTimeout(() => {
-          navigate("/login");
+          navigate(`/${user?.id}/profile`);
         }, 2000);
       }
-      onSubmitProps.resetForm();
+
+      // onSubmitProps.resetForm();
     } catch (error) {
-      toast.success(`Register failed. Error: ${error}`);
+      toast.error(`Updating failed failed. Error: ${error}`);
     } finally {
       setIsloading(false);
     }
@@ -87,12 +76,20 @@ const Settings = () => {
     onSubmitProps: OnsubmitPropsType
   ) => {
     console.log(values);
-    await register(values, onSubmitProps);
+    await update(values, onSubmitProps);
+  };
+
+  const initialRegVal = {
+    email: `${user?.email}`,
+    username: `${user?.username}`,
+    tag: `${user?.tag}`,
+    bio: `${user?.bio}`,
+    profilePic: `${user?.profilePic}`,
   };
 
   return (
     <PageLayout>
-      <div className="w-full h-screen flex justify-center px-5">
+      <div className="w-full h-full flex justify-center px-5">
         <div
           className={`rounded-xl md:w-[1000px] w-full bg-[red] mt-12 flex flex-col items-center border-zinc-500/50 border-[1px] ${
             lightmode
@@ -100,11 +97,19 @@ const Settings = () => {
               : "bg-gradient-gray text-white shadow-orange-500/10 shadow-2xl"
           } p-8 text-normal`}
         >
-          <div className="w-full justify-between">
+          <div className="w-full justify-between flex ">
             <div className="flex gap-2 items-center ">
               <FaCog className="text-xl" />
               <h1 className="text-2xl">Account Settings</h1>
             </div>
+
+            <Link
+              to={`/user/settings/password`}
+              className="hover:bg-red-400 text-white bg-red-600 p-2 text-sm rounded-md flex gap-1 items-center"
+            >
+              <RiLockPasswordLine className="text-xl" />
+              To Password
+            </Link>
           </div>
 
           <Divider />
@@ -168,10 +173,11 @@ const Settings = () => {
                               <div className="w-full h-full gap-5 flex flex-col p-5 items-center justify-center ">
                                 <div className="flex gap-5 flex-col items-center justify-center rounded-full border-[2px] border-orange-700 hover:border-orange-500">
                                   <img
+                                    // @ts-ignore
                                     src={
-                                      values.profilePic
+                                      imagePath.length > 0
                                         ? imagePath[0]
-                                        : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                        : values.profilePic
                                     }
                                     className="w-64 h-64 rounded-full"
                                     alt="image"
@@ -204,7 +210,6 @@ const Settings = () => {
                         </div>
                         <input
                           disabled={isLoading}
-                          required
                           type="email"
                           id="email"
                           name="email"
@@ -241,7 +246,7 @@ const Settings = () => {
                           </div>
                           <input
                             disabled={isLoading}
-                            required
+                            placeholder={user?.username}
                             type="username"
                             id="username"
                             name="username"
@@ -277,7 +282,7 @@ const Settings = () => {
                           </div>
                           <input
                             disabled={isLoading}
-                            required
+                            placeholder={user?.tag}
                             type="text"
                             id="tag"
                             name="tag"
@@ -314,13 +319,13 @@ const Settings = () => {
                         </div>
                         <textarea
                           disabled={isLoading}
-                          required
+                          placeholder={user?.bio}
                           id="bio"
                           name="bio"
                           value={values.bio}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          className={`w-full h-[280px] ${
+                          className={`w-full h-[200px] ${
                             errors.bio && touched.bio
                               ? "border-red-500 "
                               : "border-zinc-500/50"
@@ -332,84 +337,6 @@ const Settings = () => {
                             isLoading && "animate-pulse"
                           } rounded-md border-[1px] `}
                         />
-                      </div>
-                      {/*  2ND COL */}
-                      <div className=" w-full h-full flex flex-col gap-5">
-                        {/* PASSWORD INPUT */}
-                        <div className="flex-col flex gap-3 w-full ">
-                          <div className="w-full flex gap-5 justify-between items-center">
-                            <label className="text-md" htmlFor="password">
-                              Password
-                            </label>
-                            {/* error handling */}
-                            {errors.password && touched.password && (
-                              <div className="text-red-500 text-xs">
-                                {errors.password}
-                              </div>
-                            )}
-                          </div>
-                          <input
-                            disabled={isLoading}
-                            required
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={values.password}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            className={`${
-                              errors.password && touched.password
-                                ? "border-red-500 "
-                                : "border-zinc-500/50"
-                            } px-2 p-1 text-sm text-normal ${
-                              lightmode
-                                ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-                                : "bg-black text-white"
-                            } ${
-                              isLoading && "animate-pulse"
-                            } rounded-md border-[1px] `}
-                          />
-                        </div>
-
-                        {/* CONFIRM PASSWORD INPUT */}
-                        <div className="flex-col flex gap-3 w-full ">
-                          <div className="w-full flex items-center justify-between">
-                            <label
-                              className="text-sm"
-                              htmlFor={"confirmPassword"}
-                            >
-                              Confirm Password
-                            </label>
-                            {/* error handling */}
-                            {errors.confirmPassword &&
-                              touched.confirmPassword && (
-                                <div className="text-red-500 text-xs">
-                                  {errors.confirmPassword}
-                                </div>
-                              )}
-                          </div>
-                          <input
-                            disabled={isLoading}
-                            required
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            // value={values.confirmPassword}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            className={`${
-                              errors.confirmPassword && touched.confirmPassword
-                                ? "border-red-500 "
-                                : "border-zinc-500/50"
-                            } px-2 p-1 text-sm text-normal ${
-                              lightmode
-                                ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-                                : "bg-black text-white"
-                            } ${
-                              isLoading && "animate-pulse"
-                            } border-[1px]  rounded-md`}
-                          />
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -432,3 +359,101 @@ const Settings = () => {
 };
 
 export default Settings;
+
+// DELETE SECTIONS
+{
+  /* <div className=" w-full h-full flex flex-col gap-5">
+  
+  <div className="flex-col flex gap-3 w-full ">
+    <div className="w-full flex gap-5 justify-between items-center">
+      <label className="text-md" htmlFor="currentPassword">
+        Current Password
+      </label>
+
+      {errors.currentPassword && touched.currentPassword && (
+        <div className="text-red-500 text-xs">{errors.currentPassword}</div>
+      )}
+    </div>
+    <input
+      disabled={isLoading}
+      type="password"
+      id="currentPassword"
+      name="currentPassword"
+      value={values.currentPassword}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      className={`${
+        errors.currentPassword && touched.currentPassword
+          ? "border-red-500 "
+          : "border-zinc-500/50"
+      } px-2 p-1 text-sm text-normal ${
+        lightmode
+          ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
+          : "bg-black text-white"
+      } ${isLoading && "animate-pulse"} rounded-md border-[1px] `}
+    />
+  </div>
+
+
+  <div className="flex-col flex gap-3 w-full ">
+    <div className="w-full flex gap-5 justify-between items-center">
+      <label className="text-md" htmlFor="password">
+        New Password
+      </label>
+ 
+      {errors.password && touched.password && (
+        <div className="text-red-500 text-xs">{errors.password}</div>
+      )}
+    </div>
+    <input
+      disabled={isLoading}
+      type="password"
+      id="password"
+      name="password"
+      value={values.password}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      className={`${
+        errors.password && touched.password
+          ? "border-red-500 "
+          : "border-zinc-500/50"
+      } px-2 p-1 text-sm text-normal ${
+        lightmode
+          ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
+          : "bg-black text-white"
+      } ${isLoading && "animate-pulse"} rounded-md border-[1px] `}
+    />
+  </div>
+
+
+  <div className="flex-col flex gap-3 w-full ">
+    <div className="w-full flex items-center justify-between">
+      <label className="text-sm" htmlFor={"confirmPassword"}>
+        Confirm Password
+      </label>
+
+      {errors.confirmPassword && touched.confirmPassword && (
+        <div className="text-red-500 text-xs">{errors.confirmPassword}</div>
+      )}
+    </div>
+    <input
+      disabled={isLoading}
+      type="password"
+      id="confirmPassword"
+      name="confirmPassword"
+      // value={user?.confirmPassword}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      className={`${
+        errors.confirmPassword && touched.confirmPassword
+          ? "border-red-500 "
+          : "border-zinc-500/50"
+      } px-2 p-1 text-sm text-normal ${
+        lightmode
+          ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
+          : "bg-black text-white"
+      } ${isLoading && "animate-pulse"} border-[1px]  rounded-md`}
+    />
+  </div>
+</div>; */
+}

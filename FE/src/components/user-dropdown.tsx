@@ -61,7 +61,7 @@ const UserDropdown = () => {
           {[
             { label: "Profile", route: `/${userId}/profile` },
             { label: "Dashboard", route: `/${userId}/dashboard` },
-            { label: "Settings", route: `/${userId}/settings` },
+            { label: "Settings", route: `/user/settings` },
           ].map((btn) => (
             <Link
               to={btn.route}

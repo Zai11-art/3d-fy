@@ -22,6 +22,7 @@ import Following from "./pages/UserProfile/following";
 import Playground from "./pages/playground/playground";
 import MainViewer from "./components/main-viewer";
 import Settings from "./pages/Settings/settings";
+import PasswordForm from "./pages/Settings/password-setting";
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -61,10 +62,18 @@ function App() {
             }
           ></Route>
           <Route
-            path="/:userId/settings"
+            path="/user/settings"
             element={
               <AuthedRoute user={user}>
                 <Settings />
+              </AuthedRoute>
+            }
+          ></Route>
+          <Route
+            path="/user/settings/password"
+            element={
+              <AuthedRoute user={user}>
+                <PasswordForm />
               </AuthedRoute>
             }
           ></Route>

@@ -10,6 +10,7 @@ import {
   getRenderUserPost,
   patchLike,
   postComment,
+  updateComment,
   uploadPost,
 } from "../controllers/posts";
 import { getUser } from "../controllers/users";
@@ -46,5 +47,8 @@ router.post("/comment/:postId/:userId", authMiddleware, postComment);
 
 // DELETE COMMENT
 router.delete("/comment/:commentId", authMiddleware, deleteComment);
+
+// UPDATE COMMENT
+router.patch("/comment/:commentId", authMiddleware, updateComment);
 
 export default router;

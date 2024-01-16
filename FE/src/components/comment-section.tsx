@@ -8,6 +8,8 @@ import Avatar from "./avatar";
 import * as yup from "yup";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import Divider from "./divider";
+import useInputModal from "../hooks/use-input-modal";
+import useConfirmationModal from "../hooks/use-confirmation-modal";
 
 const commentSchema = yup.object().shape({
   content: yup.string().notRequired().max(100),
@@ -36,6 +38,14 @@ const CommentSection = ({
   const token = useMode((state) => state.token);
   const [comments, setComments] = useState<Comment[]>();
   const [isLoading, setIsloading] = useState(false);
+
+  // BUTTON MODALs
+  const modeUpdate = useInputModal();
+  const modeDelete = useConfirmationModal();
+
+  const editComment = () => {
+    console.log("hehe");
+  };
 
   useEffect(() => {
     fetchComments();
@@ -79,34 +89,40 @@ const CommentSection = ({
     values: CommentType,
     onSubmitProps: OnsubmitPropsType
   ) => {
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    try {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-    const comment = await axios.post(
-      `http://localhost:8080/posts/comment/${postId}/${user?.id}`,
-      values,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+      const comment = await axios.post(
+        `http://localhost:8080/posts/comment/${postId}/${user?.id}`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setIsloading(true);
+      fetchComments();
+      getPost(postId);
+
+      if (!comment) {
+        setIsloading(false);
+        toast.error("Failed commenting.");
+      } else {
+        toast.success(`Commented.`);
       }
-    );
 
-    setIsloading(true);
-    fetchComments();
-    getPost(postId);
-
-    if (!comment) {
-      setIsloading(false);
+      onSubmitProps.resetForm();
+    } catch (error) {
       toast.error("Failed commenting.");
-    } else {
-      toast.success(`Commented.`);
+    } finally {
+      setIsloading(false);
     }
-
-    onSubmitProps.resetForm();
   };
 
   const handleFormSubmitComm = async (
@@ -149,6 +165,7 @@ const CommentSection = ({
 
                 <div className="w-full flex gap-4">
                   <textarea
+                    disabled={isLoading}
                     id="content"
                     name="content"
                     placeholder="Comment here..."
@@ -188,7 +205,7 @@ const CommentSection = ({
                       lightmode
                         ? "bg-zinc-100 shadow-lg shadow-zinc-950/20"
                         : "bg-zinc-950 shadow-lg shadow-black"
-                    }  p-4  justify-center rounded-xl gap-2 `}
+                    }  p-4  justify-center rounded-xl gap-4 `}
                   >
                     <div className="flex h-full gap-3">
                       <Avatar url={comment.userImage} />
@@ -212,18 +229,39 @@ const CommentSection = ({
                         </p>
                       </div>
                     </div>
-                    <h1>{comment.userId}</h1>
-                    <h1>{user?.id}</h1>
-                    {comment.userId === user?.id && (
-                      <div className="flex w-full flex-row-reverse mt-2">
+                    <div className="flex text-white flex-row-reverse gap-1">
+                      {comment.userId === user?.id && (
                         <button
-                          onClick={() => deleteComment(comment.id)}
-                          className="w-16 px-2 py-1 text-xs bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
+                          onClick={() => {
+                            modeDelete.onOpen({
+                              title: "Delete Comment?",
+                              description: "This action is irreversible.",
+                              method: () => deleteComment(comment.id),
+                            });
+                          }}
+                          className="px-2 py-1 text-xs bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
                         >
                           delete
                         </button>
-                      </div>
-                    )}
+                      )}
+                      {comment.userId === user?.id && (
+                        <button
+                          onClick={() =>
+                            modeUpdate.onOpen({
+                              title: "Edit Comment",
+                              description: "This action is irreversible.",
+                              content: `${comment.content}`,
+                              commentId: `${comment.id}`,
+                              method: () => editComment(),
+                              refetcher: () => fetchComments(),
+                            })
+                          }
+                          className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-400 rounded-md flex items-center justify-center"
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

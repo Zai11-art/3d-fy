@@ -157,13 +157,13 @@ const Post = () => {
             id="viewer"
             className="lg:w-[70%] w-full sticky lg:top-32 lg:h-[800px] md:h-[600px] h-[400px]  font-light text-normal border-[1px] border-zinc-500/50 rounded-lg"
           >
-            <Viewer
+            {/* <Viewer
               showLeva={false}
               wireframe={isWireFrameOn}
               normal={isNormalOn}
               color={color}
               hdri={hdri}
-            />
+            /> */}
 
             {/* SIDE BAR TOGGLE BUTTON */}
             {!toggleBar && (
@@ -460,7 +460,7 @@ const Post = () => {
                         method: () => deletePost(postData.id),
                       })
                     }
-                    className=" px-2 py-1 text-sm bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
+                    className="text-white px-2 py-1 text-sm bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
                   >
                     <IoMdTrash className="text-lg" />
                     <span>delete</span>
