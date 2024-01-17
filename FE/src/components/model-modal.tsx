@@ -50,7 +50,7 @@ const ModelModal = () => {
             >
               {/* MODEL VIEWER */}
               <div className="relative border-[1px] rounded-xl border-zinc-100/40 flex md:w-[70%] w-full md:h-full h-[300px] items-center justify-center ">
-                <ViewerComponent />
+                {/* <ViewerComponent /> */}
                 <div className="bottom-5 inset-x-0 absolute w-full flex items-center justify-center z-[200]">
                   <Link
                     onClick={() => useModal.onClose()}

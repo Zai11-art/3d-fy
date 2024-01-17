@@ -43,7 +43,9 @@ const Following = () => {
 
   const getUser2 = async () => {
     const user = await axios
-      .get(`http://localhost:8080/users/${paramId}`)
+      .get(`http://localhost:8080/users/${paramId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => res.data);
 
     setUserData(user);
@@ -52,7 +54,6 @@ const Following = () => {
   const isFollowed = userData?.following.some(
     (follower) => follower.id === paramId
   );
-
 
   const patchFollow = async (followingId: string) => {
     try {
@@ -69,7 +70,6 @@ const Following = () => {
       getUser2();
     } catch (error) {
       toast.error("Following failed. please try again.");
-
     }
   };
 

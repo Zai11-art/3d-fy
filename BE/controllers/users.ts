@@ -102,48 +102,47 @@ export const getFollowers = async (req: Request, res: Response) => {
 export const patchFollow = async (req: Request, res: Response) => {
   try {
     const { userId, followId } = req?.params;
+    console.log(userId, followId);
 
-    if (!userId) return res.status(404).json({ msg: "Unauthorized access." });
+    // if (!userId) return res.status(404).json({ msg: "Unauthorized access." });
 
-    const user = await prismadb.user.findUnique({
-      where: { id: userId },
-      include: { followers: true, following: true },
-    });
-    const toFollow = await prismadb.user.findUnique({
-      where: { id: followId },
-      include: { followers: true, following: true },
-    });
+    // const user = await prismadb.user.findUnique({
+    //   where: { id: userId },
+    //   include: { followers: true, following: true },
+    // });
+    // const toFollow = await prismadb.user.findUnique({
+    //   where: { id: followId },
+    //   include: { followers: true, following: true },
+    // });
 
-    if (!user && !toFollow)
-      return res.status(404).json({ msg: "User nonexistent." });
+    // if (!user && !toFollow)
+    //   return res.status(404).json({ msg: "User nonexistent." });
 
-    if (user?.following.some((following) => following.id === followId)) {
-      await prismadb.user.update({
-        where: { id: followId },
-        data: {
-          followers: {
-            disconnect: {
-              id: userId,
-            },
-          },
-        },
-      });
+    // if (user?.following.some((following) => following.id === followId)) {
+    //   await prismadb.user.update({
+    //     where: { id: followId },
+    //     data: {
+    //       followers: {
+    //         disconnect: {
+    //           id: userId,
+    //         },
+    //       },
+    //     },
+    //   });
+    // } else {
+    //   await prismadb.user.update({
+    //     where: { id: userId },
+    //     data: {
+    //       following: {
+    //         connect: {
+    //           id: followId,
+    //         },
+    //       },
+    //     },
+    //   });
+    // }
 
-      // user.following = user.following.filter((user) => user.id !== followId);
-    } else {
-      await prismadb.user.update({
-        where: { id: userId },
-        data: {
-          following: {
-            connect: {
-              id: followId,
-            },
-          },
-        },
-      });
-    }
-
-    res.status(200).json({ toFollow });
+    // res.status(200).json({ toFollow });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -168,12 +167,42 @@ export const updateUserSettings = async (req: Request, res: Response) => {
         username: username,
         tag: tag,
         bio: bio,
-
         profilePic: profilePic,
       },
     });
 
     res.status(200).json(user);
+  } catch (err) {
+    res.status(505).json({ error: err.message });
+  }
+};
+
+export const updatePasswordSettings = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req?.params;
+    const { currentPassword, password } = req.body;
+
+    if (!userId) return res.status(401).json({ msg: "Unauthorized access." });
+    const user = await prismadb.user.findUnique({ where: { id: userId } });
+    const userMatch = await bcrypt.compare(
+      currentPassword,
+      user?.password || ""
+    );
+
+    if (!userMatch) return res.status(401).json({ msg: "User not found." });
+
+    console.log("result here");
+    console.log(userMatch);
+
+    const salt = await bcrypt.genSalt();
+    const pwordHash = await bcrypt.hash(password, salt);
+
+    const updatedUser = await prismadb.user.update({
+      where: { id: userId },
+      data: { password: pwordHash },
+    });
+
+    res.status(200).json(updatedUser);
   } catch (err) {
     res.status(505).json({ error: err.message });
   }

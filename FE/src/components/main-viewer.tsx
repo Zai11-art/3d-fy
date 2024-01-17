@@ -4,10 +4,12 @@ import { useControls, folder, Leva } from "leva";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
 import {
   Html,
+  OrbitControls,
   OrthographicCamera,
   PerspectiveCamera,
   Stage,
   useProgress,
+  Wireframe,
 } from "@react-three/drei";
 import { CameraControls, ContactShadows, Environment } from "@react-three/drei";
 
@@ -34,7 +36,7 @@ const ViewContainer = ({
   return (
     <>
       <Model
-        modelUrl={fileToView[0].path}
+        modelUrl={fileToView[0]?.path}
         scale={scale}
         position={position}
         color={color}
@@ -43,39 +45,6 @@ const ViewContainer = ({
         wireframeThickness={wireframeThickness}
       />
     </>
-  );
-};
-
-const Tweaker = () => {
-  const {
-    scale,
-    color,
-    wireframe,
-    position,
-    wireframeThickness,
-    normalTexture,
-  } = useControls("Model", {
-    transform: folder({
-      scale: { value: 5, max: 5, min: 4 },
-      position: [0, -0.18, 0],
-    }),
-    material: folder({
-      color: "red",
-      normalTexture: false,
-      wireframe: false,
-      wireframeThickness: { value: 0.05, max: 0.25, min: 0.01 },
-    }),
-  });
-
-  return (
-    <ViewContainer
-      scale={scale}
-      color={color}
-      wireframe={wireframe}
-      position={position}
-      wireframeThickness={wireframeThickness}
-      normalTexture={normalTexture}
-    ></ViewContainer>
   );
 };
 
@@ -108,21 +77,28 @@ const MainViewer = ({
         showLeva ? "w-full h-screen" : "w-full h-full flex "
       } relative `}
     >
-      <Canvas className={`${!showLeva && "rounded-lg"}`}>
+      <color attach="background" args={["skyblue"]} />
+      <Canvas
+        shadows
+        gl={{ antialias: false }}
+        dpr={[1, 1.5]}
+        camera={{
+          position: [4, -1, 8],
+          fov: 35,
+          zoom: 0.65,
+          near: 1,
+          far: 5000,
+        }}
+        className={`${!showLeva && "rounded-lg"}`}
+      >
         <Suspense fallback={<Loader />}>
-          <CameraControls makeDefault />
           {/* APPLY FIX TO ENVIRONMENT: HDRI NOT WORKING */}
 
-          <Environment
-            background
-            // files="/brown_photostudio_04_8k.hdr"
-            // @ts-ignore
-            preset={hdri}
-          />
-
-          <ContactShadows position-y={0.001} opacity={0.9} blur={3} />
-          <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-          <Tweaker />
+          <OrbitControls />
+          <Stage environment={hdri} adjustCamera={1}>
+            <Environment background preset={hdri} />
+            <ViewContainer />
+          </Stage>
         </Suspense>
       </Canvas>
       <div className="absolute bottom-0 right-0 "></div>

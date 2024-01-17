@@ -8,7 +8,7 @@ const Home = () => {
 
   return (
     <PageLayout>
-      <div className="flex w-full h-[100%] items-center flex-col md:pt-[50px] pt-12 pb-[265px] md:pb-[200px]">
+      <div className="flex px-12 w-full h-[100%] items-center flex-col md:pt-[50px] pt-12 pb-[265px] md:pb-[200px]">
         <h1 className="hero-text font-bold  text-4xl md:text-5xl lg:text-6xl text-center px-3">
           View and inspect your 3D <br /> models here.
         </h1>
@@ -21,7 +21,9 @@ const Home = () => {
           Drag and drop your files below and start viewing your model.
         </p>
 
-        <FileUpload />
+        <div className=" w-full">
+          <FileUpload />
+        </div>
 
         <CardList />
       </div>

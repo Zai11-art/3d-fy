@@ -77,16 +77,21 @@ const UserProfile = () => {
 
   const patchFollow = async () => {
     try {
-      const data = await axios
-        .patch(`http://localhost:8080/users/${user?.id}/${paramId}`, {
+      const res = await fetch(
+        `http://localhost:8080/users/${user?.id}/${paramId}`,
+        {
+          method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        })
-        .then((res) => res.data);
+        }
+      );
+      const data = res.json();
+      console.log(data);
 
       // refetch again to update state
+
       getUser();
     } catch (error) {
       toast.error("Following failed. please try again.");
@@ -259,16 +264,24 @@ const UserProfile = () => {
 
         {/* POSTS SECTION */}
         <main className="flex xl:w-[1250px] w-full  mx-3 md:flex-row flex-col pb-32">
-          <div className={`  w-full h-full p-2`}>
-            <div className={`flex  w-full pb-5`}>
-              <div className="flex flex-wrap justify-center gap-10 p-5">
+          <div className={`  w-full h-full p-2 bg-`}>
+            <div className={`flex  items-center justify-center w-full pb-5`}>
+              <div className={`flex flex-wrap justify-center  gap-10 p-5`}>
                 {!posts ? (
                   <Loader />
                 ) : (
                   <>
-                    {posts
-                      ?.slice(firstPostIndex, lastPostIndex)
-                      .map((card, idx) => <Card data={card} key={idx} />)}
+                    {posts.length > 0 ? (
+                      <>
+                        {posts
+                          ?.slice(firstPostIndex, lastPostIndex)
+                          .map((card, idx) => <Card data={card} key={idx} />)}
+                      </>
+                    ) : (
+                      <div className="text-xl flex text-normal font-light  w-full">
+                        No posts yet.
+                      </div>
+                    )}
                   </>
                 )}
               </div>

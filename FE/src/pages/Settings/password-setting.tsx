@@ -13,12 +13,13 @@ import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const registerSchema = yup.object().shape({
-  email: yup.string().email("Invalid email"),
-  username: yup.string(),
-  tag: yup.string(),
-  bio: yup.string(),
-  profilePic: yup.string(),
+const passwordSchema = yup.object().shape({
+  currentPassword: yup.string().required("required"),
+  password: yup.string().required("required"),
+  confirmPassword: yup
+    .string()
+    .required("required")
+    .oneOf([yup.ref("password")], `Passwords don't match.`),
 });
 
 const PasswordForm = () => {
@@ -28,12 +29,10 @@ const PasswordForm = () => {
   const [isLoading, setIsloading] = useState(false);
   const navigate = useNavigate();
 
-  const initialRegVal = {
-    email: `${user?.email}`,
-    username: `${user?.username}`,
-    tag: `${user?.tag}`,
-    bio: `${user?.bio}`,
-    profilePic: `${user?.profilePic}`,
+  const initialPassVal = {
+    currentPassword: "",
+    password: "",
+    confirmPassword: "",
   };
 
   const update = async (
@@ -53,7 +52,7 @@ const PasswordForm = () => {
       setIsloading(true);
 
       const response = await axios.put(
-        `http://localhost:8080/users/${user?.id}/update`,
+        `http://localhost:8080/users/${user?.id}/update/pass`,
         values,
         {
           headers: {
@@ -70,8 +69,8 @@ const PasswordForm = () => {
       }
 
       // onSubmitProps.resetForm();
-    } catch (error) {
-      toast.error(`Updating failed failed. Error: ${error}`);
+    } catch (err) {
+      toast.error(`Updating failed : ${err}`);
     } finally {
       setIsloading(false);
     }
@@ -118,9 +117,9 @@ const PasswordForm = () => {
 
           <Formik
             //@ts-ignore
-            initialValues={initialRegVal}
+            initialValues={initialPassVal}
             onSubmit={handleFormSubmitReg}
-            validationSchema={registerSchema}
+            validationSchema={passwordSchema}
           >
             {({
               values,

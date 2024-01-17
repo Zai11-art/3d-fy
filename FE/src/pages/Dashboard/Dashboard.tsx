@@ -88,11 +88,11 @@ const Dashboard = () => {
       <div className="h-full w-full flex flex-col items-center justify-center xl:px-5 px-4 pb-32">
         {/* DASHBOARD SECTION */}
         <div
-          className={`xl:w-[1250px] w-full xl:flex-row flex-col xl:h-[475px] h-full p-4 gap-3 ${
+          className={`xl:w-[1250px] w-full xl:flex-row flex-col xl:h-[600px] h-full p-4 gap-3 ${
             lightmode
               ? "bg-gradient-gray-light border-zinc-500 shadow-lg shadow-zinc-500/50"
               : "bg-gradient-gray border-zinc-500/50"
-          } mt-8 flex items-center justify-around rounded-t-xl border-[1px]`}
+          } mt-24 flex items-center justify-around rounded-xl border-[1px]`}
         >
           {/* STATS SECTION */}
           <div
@@ -122,7 +122,7 @@ const Dashboard = () => {
             </div>
 
             <div
-              className={`w-full h-[350px] mt-7 text-black  ${
+              className={`w-full h-[450px] mt-7 text-black  ${
                 lightmode
                   ? "bg-zinc-100 border-[1px] border-zinc-950/20 shadow-inner shadow-zinc-950/20"
                   : "bg-black"
@@ -202,152 +202,6 @@ const Dashboard = () => {
             >
               Impressions up by 93%!
             </div>
-          </div>
-        </div>
-
-        {/* ABOUT SECTION */}
-        <div
-          className={`xl:w-[1250px] w-full  h-full p-4 gap-5 ${
-            lightmode
-              ? "bg-gradient-gray-light border-zinc-500 shadow-lg shadow-zinc-500/50"
-              : "bg-gradient-gray border-zinc-500/50"
-          } flex flex-col items-center justify-around rounded-b-xl border-[1px]`}
-        >
-          <div className="w-full h-full flex gap-5 md:flex-row flex-col">
-            {/* DESCRIPTION SECTION */}
-            <div
-              className={`w-full rounded-xl  ${
-                lightmode
-                  ? "bg-gradient-gray-light border-zinc-400 shadow-md shadow-zinc-500/20"
-                  : "bg-gradient-gray border-zinc-500/30"
-              } xl:h-full h-[280px] flex flex-col  border-[1px] p-7`}
-            >
-              <div className="w-full flex justify-between">
-                <span className="flex items-center gap-2">
-                  <FaRegUser className="text-xl" />
-                  <h1 className="text-lg">Description</h1>
-                </span>
-
-                <div className="flex gap-1"></div>
-              </div>
-
-              <Divider />
-
-              <textarea
-                name=""
-                id=""
-                className={`text-normal font-light ${
-                  lightmode
-                    ? "bg-zinc-100 text-black font-normal shadow-inner shadow-zinc-500/40"
-                    : "bg-black text-white"
-                }  p-2 rounded-lg text-sm w-full xl:h-[160px] h-full  border-[1px] border-zinc-500/80`}
-              >
-                {user?.bio}
-              </textarea>
-              <p
-                className={`text-normal ${
-                  lightmode ? "font-normal" : "font-light"
-                }  text-[0.85rem] text-justify`}
-              ></p>
-            </div>
-
-            {/* USER INFO SECTION */}
-            <div
-              className={`w-full rounded-xl  ${
-                lightmode
-                  ? "bg-gradient-gray-light border-zinc-400 shadow-md shadow-zinc-500/20"
-                  : "bg-gradient-gray border-zinc-500/30"
-              } h-full flex flex-col  border-[1px] p-7`}
-            >
-              <div className="flex w-full h-full md:flex-row flex-col">
-                {/* TEXT CREDS */}
-                <div className=" w-full h-full p-2 ">
-                  <div className="w-full flex-col gap-4 flex justify-between">
-                    <span className="flex items-center gap-2">
-                      <MdDriveFileRenameOutline className="text-lg" />
-                      <div className="flex flex-col">
-                        <h1 className="text-sm">Username</h1>
-                      </div>
-                    </span>
-
-                    <div className="flex gap-1">
-                      <input
-                        type="text"
-                        className={`rounded-lg bg-black ${
-                          lightmode
-                            ? "bg-zinc-100 text-black font-normal shadow-inner shadow-zinc-500/40"
-                            : "bg-black text-white"
-                        } border-[1px] border-zinc-500/60 text-normal font-light py-2 px-2 text-sm w-full`}
-                        placeholder={user?.username}
-                      />
-                    </div>
-                  </div>
-                  <Divider />
-                  <div className="w-full flex-col gap-4 flex justify-between">
-                    <span className="flex items-center gap-2">
-                      <FaUserTag className="text-lg" />
-                      <div className="flex flex-col">
-                        <h1 className="text-sm">Tag</h1>
-                      </div>
-                    </span>
-
-                    <div className="flex gap-1">
-                      <input
-                        type="text"
-                        className={`rounded-lg bg-black ${
-                          lightmode
-                            ? "bg-zinc-100 text-black font-normal shadow-inner shadow-zinc-500/40"
-                            : "bg-black text-white"
-                        } border-[1px] border-zinc-500/60 text-normal font-light py-2 px-2 text-sm w-full`}
-                        placeholder={user?.tag}
-                      />
-                    </div>
-                  </div>
-                  <Divider />
-                </div>
-                {/* IMAGE */}
-                <div className="flex w-full  flex-col p-1 gap-5 items-center">
-                  <div className="text-sm gap-2 w-full flex items-center">
-                    <RxAvatar className="w-5 h-5" />
-                    <span>Change Avatar</span>
-                  </div>
-                  <div className="w-full h-full  border-[1px] border-zinc-500/50 rounded-lg flex items-center justify-center ">
-                    <img
-                      className="w-[120px] h-[120px] m-3"
-                      src={
-                        user?.profilePic
-                          ? user.profilePic
-                          : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                      }
-                      alt="user"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full h-full flex my-1 p-1 gap-2">
-            <button
-              onClick={() => modal.onOpen(questionData)}
-              className={`px-3 py-2 flex rounded-full ${
-                lightmode
-                  ? "bg-orange-500 hover:bg-orange-400 shadow-md shadow-zinc-950/20"
-                  : "bg-orange-600 hover:bg-orange-500"
-              }   text-white font-normal text-xs transition-all ease-in-out`}
-            >
-              Save changes
-            </button>
-            <Link
-              to={"/user"}
-              className={`px-3 py-2 flex rounded-full ${
-                lightmode
-                  ? "bg-green-500 hover:bg-green-400 shadow-md shadow-zinc-950/20"
-                  : "bg-green-600 hover:bg-green-500"
-              }   text-white font-normal text-xs transition-all ease-in-out`}
-            >
-              Go to Profile
-            </Link>
           </div>
         </div>
 

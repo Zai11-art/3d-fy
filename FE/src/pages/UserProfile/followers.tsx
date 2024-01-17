@@ -45,7 +45,9 @@ const Following = () => {
 
   const getTobeFollwed = async () => {
     const user = await axios
-      .get(`http://localhost:8080/users/${paramId}/followers`)
+      .get(`http://localhost:8080/users/${paramId}/followers`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => res.data);
 
     setUserData(user);
@@ -53,7 +55,9 @@ const Following = () => {
 
   const getUser = async () => {
     const user = await axios
-      .get(`http://localhost:8080/users/${paramId}`)
+      .get(`http://localhost:8080/users/${paramId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => res.data);
 
     setUserUserFollowed(user);
