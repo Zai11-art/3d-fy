@@ -19,8 +19,9 @@ import {
   getRenderUserPost,
 } from "../../api/post";
 
+const tabs = ["All", "Render", "Model"];
+
 const UserProfile = () => {
-  const [clicked, setClicked] = useState("All");
   const { userId: paramId } = useParams();
 
   const token = useMode((state) => state.token);
@@ -31,9 +32,8 @@ const UserProfile = () => {
   const [posts, setPosts] = useState<Post[]>();
 
   // tabs
-  const [toggleAll, setToggleAll] = useState(true);
-  const [toggleRender, setToggleRender] = useState(false);
-  const [toggleModels, setToggleModels] = useState(false);
+  const [toggleTab, setToggleTab] = useState("All");
+
   console.log(userData);
   console.log(posts);
 
@@ -45,15 +45,17 @@ const UserProfile = () => {
   useEffect(() => {
     fetcher();
     getUser();
-  }, [toggleAll, toggleRender, toggleModels]);
+  }, [toggleTab]);
 
   const fetcher = async () => {
     let data: React.SetStateAction<Post[]> = [];
-    if (toggleAll) {
+    if (toggleTab === "All") {
       data = await getAllUserPost(paramId as string);
-    } else if (toggleModels) {
+    }
+    if (toggleTab === "Render") {
       data = await getModelUserPost(paramId as string);
-    } else if (toggleRender) {
+    }
+    if (toggleTab === "Model") {
       data = await getRenderUserPost(paramId as string);
     }
     setPosts(data);
@@ -229,7 +231,20 @@ const UserProfile = () => {
                 : "bg-zinc-900 shadow-orange-500/20"
             }    rounded-full`}
           >
-            <button
+            {tabs.map((btn, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  setToggleTab(btn);
+                }}
+                className={`hover:bg-orange-500 text-sm px-2 py-1 rounded-full transition-all ease-in-out ${
+                  toggleTab === btn && "bg-orange-500"
+                }`}
+              >
+                {btn}
+              </button>
+            ))}
+            {/* <button
               onClick={() => {
                 setToggleAll(!toggleAll);
               }}
@@ -258,7 +273,7 @@ const UserProfile = () => {
               }`}
             >
               Render
-            </button>
+            </button> */}
           </div>
         </div>
 

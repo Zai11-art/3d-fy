@@ -10,6 +10,8 @@ import { RiSendPlane2Fill } from "react-icons/ri";
 import Divider from "./divider";
 import useInputModal from "../hooks/use-input-modal";
 import useConfirmationModal from "../hooks/use-confirmation-modal";
+import { LuClipboardEdit } from "react-icons/lu";
+import { BiTrash } from "react-icons/bi";
 
 const commentSchema = yup.object().shape({
   content: yup.string().notRequired().max(100),
@@ -239,9 +241,9 @@ const CommentSection = ({
                               method: () => deleteComment(comment.id),
                             });
                           }}
-                          className="px-2 py-1 text-xs bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
+                          className="p-1 text-xs bg-red-600 hover:bg-red-400 rounded-full flex items-center justify-center"
                         >
-                          delete
+                          <BiTrash className="text-lg" />
                         </button>
                       )}
                       {comment.userId === user?.id && (
@@ -256,9 +258,9 @@ const CommentSection = ({
                               refetcher: () => fetchComments(),
                             })
                           }
-                          className="px-2 py-1 text-xs bg-blue-600 hover:bg-blue-400 rounded-md flex items-center justify-center"
+                          className="p-1 text-xs bg-blue-600 hover:bg-blue-400 rounded-full flex items-center justify-center"
                         >
-                          Edit
+                          <LuClipboardEdit className="text-lg" />
                         </button>
                       )}
                     </div>

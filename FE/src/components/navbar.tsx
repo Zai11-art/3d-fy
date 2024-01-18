@@ -1,6 +1,10 @@
 import { useState } from "react";
 import reactLogo from "../assets/react.svg";
-import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
+import {
+  MdDashboard,
+  MdOutlineDarkMode,
+  MdOutlineLightMode,
+} from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 
 import { MdArrowForward, MdMenu } from "react-icons/md";
@@ -8,17 +12,32 @@ import { useMediaQuery } from "../hooks/use-media-query";
 import useMode from "../hooks/state";
 import Avatar from "./avatar";
 import Divider from "./divider";
-import { CgShapeHexagon } from "react-icons/cg";
+import { CgProfile, CgShapeHexagon } from "react-icons/cg";
 import { MdStarPurple500 } from "react-icons/md";
 import UserDropdown from "./user-dropdown";
 import toast from "react-hot-toast";
-import { FaPlus } from "react-icons/fa";
+import { FaCog, FaPlus } from "react-icons/fa";
 
 const dummyUserData = {
   name: "Raygun",
 };
 
 const navbarContent = [
+  {
+    label: "profile",
+    icon: <CgProfile />,
+    url: "/viewer",
+  },
+  {
+    label: "dashboard",
+    icon: <MdDashboard />,
+    url: "/viewer",
+  },
+  {
+    label: "settings",
+    icon: <FaCog />,
+    url: "/viewer",
+  },
   {
     label: "viewer",
     icon: <MdArrowForward />,

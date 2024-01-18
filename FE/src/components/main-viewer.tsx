@@ -97,7 +97,14 @@ const MainViewer = ({
           <OrbitControls />
           <Stage environment={hdri} adjustCamera={1}>
             <Environment background preset={hdri} />
-            <ViewContainer />
+            <ViewContainer
+              scale={undefined}
+              position={[]}
+              color={""}
+              wireframe={false}
+              wireframeThickness={undefined}
+              normalTexture={false}
+            />
           </Stage>
         </Suspense>
       </Canvas>

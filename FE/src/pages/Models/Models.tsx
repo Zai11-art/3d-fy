@@ -34,11 +34,11 @@ const images = [
   },
 ];
 
+const tabs = ["All", "Render", "Model"];
+
 const Models = () => {
   const lightmode = useMode((state) => state.isDarkMode);
-  const [toggleAll, setToggleAll] = useState(true);
-  const [toggleRender, setToggleRender] = useState(false);
-  const [toggleModels, setToggleModels] = useState(false);
+  const [toggleTab, setToggleTab] = useState("All");
   const [feedData, setFeedData] = useState<Post[]>([]);
 
   console.log(feedData);
@@ -54,11 +54,11 @@ const Models = () => {
 
   const fetcher = async () => {
     let data: SetStateAction<Post[]> = [];
-    if (toggleAll) {
+    if (toggleTab === "All") {
       data = await getFeed();
-    } else if (toggleModels) {
+    } else if (toggleTab === "Render") {
       data = await getModels();
-    } else if (toggleRender) {
+    } else if (toggleTab === "Model") {
       data = await getRenders();
     }
     setFeedData(data);
@@ -84,7 +84,7 @@ const Models = () => {
 
   useEffect(() => {
     fetcher();
-  }, [toggleAll, toggleModels, toggleRender]);
+  }, [toggleTab]);
 
   // solution for toggling 2
   // console.log(toggle);
@@ -97,7 +97,7 @@ const Models = () => {
 
   return (
     <PageLayout>
-      <div className="w-full h-screen">
+      <div className="w-full h-full">
         <header className="h-[450px] flex py-5 items-center justify-center">
           <Carousel images={images} />
         </header>
@@ -122,69 +122,30 @@ const Models = () => {
               <Divider />
 
               <div className="md:mt-0 mt-2 flex flex-wrap flex-row w-full">
-                <button
-                  onClick={() => {
-                    setToggleAll(!toggleAll);
-                  }}
-                  className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
-                    lightmode
-                      ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
-                      : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
-                  } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
-                >
-                  <div
-                    className={`flex items-center w-4 h-4 rounded-md ${
+                {tabs.map((btn, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setToggleTab(btn);
+                    }}
+                    className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
                       lightmode
-                        ? "bg-zinc-800 text-orange-200"
-                        : "bg-black text-white"
-                    } justify-center`}
+                        ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
+                        : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
+                    } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
                   >
-                    {toggleAll && <FaCheck className="text-[10px]" />}
-                  </div>
-                  <span>All</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setToggleModels(!toggleModels);
-                  }}
-                  className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
-                    lightmode
-                      ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
-                      : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
-                  } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
-                >
-                  <div
-                    className={`flex items-center w-4 h-4 rounded-md ${
-                      lightmode
-                        ? "bg-zinc-800 text-orange-200"
-                        : "bg-black text-white"
-                    } justify-center`}
-                  >
-                    {toggleModels ? <FaCheck className="text-[10px]" /> : ""}
-                  </div>
-                  <span>Model</span>
-                </button>
-                <button
-                  onClick={() => {
-                    setToggleRender(!toggleRender);
-                  }}
-                  className={`items-center cursor-pointer  shadow-md hover:shadow-lg transition-all ease-in-out ${
-                    lightmode
-                      ? "bg-slate-200 shadow-black hover:shadow-slate-800/50"
-                      : "bg-amber-600 shadow-yellow-500 hover:shadow-amber-200/50"
-                  } shadow-md  shadow-gray-600 p-1 md:my-2 my-0 md:mx-1 mx-1 px-2 flex items-center gap-2 rounded-xl`}
-                >
-                  <div
-                    className={`flex items-center w-4 h-4 rounded-md ${
-                      lightmode
-                        ? "bg-zinc-800 text-orange-200"
-                        : "bg-black text-white"
-                    } justify-center`}
-                  >
-                    {toggleRender ? <FaCheck className="text-[10px]" /> : ""}
-                  </div>
-                  <span>Render</span>
-                </button>
+                    <div
+                      className={`flex items-center w-4 h-4 rounded-md ${
+                        lightmode
+                          ? "bg-zinc-800 text-orange-200"
+                          : "bg-black text-white"
+                      } justify-center`}
+                    >
+                      {toggleTab === btn && <FaCheck className="text-[10px]" />}
+                    </div>
+                    <span>{btn}</span>
+                  </button>
+                ))}
 
                 <div className="flex w-full bg-[red] flex-col"></div>
               </div>
