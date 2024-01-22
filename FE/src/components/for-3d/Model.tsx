@@ -16,6 +16,9 @@ import { useGLTF, Wireframe } from "@react-three/drei";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { useState, useEffect } from "react";
+import { ObjectLoader } from "three";
 
 // export function Model(props) {
 //   const { nodes, materials } = useGLTF(
@@ -59,10 +62,28 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 // useGLTF.preload("/food_apple_01_4k.glb");
 
 export function Model(props) {
-  const gltf = useLoader(GLTFLoader, props.modelUrl);
-  console.log(gltf);
+  // console.log(props.modelUrl);
 
-  return <primitive object={gltf.scene} />;
+  // console.log(props.modelUrl.split(".")[1].toLowerCase() === "fbx");
+  // const [model, setModel] = useState("");
+
+  // useEffect(() => {
+  //   setModel(gltf.scene);
+  // }, [model]);
+
+  // const fbx = useLoader(FBXLoader, props.modelUrl);
+  let model;
+
+  if (
+    props.modelUrl.split(".")[1].toLowerCase() === "glb" ||
+    props.modelUrl.split(".")[1].toLowerCase() === "gltf"
+  ) {
+    model = useLoader(GLTFLoader, props.modelUrl)?.scene;
+  } else if (props.modelUrl.split(".")[1].toLowerCase() === "obj") {
+    model = useLoader(ObjectLoader, props.modelUrl);
+  } else if (props.modelUrl.split(".")[1].toLowerCase() === "fbx") {
+    model = useLoader(FBXLoader, props.modelUrl);
+  }
+
+  return <primitive object={model} />;
 }
-
-useGLTF.preload("/food_apple_01_4k.glb");

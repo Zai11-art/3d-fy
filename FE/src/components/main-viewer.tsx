@@ -1,22 +1,11 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
-import { useControls, folder, Leva } from "leva";
 import { CgSpinnerTwoAlt } from "react-icons/cg";
-import {
-  Html,
-  OrbitControls,
-  OrthographicCamera,
-  PerspectiveCamera,
-  Stage,
-  useProgress,
-  Wireframe,
-} from "@react-three/drei";
-import { CameraControls, ContactShadows, Environment } from "@react-three/drei";
+import { Html, OrbitControls, Stage, useProgress } from "@react-three/drei";
+import { Environment } from "@react-three/drei";
 
 import useModelModal from "../hooks/use-model-modal";
 import { Model } from "./for-3d/Model";
-
-import { Scene } from "three";
 import { ViewContainerProps } from "../types/types";
 import useViewer from "../hooks/use-viewer";
 // import daPic from "../../../public/brown_photostudio_04_8k.hdr";
@@ -95,7 +84,7 @@ const MainViewer = ({
           {/* APPLY FIX TO ENVIRONMENT: HDRI NOT WORKING */}
 
           <OrbitControls />
-          <Stage environment={hdri} adjustCamera={1}>
+          <Stage environment={hdri} adjustCamera={1} shadows={false}>
             <Environment background preset={hdri} />
             <ViewContainer
               scale={undefined}

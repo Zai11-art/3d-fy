@@ -14,16 +14,18 @@ import toast from "react-hot-toast";
 
 const registerSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("required"),
-  username: yup.string().required("required"),
-  tag: yup.string().required("required"),
-  bio: yup.string().required("required"),
+  username: yup.string().required("required").min(8).max(20),
+  tag: yup.string().required("required").min(1).max(8),
+  bio: yup.string().required("required").min(8).max(250),
   profilePic: yup.string().required("required"),
   // banner: yup.string().required("required"),
-  password: yup.string().required("required"),
+  password: yup.string().required("required").min(8).max(20),
   confirmPassword: yup
     .string()
     .required("required")
-    .oneOf([yup.ref("password")], `Passwords don't match.`),
+    .oneOf([yup.ref("password")], `Passwords don't match.`)
+    .min(8)
+    .max(20),
 });
 
 const initialRegVal = {
@@ -58,18 +60,6 @@ const Register = () => {
         formData.append(key, value);
       });
       formData.append("profilePic", values.profilePic.name);
-
-      // Object.entries(parsedValues).forEach(([key, value]) => {
-      //   if (key === "images" && Array.isArray(value)) {
-      //     value.forEach((imageFile, index) => {
-      //       formData.append(`images[${index}]`, imageFile);
-      //     });
-      //   } else {
-      //     formData.append(key, value);
-      //   }
-      // });
-      // console.log(JSON.stringify(parsedValues));
-      // formData.append("banner", values.banner.name);
 
       setIsloading(true);
       const registerRes = await fetch("http://localhost:8080/auth/register", {
@@ -191,78 +181,76 @@ const Register = () => {
                             />
                           </div>
 
-                          <div className="w-full h-full flex justify-between gap-5">
-                            {/* USERNAME INPUT */}
-                            <div className="flex-col flex gap-3 w-full ">
-                              <div className="w-full flex gap-5 justify-between items-center">
-                                <label className="text-sm" htmlFor={"username"}>
-                                  Username
-                                </label>
-                                {/* error handling */}
-                                {errors.username && touched.username && (
-                                  <div className="text-red-500 text-xs">
-                                    {errors.username}
-                                  </div>
-                                )}
-                              </div>
-                              <input
-                                disabled={isLoading}
-                                required
-                                type="username"
-                                id="username"
-                                name="username"
-                                value={values.username}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                className={`w-full ${
-                                  errors.username && touched.username
-                                    ? "border-red-500 "
-                                    : "border-zinc-500/50"
-                                } px-2 p-1 text-sm text-normal ${
-                                  lightmode
-                                    ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-                                    : "bg-black text-white"
-                                } ${
-                                  isLoading && "animate-pulse"
-                                } rounded-md border-[1px] `}
-                              />
+                          {/* USERNAME INPUT */}
+                          <div className="flex-col flex gap-3 w-full ">
+                            <div className="w-full flex gap-5 justify-between items-center">
+                              <label className="text-sm" htmlFor={"username"}>
+                                Username
+                              </label>
+                              {/* error handling */}
+                              {errors.username && touched.username && (
+                                <div className="text-red-500 text-xs">
+                                  {errors.username}
+                                </div>
+                              )}
                             </div>
+                            <input
+                              disabled={isLoading}
+                              required
+                              type="username"
+                              id="username"
+                              name="username"
+                              value={values.username}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              className={`w-full ${
+                                errors.username && touched.username
+                                  ? "border-red-500 "
+                                  : "border-zinc-500/50"
+                              } px-2 p-1 text-sm text-normal ${
+                                lightmode
+                                  ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
+                                  : "bg-black text-white"
+                              } ${
+                                isLoading && "animate-pulse"
+                              } rounded-md border-[1px] `}
+                            />
+                          </div>
 
-                            {/* TAG INPUT */}
-                            <div className="flex-col flex gap-3 w-full ">
-                              <div className="w-full flex gap-5 justify-between items-center">
-                                <label className="text-sm" htmlFor="tag">
-                                  User Tag
-                                </label>
-                                {/* error handling */}
-                                {errors.tag && touched.tag && (
-                                  <div className="text-red-500 text-xs">
-                                    {errors.tag}
-                                  </div>
-                                )}
-                              </div>
-                              <input
-                                disabled={isLoading}
-                                required
-                                type="text"
-                                id="tag"
-                                name="tag"
-                                value={values.tag}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                className={`w-full ${
-                                  errors.tag && touched.tag
-                                    ? "border-red-500 "
-                                    : "border-zinc-500/50"
-                                } px-2 p-1 text-sm text-normal ${
-                                  lightmode
-                                    ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-                                    : "bg-black text-white"
-                                } ${
-                                  isLoading && "animate-pulse"
-                                } rounded-md border-[1px] `}
-                              />
+                          {/* TAG INPUT */}
+                          <div className="flex-col flex gap-3 w-full ">
+                            <div className="w-full flex gap-5 justify-between items-center">
+                              <label className="text-sm" htmlFor="tag">
+                                User Tag
+                              </label>
+                              {/* error handling */}
+                              {errors.tag && touched.tag && (
+                                <div className="text-red-500 text-xs">
+                                  {errors.tag}
+                                </div>
+                              )}
                             </div>
+                            <input
+                              disabled={isLoading}
+                              required
+                              type="text"
+                              id="tag"
+                              name="tag"
+                              value={values.tag}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              className={`w-full ${
+                                errors.tag && touched.tag
+                                  ? "border-red-500 "
+                                  : "border-zinc-500/50"
+                              } px-2 p-1 text-sm text-normal ${
+                                lightmode
+                                  ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
+                                  : "bg-black text-white"
+                              } ${
+                                isLoading && "animate-pulse"
+                              } rounded-md border-[1px] `}
+                            />
                           </div>
 
                           {/* BIO INPUT */}
@@ -286,7 +274,7 @@ const Register = () => {
                               value={values.bio}
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              className={`w-full h-[280px] ${
+                              className={`w-full h-[265px] ${
                                 errors.bio && touched.bio
                                   ? "border-red-500 "
                                   : "border-zinc-500/50"

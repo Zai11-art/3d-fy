@@ -156,14 +156,13 @@ export const getPost = async (req: Request, res: Response) => {
 
 export const deletePost = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    console.log(id);
+    const { postId } = req.params;
+    console.log(postId);
 
-    if (!id) return res.status(404).json("Unauthorized access.");
+    if (!postId) return res.status(404).json("Unauthorized access.");
 
     const post = await prismadb.post.delete({
-      where: { id: id },
-      include: { likes: true, comments: true },
+      where: { id: postId },
     });
 
     res.status(200).json(post);
@@ -237,6 +236,26 @@ export const patchLike = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ post });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// POST views increment
+export const addPostViews = async (req: Request, res: Response) => {
+  try {
+    const { postId } = req.params;
+    const { viewCount } = req.body;
+
+    console.log("here broooooooooooooo");
+    console.log(postId);
+    console.log(viewCount);
+    const post = await prismadb.post.update({
+      where: { id: postId },
+      data: { views: viewCount + 1 },
+    });
+
+    res.status(200).json(post.views);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

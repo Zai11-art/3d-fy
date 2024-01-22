@@ -19,11 +19,11 @@ const Card = ({ data }: { data: Post }) => {
           : " bg-zinc-950  border-zinc-500/30  hover:shadow-amber-300/50 hover:shadow-md"
       } border-[1px] `}
     >
-      <div className="">
+      <div className="w-[100%] flex items-center justify-center h-[200px] ">
         <img
           src={data?.filePath}
           alt={data?.username}
-          className="w-full h-full"
+          className="w-[100%] h-[100%] aspect-square"
         />
       </div>
 

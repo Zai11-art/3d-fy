@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  addPostViews,
   deleteComment,
   deletePost,
   getAllUserPost,
@@ -29,7 +30,7 @@ router.post(
 
 // POST
 router.get("/:id", authMiddleware, getPost);
-router.delete("/:id", authMiddleware, deletePost);
+router.delete("/:postId", authMiddleware, deletePost);
 
 // GET POSTS FOR TABBING
 router.get("/:id/all", getAllUserPost);
@@ -38,6 +39,9 @@ router.get("/:id/render", getRenderUserPost);
 
 // LIKE POSTS
 router.patch("/:postId", authMiddleware, patchLike);
+
+// ADD VIEWS ON POST
+router.patch("/:postId/addViews", authMiddleware, addPostViews);
 
 // GET COMMENTS
 router.get("/:postId/comments", authMiddleware, getComments);

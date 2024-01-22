@@ -5,7 +5,7 @@ import {
   MdOutlineDarkMode,
   MdOutlineLightMode,
 } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { MdArrowForward, MdMenu } from "react-icons/md";
 import { useMediaQuery } from "../hooks/use-media-query";
@@ -21,39 +21,6 @@ import { FaCog, FaPlus } from "react-icons/fa";
 const dummyUserData = {
   name: "Raygun",
 };
-
-const navbarContent = [
-  {
-    label: "profile",
-    icon: <CgProfile />,
-    url: "/viewer",
-  },
-  {
-    label: "dashboard",
-    icon: <MdDashboard />,
-    url: "/viewer",
-  },
-  {
-    label: "settings",
-    icon: <FaCog />,
-    url: "/viewer",
-  },
-  {
-    label: "viewer",
-    icon: <MdArrowForward />,
-    url: "/viewer",
-  },
-  {
-    label: "models",
-    icon: <CgShapeHexagon />,
-    url: "/models",
-  },
-  {
-    label: "showcase",
-    icon: <MdStarPurple500 />,
-    url: "/showcase",
-  },
-];
 
 const navLinks = [
   { label: "Models", url: "/models" },
@@ -71,6 +38,39 @@ const Navbar = () => {
   const user = useMode((state) => state.user);
   const mode = useMode();
   const navigate = useNavigate();
+
+  const navbarContent = [
+    {
+      label: "profile",
+      icon: <CgProfile />,
+      url: `/${user?.id}/profile`,
+    },
+    {
+      label: "dashboard",
+      icon: <MdDashboard />,
+      url: `/${user?.id}/dashboard`,
+    },
+    {
+      label: "settings",
+      icon: <FaCog />,
+      url: `/${user?.id}/settings`,
+    },
+    {
+      label: "viewer",
+      icon: <MdArrowForward />,
+      url: "/viewer",
+    },
+    {
+      label: "models",
+      icon: <CgShapeHexagon />,
+      url: "/models",
+    },
+    {
+      label: "showcase",
+      icon: <MdStarPurple500 />,
+      url: "/showcase",
+    },
+  ];
 
   const logout = () => {
     mode.setLogout();
@@ -269,20 +269,22 @@ const Navbar = () => {
           </>
         ) : (
           <div className="flex items-center justify-center pr-4 gap-2  ">
-            <Link to={`/${user?.id}/upload`}>
-              <button
-                type="button"
-                className={`flex gap-1 items-center justify-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
+            {isAuth && (
+              <Link to={`/${user?.id}/upload`}>
+                <button
+                  type="button"
+                  className={`flex gap-1 items-center justify-center p-[2px] px-2 border-[1px] border-yellow-200/40 rounded-md font-normal transition-all ease-in-out
             ${
               lightMode
                 ? "bg-gradient-to-r from-amber-700/70 to-amber-900 hover:bg-amber-900 shadow-slate-900/40 shadow-md"
                 : "bg-gradient-to-r from-amber-900/50 to-amber-900 hover:bg-amber-500"
             }`}
-              >
-                <FaPlus className="text-sm " />
-                Publish
-              </button>
-            </Link>
+                >
+                  <FaPlus className="text-sm " />
+                  Publish
+                </button>
+              </Link>
+            )}
             <button
               onClick={setDarkMode}
               className={`text-white ${

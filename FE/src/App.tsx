@@ -23,6 +23,18 @@ import Playground from "./pages/playground/playground";
 import MainViewer from "./components/main-viewer";
 import Settings from "./pages/Settings/settings";
 import PasswordForm from "./pages/Settings/password-setting";
+import Error from "./pages/Error/error";
+
+const routes = [
+  { path: "/:userId/dashboard", element: <Dashboard /> },
+  { path: "/:userId/profile", element: <UserProfile /> },
+  { path: "/:userId/upload", element: <Upload /> },
+  { path: "/user/settings", element: <Settings /> },
+  { path: "/user/settings/password", element: <PasswordForm /> },
+  { path: "/:userId/followers", element: <Followers /> },
+  { path: "/:userId/following", element: <Following /> },
+  { path: "/post/:postId", element: <Post /> },
+];
 
 function App() {
   const isAuth = useMode((state) => state.isLoggedIn);
@@ -37,79 +49,24 @@ function App() {
           <Route path="/models" element={<Models />}></Route>
           <Route path="/showcase" element={<Showcase />}></Route>
           <Route path="/learn" element={<Learn />}></Route>
-          <Route
-            path="/:userId/dashboard"
-            element={
-              <AuthedRoute user={user}>
-                <Dashboard />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/:userId/profile"
-            element={
-              <AuthedRoute user={user}>
-                <UserProfile />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/:userId/upload"
-            element={
-              <AuthedRoute user={user}>
-                <Upload />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/user/settings"
-            element={
-              <AuthedRoute user={user}>
-                <Settings />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/user/settings/password"
-            element={
-              <AuthedRoute user={user}>
-                <PasswordForm />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/:userId/followers"
-            element={
-              <AuthedRoute user={user}>
-                <Followers />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/:userId/following"
-            element={
-              <AuthedRoute user={user}>
-                <Following />
-              </AuthedRoute>
-            }
-          ></Route>
-          <Route
-            path="/post/:postId"
-            element={
-              <AuthedRoute user={user}>
-                <Post />
-              </AuthedRoute>
-            }
-          ></Route>
           <Route path="/feed" element={<Feed />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/about" element={<About />}></Route>
+
+          {routes.map((route) => (
+            <Route
+              path={route.path}
+              element={<AuthedRoute user={user}>{route.element}</AuthedRoute>}
+            ></Route>
+          ))}
+
           <Route
             path="/view-3d"
             element={<MainViewer showLeva={true} hdri={"sunset"} />}
           ></Route>
-          {/* <Route path="/playground" element={<MainViewer />}></Route> */}
+
+          <Route path="*" element={<Error />}></Route>
         </Route>
 
         {/* WITHOUT NAV */}

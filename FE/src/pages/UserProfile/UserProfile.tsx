@@ -104,6 +104,12 @@ const UserProfile = () => {
     (follower) => follower.id === user?.id
   );
 
+  const likes = userData?.posts.reduce(
+    (acc, curr) => acc + curr?.likes.length,
+    0
+  );
+  console.log(likes);
+
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
   const [postsPerPage, setpostsPerPage] = useState(10);
@@ -120,11 +126,15 @@ const UserProfile = () => {
           >
             {/* IMAGE */}
             <div
-              className={`w-[110px] h-[110px] rounded-full border-rounded ${
+              className={` flex rounded-full border-rounded ${
                 lightmode ? "border-zinc-300" : " border-zinc-700"
               } border-[3px]`}
             >
-              <img src={userData?.profilePic} alt="userImage" />
+              <img
+                src={userData?.profilePic}
+                className="w-[110px] h-[110px] rounded-full"
+                alt="userImage"
+              />
             </div>
 
             <div
@@ -167,7 +177,7 @@ const UserProfile = () => {
                   <span
                     className={`${lightmode ? "font-normal" : "font-light"} `}
                   >
-                    {userData?.likes.length}
+                    {likes}
                   </span>
                 </div>
                 <div className="flex flex-col items-center">

@@ -18,6 +18,7 @@ import { Comment, Post } from "../types/types";
 import CommentSection from "./comment-section";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { dateConverter, dateReformat } from "../utils/utils";
 
 const ModelModal = () => {
   const lightmode = useMode((state) => state.isDarkMode);
@@ -119,7 +120,7 @@ const ModelModal = () => {
                             lightmode ? "text-slate-800" : "text-slate-300"
                           } text-slate-300`}
                         >
-                          date published: {data?.createdAt}
+                          published: {dateConverter(data?.createdAt)}
                         </span>
                       </div>
                     </div>

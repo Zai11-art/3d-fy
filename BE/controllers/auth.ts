@@ -35,21 +35,21 @@ export const login = async (req: Request, res: Response) => {
     if (!userMatch) return res.status(400).json({ msg: "Invalid credentials" });
 
     // AWS IMAGE SIGNER (NOT WORKING YET)
-    const s3Configuration: S3ClientConfig = {
-      credentials: {
-        accessKeyId: `${process.env.AWS_ACCESS_KEY_ID}`,
-        secretAccessKey: `${process.env.AWS_SECRET_ACCESS_KEY}`,
-      },
-      region: `${process.env.AWS_REGION}`,
-    };
-    const s3 = new S3Client(s3Configuration);
-    const command = new GetObjectCommand({
-      Bucket: process.env.BUCKET_NAME,
-      Key: user?.id,
-    });
-    const url = await getSignedUrl(s3, command, { expiresIn: 15 * 60 }); // expires in seconds
-    user.profilePic = url;
-    console.log("Presigned URL: ", url);
+    // const s3Configuration: S3ClientConfig = {
+    //   credentials: {
+    //     accessKeyId: `${process.env.AWS_ACCESS_KEY_ID}`,
+    //     secretAccessKey: `${process.env.AWS_SECRET_ACCESS_KEY}`,
+    //   },
+    //   region: `${process.env.AWS_REGION}`,
+    // };
+    // const s3 = new S3Client(s3Configuration);
+    // const command = new GetObjectCommand({
+    //   Bucket: process.env.BUCKET_NAME,
+    //   Key: user?.id,
+    // });
+    // const url = await getSignedUrl(s3, command, { expiresIn: 15 * 60 }); // expires in seconds
+    // user.profilePic = url;
+    // console.log("Presigned URL: ", url);
 
     const token = jwt.sign(
       { id: user?.id },
@@ -85,7 +85,25 @@ export const register = async (req: Request, res: Response) => {
       profilePic: image,
     };
 
-    const newlyRegUser = await prismadb.user.create({ data: registerUser });
+    let newlyRegUser = await prismadb.user.create({ data: registerUser });
+
+    // AWS IMAGE SIGNER (NOT WORKING YET)
+    // const s3Configuration: S3ClientConfig = {
+    //   credentials: {
+    //     accessKeyId: `${process.env.AWS_ACCESS_KEY_ID}`,
+    //     secretAccessKey: `${process.env.AWS_SECRET_ACCESS_KEY}`,
+    //   },
+    //   region: `${process.env.AWS_REGION}`,
+    // };
+
+    // const s3 = new S3Client(s3Configuration);
+    // const command = new GetObjectCommand({
+    //   Bucket: process.env.BUCKET_NAME,
+    //   Key: newlyRegUser?.profilePic,
+    // });
+
+    // const url = await getSignedUrl(s3, command); // expires in seconds
+    // newlyRegUser.profilePic = url;
 
     res.status(200).json(newlyRegUser);
   } catch (err) {

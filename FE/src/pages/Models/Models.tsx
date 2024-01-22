@@ -155,7 +155,7 @@ const Models = () => {
           <div className={` md:w-[80%]  w-full h-full p-2`}>
             <div className={`flex h-full w-full pb-5 `}>
               <div className="flex flex-wrap justify-center gap-12 p-5">
-                {!feedData ? (
+                {feedData.length === 0 ? (
                   <div className="w-full h-full">
                     <Loader />
                   </div>

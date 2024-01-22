@@ -26,6 +26,7 @@ import Loader from "../../components/loader";
 import CommentSection from "../../components/comment-section";
 import { IoMdTrash } from "react-icons/io";
 import useConfirmationModal from "../../hooks/use-confirmation-modal";
+import { dateConverter, dateReformat } from "../../utils/utils";
 
 const hdris = [
   "apartment",
@@ -46,14 +47,13 @@ const Post = () => {
   const user = useMode((state) => state.user);
   const lightmode = useMode((state) => state.isDarkMode);
   const [postData, setPostdata] = useState<Post>();
-  console.log(postData);
+
   // maps
   const [isSelected, setSelected] = useState("Base");
   const [toggleBar, setToggleBar] = useState(false);
 
   // set hdris
   const [hdri, setHdri] = useState("apartment");
-  console.log(hdri);
 
   // wireframe settings
   const [isWireFrameOn, setWireFrameOn] = useState(false);
@@ -69,6 +69,8 @@ const Post = () => {
 
   // deleting state
   const mode = useConfirmationModal();
+
+  // set view count
 
   const getPost = async (postId: string | undefined) => {
     const res = await axios.get(`http://localhost:8080/posts/${postId}`, {
@@ -96,9 +98,28 @@ const Post = () => {
     }
   };
 
+  const addViewerCount = async (postId: string, viewCount: number) => {
+    try {
+      if (postData?.userId === user?.id) return null;
+
+      const res = await axios.patch(
+        `http://localhost:8080/posts/${postId}/addViews`,
+        { viewCount },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (err) {}
+  };
+
   useEffect(() => {
+    // @ts-ignore
+    addViewerCount(postData?.id, postData?.views);
     getPost(postId);
-  }, []);
+  }, [postData?.userId]);
 
   const patchLike = async () => {
     try {
@@ -452,19 +473,21 @@ const Post = () => {
                 <div className="w-full flex items-center justify-between">
                   <h1 className="text-2xl">{postData?.title}</h1>
 
-                  <button
-                    onClick={() =>
-                      mode.onOpen({
-                        title: "Delete this post?",
-                        description: "This action is irreversible.",
-                        method: () => deletePost(postData.id),
-                      })
-                    }
-                    className="text-white px-2 py-1 text-sm bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
-                  >
-                    <IoMdTrash className="text-lg" />
-                    <span>delete</span>
-                  </button>
+                  {user?.id === postData.userId && (
+                    <button
+                      onClick={() =>
+                        mode.onOpen({
+                          title: "Delete this post?",
+                          description: "This action is irreversible.",
+                          method: () => deletePost(postData.id),
+                        })
+                      }
+                      className="text-white px-2 py-1 text-sm bg-red-600 hover:bg-red-400 rounded-md flex items-center justify-center"
+                    >
+                      <IoMdTrash className="text-lg" />
+                      <span>delete</span>
+                    </button>
+                  )}
                 </div>
                 <Divider />
 
@@ -476,9 +499,12 @@ const Post = () => {
                       <span className="text-sm">{postData?.tag}</span>
                     </div>
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col text-right">
                     <span className="text-xs">
-                      Published at: {postData?.createdAt}
+                      Posted: {dateConverter(postData?.createdAt)}
+                    </span>
+                    <span className="text-xs">
+                      Published at: {dateReformat(postData?.createdAt)}
                     </span>
                   </div>
                 </div>
@@ -548,7 +574,7 @@ const Post = () => {
                         } `}
                       />
                       <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
-                        {`${postData?.views}`}
+                        {`${postData.views}`}
                       </span>
                     </div>
                   </div>

@@ -21,8 +21,12 @@ const FileUpload = () => {
     console.log(acceptedFiles);
 
     if (
-      acceptedFiles.length <= 8 &&
-      acceptedFiles[0].name.split(".").slice(-1)[0] === "glb"
+      (acceptedFiles.length <= 8 &&
+        acceptedFiles[0].name.split(".").slice(-1)[0].toLowerCase() ===
+          "glb") ||
+      acceptedFiles[0].name.split(".").slice(-1)[0].toLowerCase() === "gltf" ||
+      acceptedFiles[0].name.split(".").slice(-1)[0].toLowerCase() === "obj" ||
+      acceptedFiles[0].name.split(".").slice(-1)[0].toLowerCase() === "fbx"
     ) {
       setfileName(acceptedFiles);
       view.onOpen(acceptedFiles);

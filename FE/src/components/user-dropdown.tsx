@@ -7,8 +7,9 @@ import useMode from "../hooks/state";
 
 const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const isAuth = useMode((state) => state.token);
   const lightmode = useMode((state) => state.isDarkMode);
-  const userId = useMode((state) => state.user?.id);
+  const user = useMode((state) => state.user);
   const mode = useMode();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -48,7 +49,13 @@ const UserDropdown = () => {
   return (
     <div className="flex  relative " ref={dropdownRef}>
       <button onClick={handleModalClick}>
-        <Avatar url="https://cdn-icons-png.flaticon.com/512/149/149071.png" />
+        <Avatar
+          url={
+            isAuth
+              ? user?.profilePic
+              : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          }
+        />
       </button>
       {isOpen && (
         <div
@@ -59,8 +66,8 @@ const UserDropdown = () => {
           } border-[1px] items-center justify-center p-5`}
         >
           {[
-            { label: "Profile", route: `/${userId}/profile` },
-            { label: "Dashboard", route: `/${userId}/dashboard` },
+            { label: "Profile", route: `/${user?.id}/profile` },
+            { label: "Dashboard", route: `/${user?.id}/dashboard` },
             { label: "Settings", route: `/user/settings` },
           ].map((btn) => (
             <Link

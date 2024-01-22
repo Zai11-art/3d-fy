@@ -13,15 +13,37 @@ import { FaEye, FaRegUser, FaUserTag } from "react-icons/fa6";
 import { RxAvatar } from "react-icons/rx";
 import useConfirmationModal from "../../hooks/use-confirmation-modal";
 import Loader from "../../components/loader";
-import { Link, Router } from "react-router-dom";
+import { Link, Router, useRouteLoaderData } from "react-router-dom";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "../../hooks/use-media-query";
+import { useEffect, useState } from "react";
+import { User } from "../../types/types";
+import axios from "axios";
+
+export const dateStyle = (receivedDate: string): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    // weekday: "long",
+    // month: "long",
+    // day: "numeric",
+    // year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    // hour12: true,
+  };
+
+  const reformattedDate: string = new Date(receivedDate).toLocaleDateString(
+    undefined,
+    options
+  );
+  return reformattedDate;
+};
 
 const data = [
   {
     id: "24hr",
     data: [
       {
-        x: "24:00",
+        x: `24:00`,
         y: 149,
       },
       {
@@ -76,12 +98,38 @@ const Dashboard = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useConfirmationModal();
   const user = useMode((state) => state.user);
-  console.log(user);
+  const token = useMode((state) => state.token);
+  const md = useMediaQuery("(min-width:1200px)");
+  const [userData, setUserData] = useState<User>();
+  console.log(userData);
 
-  const questionData = {
-    title: "Save these changes?",
-    description: "This action is irreversible.",
+  const views =
+    userData?.posts.reduce((acc, curr) => acc + +curr?.views, 0) || 0;
+  const likes =
+    userData?.posts.reduce((acc, curr) => acc + +curr.likes.length, 0) || 0;
+  const comments =
+    userData?.posts.reduce((acc, curr) => acc + +curr.comments.length, 0) || 0;
+
+  const impressions = `${views + likes + comments}`;
+
+  const getUser = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/users/${user?.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const res = response?.data;
+      console.log(res);
+      setUserData(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   return (
     <PageLayout>
@@ -92,7 +140,7 @@ const Dashboard = () => {
             lightmode
               ? "bg-gradient-gray-light border-zinc-500 shadow-lg shadow-zinc-500/50"
               : "bg-gradient-gray border-zinc-500/50"
-          } mt-24 flex items-center justify-around rounded-xl border-[1px]`}
+          } mt-16 flex items-center justify-around rounded-xl border-[1px]`}
         >
           {/* STATS SECTION */}
           <div
@@ -122,7 +170,9 @@ const Dashboard = () => {
             </div>
 
             <div
-              className={`w-full h-[450px] mt-7 text-black  ${
+              className={`w-full ${
+                md ? "h-[450px]" : "h-[300px]"
+              }  mt-7 text-black  ${
                 lightmode
                   ? "bg-zinc-100 border-[1px] border-zinc-950/20 shadow-inner shadow-zinc-950/20"
                   : "bg-black"
@@ -138,76 +188,84 @@ const Dashboard = () => {
               lightmode
                 ? "bg-gradient-gray-light border-zinc-400 shadow-md shadow-zinc-500/20"
                 : "bg-gradient-gray border-zinc-500/30"
-            } h-full flex flex-col items-center justify-between border-[1px] p-6 gap-12`}
+            } h-full flex flex-col items-center ${
+              !userData ? "justify-center" : "justify-between"
+            }  border-[1px] p-6 gap-12`}
           >
-            {/* USER CREDENTIALS */}
-            <div className="h-12 w-full flex items-center justify-between">
-              <div className="flex gap-2">
-                <Avatar url={user?.profilePic} />
+            {!userData ? (
+              <Loader />
+            ) : (
+              <>
+                {/* USER CREDENTIALS */}
+                <div className="h-12 w-full flex items-center justify-between">
+                  <div className="flex gap-2">
+                    <Avatar url={userData?.profilePic} />
 
-                <div className="flex flex-col">
-                  <span className="text-sm">{user?.username}</span>
-                  <span className="text-xs">{user?.tag}</span>
-                </div>
-              </div>
-
-              <button type="button">
-                <FaCog className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* NUMERIC STATS */}
-            <div className="flex gap-5 w-full xl:flex-wrap no-wrap  items-center justify-center">
-              {[
-                { label: "Views", data: 20323, icon: <FaEye /> },
-                {
-                  label: "Likes",
-                  data: user?.likes.length,
-                  icon: <BiSolidLike />,
-                },
-                {
-                  label: "Impressions",
-                  data: 22426,
-                  icon: <AiTwotoneInteraction />,
-                },
-                {
-                  label: "Posts",
-                  data: user?.posts?.length,
-                  icon: <BsFilePostFill />,
-                },
-              ].map((stat) => (
-                <div
-                  className={`border-[1px] py-4 xl:w-[120px] ${
-                    lightmode
-                      ? "bg-gradient-gray-light border-zinc-400 shadow-zinc-950/30 shadow-inner"
-                      : "bg-gradient-gray border-zinc-700"
-                  } w-full gap-1  rounded-xl text-md flex flex-col justify-center items-center text-normal`}
-                >
-                  <span className="text-xl">{stat.icon}</span>
-                  <span className="text-xs ">{stat.label}</span>
-                  <div className="text-sm font-bold">
-                    {stat?.data?.toLocaleString()}
+                    <div className="flex flex-col">
+                      <span className="text-sm">{userData?.username}</span>
+                      <span className="text-xs">{userData?.tag}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
 
-            {/* USER SECTION FOOTER */}
-            <div
-              className={`w-full h-11 transition-all ease-in-out ${
-                lightmode
-                  ? "border-green-600 text-green-600 "
-                  : "border-green-500 text-green-200 bg-green-950/20 hover:text-green-100 hover:scale-[1.01]"
-              }   rounded-full shadow-inner border-[1px]  font-bold flex items-center justify-center text-[13px]`}
-            >
-              Impressions up by 93%!
-            </div>
+                  <Link
+                    to={`/user/settings`}
+                    className="hover:text-orange-500"
+                    type="button"
+                  >
+                    <FaCog className="w-6 h-6" />
+                  </Link>
+                </div>
+
+                {/* NUMERIC STATS */}
+                <div className="flex gap-5 w-full xl:flex-wrap no-wrap  items-center justify-center">
+                  {[
+                    { label: "Views", data: views, icon: <FaEye /> },
+                    {
+                      label: "Likes",
+                      data: likes,
+                      icon: <BiSolidLike />,
+                    },
+                    {
+                      label: "Impressions",
+                      data: impressions,
+                      icon: <AiTwotoneInteraction />,
+                    },
+                    {
+                      label: "Posts",
+                      data: userData?.posts?.length,
+                      icon: <BsFilePostFill />,
+                    },
+                  ].map((stat) => (
+                    <div
+                      className={`border-[1px] py-4 xl:w-[120px] ${
+                        lightmode
+                          ? "bg-gradient-gray-light border-zinc-400 shadow-zinc-950/30 shadow-inner"
+                          : "bg-gradient-gray border-zinc-700"
+                      } w-full gap-1  rounded-xl text-md flex flex-col justify-center items-center text-normal`}
+                    >
+                      <span className="text-xl">{stat.icon}</span>
+                      <span className="text-xs ">{stat.label}</span>
+                      <div className="text-sm font-bold">
+                        {stat?.data?.toLocaleString()}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* USER SECTION FOOTER */}
+                <div
+                  className={`w-full h-11 transition-all ease-in-out ${
+                    lightmode
+                      ? "border-green-600 text-green-600 "
+                      : "border-green-500 text-green-200 bg-green-950/20 hover:text-green-100 hover:scale-[1.01]"
+                  }   rounded-full shadow-inner border-[1px]  font-bold flex items-center justify-center text-[13px]`}
+                >
+                  Impressions up by 93%!
+                </div>
+              </>
+            )}
           </div>
         </div>
-
-        {/* <div className="lg:w-[1250px] w-full h-[400px] bg-[red] p-1 mb-16 mt-10 flex items-center justify-around">
-          <h1>Posts</h1>
-        </div> */}
       </div>
     </PageLayout>
   );
