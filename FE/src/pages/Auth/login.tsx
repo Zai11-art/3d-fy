@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useState } from "react";
@@ -9,7 +10,6 @@ import useMode from "../../hooks/state";
 import Divider from "../../components/divider";
 import PageLayout from "../../layout/page-layout";
 import { LoginValuesType, OnsubmitPropsType } from "../../types/types";
-import { useQuery } from "@tanstack/react-query";
 
 const loginSchema = yup.object().shape({
   email: yup
@@ -40,39 +40,37 @@ const Login = () => {
     values: LoginValuesType,
     onSubmitProps: OnsubmitPropsType
   ) => {
-    console.log("triggered from login");
-    console.log(values);
+    try {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+      const res = await axios.post("http://localhost:8080/auth/login", values, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-    const loginRes2 = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+      const data = await res.data;
+      setIsloading(true);
+      if (
+        data.msg === "User does not exist." ||
+        data.msg === "Invalid credentials"
+      ) {
+        toast.error("Wrong password or email.");
+      } else {
+        mode.setToken(data);
+        toast.success(`Login Successful, welcome ${data.user.username}`);
+        setTimeout(() => {
+          navigate("/models");
+        }, 2000);
+      }
 
-    const data = await loginRes2.json();
-    console.log(data);
-    setIsloading(true);
-    if (
-      data.msg === "User does not exist." ||
-      data.msg === "Invalid credentials"
-    ) {
+      onSubmitProps.resetForm();
+    } catch (err) {
+      toast.error("Error Logging in.");
+    } finally {
       setIsloading(false);
-      toast.error("Wrong password or email.");
-    } else {
-      mode.setToken(data);
-      toast.success(`Login Successful, welcome ${data.user.username}`);
-      setTimeout(() => {
-        navigate("/models");
-      }, 2000);
     }
-
-    console.log(data);
-    onSubmitProps.resetForm();
   };
 
   const handleFormSubmitLog = async (

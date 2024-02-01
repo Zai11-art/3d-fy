@@ -1,9 +1,10 @@
 import { MdArrowDownward } from "react-icons/md";
-import Divider from "../../../components/divider";
-import { sectionRendering } from "../../../data/learnpage-data";
+
 import useMode from "../../../hooks/state";
+import Divider from "../../../components/divider";
 import useInfoModal from "../../../hooks/use-info-modal";
 import useScrollTo from "../../../hooks/use-scroll-to-el";
+import { sectionRendering } from "../../../data/learnpage-data";
 
 const RenderingSection = () => {
   const lightmode = useMode((state) => state.isDarkMode);

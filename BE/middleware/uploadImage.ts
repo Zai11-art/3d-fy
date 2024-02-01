@@ -10,6 +10,8 @@ const s3Config: S3ClientConfig = {
   },
 };
 
+console.log(process.env.AWS_REGION)
+
 export const s3 = new S3Client(s3Config);
 
 export const upload = (path: string) =>

@@ -1,33 +1,33 @@
 import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
-import WithNav from "./layout/with-nav";
+
 import NoNav from "./layout/no-nav";
-import Home from "./pages/Home/Home";
-import Viewer from "./pages/Viewer/Viewer";
-import Models from "./pages/Models/Models";
-import Showcase from "./pages/Showcase/Showcase";
-import Learn from "./pages/Learn/Learn";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import UserProfile from "./pages/UserProfile/UserProfile";
-import Auth from "./pages/Auth/login";
-import About from "./pages/About/About";
-import Register from "./pages/Auth/register";
-import Login from "./pages/Auth/login";
 import useMode from "./hooks/state";
-import AuthedRoute from "./layout/protected-route";
-import Upload from "./pages/Upload/upload";
 import Feed from "./pages/Feed/feed";
 import Post from "./pages/Post/post";
-import Followers from "./pages/UserProfile/followers";
-import Following from "./pages/UserProfile/following";
-import Playground from "./pages/playground/playground";
-import MainViewer from "./components/main-viewer";
-import Settings from "./pages/Settings/settings";
-import PasswordForm from "./pages/Settings/password-setting";
+import Home from "./pages/Home/home";
+import Login from "./pages/Auth/login";
+import Learn from "./pages/Learn/learn";
 import Error from "./pages/Error/error";
+import About from "./pages/About/about";
+import WithNav from "./layout/with-nav";
+import Viewer from "./pages/Viewer/Viewer";
+import Models from "./pages/Models/models";
+import Upload from "./pages/Upload/upload";
+import Register from "./pages/Auth/register";
+import Profile from "./pages/Profile/profile";
+import Showcase from "./pages/Showcase/showcase";
+import Settings from "./pages/Settings/settings";
+import Following from "./pages/Profile/following";
+import Followers from "./pages/Profile/followers";
+import MainViewer from "./components/main-viewer";
+import AuthedRoute from "./layout/protected-route";
+import Dashboard from "./pages/Dashboard/dashboard";
+import PasswordForm from "./pages/Settings/password-setting";
 
+// PROTECTED ROUTES
 const routes = [
   { path: "/:userId/dashboard", element: <Dashboard /> },
-  { path: "/:userId/profile", element: <UserProfile /> },
+  { path: "/:userId/profile", element: <Profile /> },
   { path: "/:userId/upload", element: <Upload /> },
   { path: "/user/settings", element: <Settings /> },
   { path: "/user/settings/password", element: <PasswordForm /> },
@@ -57,7 +57,11 @@ function App() {
           {routes.map((route) => (
             <Route
               path={route.path}
-              element={<AuthedRoute user={user}>{route.element}</AuthedRoute>}
+              element={
+                <AuthedRoute isAuth={isAuth} user={user}>
+                  {route.element}
+                </AuthedRoute>
+              }
             ></Route>
           ))}
 

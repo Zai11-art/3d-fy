@@ -1,17 +1,16 @@
-import React from "react";
-import { FaCog } from "react-icons/fa";
-import { useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { RiLockPasswordLine } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
-import Divider from "../../components/divider";
-import useMode from "../../hooks/state";
-import PageLayout from "../../layout/page-layout";
+import axios from "axios";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
-import axios from "axios";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { Link, useNavigate } from "react-router-dom";
+import { IoIosInformationCircleOutline } from "react-icons/io";
+
+import useMode from "../../hooks/state";
+import Divider from "../../components/divider";
+import PageLayout from "../../layout/page-layout";
+import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
 
 const passwordSchema = yup.object().shape({
   currentPassword: yup.string().required("required"),
@@ -40,17 +39,6 @@ const PasswordForm = () => {
     onSubmitProps: OnsubmitPropsType
   ) => {
     try {
-      console.log("values here");
-      console.log(values);
-
-      // const formData = new FormData();
-      // Object.entries(values).forEach(([key, value]) => {
-      //   formData.append(key, value);
-      // });
-      // formData.append("profilePic", values.profilePic.name);
-
-      setIsloading(true);
-
       const response = await axios.put(
         `http://localhost:8080/users/${user?.id}/update/pass`,
         values,
@@ -60,7 +48,9 @@ const PasswordForm = () => {
           },
         }
       );
-      console.log(response);
+
+      setIsloading(true);
+      
       if (response.statusText === "OK") {
         toast.success("User info updated.");
         setTimeout(() => {
@@ -68,7 +58,7 @@ const PasswordForm = () => {
         }, 2000);
       }
 
-      // onSubmitProps.resetForm();
+      onSubmitProps.resetForm();
     } catch (err) {
       toast.error(`Updating failed : ${err}`);
     } finally {

@@ -1,16 +1,17 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { FaCheck } from "react-icons/fa";
+import { SetStateAction, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import useMode from "../../hooks/state";
-import { getFeed, getModels, getRenders } from "../../api/post";
+import { Post } from "../../types/types";
+import Loader from "../../components/loader";
+import FullLoader from "../Loader/loader-full";
 import Divider from "../../components/divider";
 import Card from "../../components/card-sample";
 import Carousel from "../../components/carousel";
 import PageLayout from "../../layout/page-layout";
 import Pagination from "../../components/pagination";
-import Loader from "../../components/loader";
-import { Post } from "../../types/types";
-import { FaCheck } from "react-icons/fa";
+import { getFeed, getModels, getRenders } from "../../api/post";
 
 const images = [
   {
@@ -39,61 +40,34 @@ const tabs = ["All", "Render", "Model"];
 const Models = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const [toggleTab, setToggleTab] = useState("All");
-  const [feedData, setFeedData] = useState<Post[]>([]);
 
-  console.log(feedData);
-  // const {
-  //   isPending,
-  //   isError,
-  //   data: feedData,
-  //   error,
-  // } = useQuery({
-  //   queryKey: ["feed"],
-  //   queryFn: getFeed,
-  // });
+  // PAGINATION
+  const [currentPage, setcurrentPage] = useState(1);
+  const [postsPerPage, setpostsPerPage] = useState(10);
+  const lastPostIndex = currentPage * postsPerPage;
+  const firstPostIndex = lastPostIndex - postsPerPage;
+
+  const { isLoading, data: feedData } = useQuery({
+    queryKey: ["feed", toggleTab],
+    queryFn: () => fetcher(),
+  });
 
   const fetcher = async () => {
     let data: SetStateAction<Post[]> = [];
     if (toggleTab === "All") {
       data = await getFeed();
     } else if (toggleTab === "Render") {
-      data = await getModels();
-    } else if (toggleTab === "Model") {
       data = await getRenders();
+    } else if (toggleTab === "Model") {
+      data = await getModels();
     }
-    setFeedData(data);
 
-    // if (toggleModels) {
-    //   const data = await getModels();
-    //   console.log("toggled models");
-    //   console.log(data);
-    //   setFeedData(data);
-    // }
-    // if (toggleRender) {
-    //   const data = await getRenders();
-    //   console.log("toggled renders");
-    //   console.log(data);
-    //   setFeedData(data);
-    // }
-    // if (!toggleAll && !toggleModels && !toggleRender) {
-    //   setFeedData([]);
-    // }
+    return data;
   };
 
-  // const toggler
-
-  useEffect(() => {
-    fetcher();
-  }, [toggleTab]);
-
-  // solution for toggling 2
-  // console.log(toggle);
-
-  // pagination logic/controls
-  const [currentPage, setcurrentPage] = useState(1);
-  const [postsPerPage, setpostsPerPage] = useState(10);
-  const lastPostIndex = currentPage * postsPerPage;
-  const firstPostIndex = lastPostIndex - postsPerPage;
+  if (isLoading) {
+    return <FullLoader />;
+  }
 
   return (
     <PageLayout>
@@ -155,7 +129,7 @@ const Models = () => {
           <div className={` md:w-[80%]  w-full h-full p-2`}>
             <div className={`flex h-full w-full pb-5 `}>
               <div className="flex flex-wrap justify-center gap-12 p-5">
-                {feedData.length === 0 ? (
+                {feedData?.length === 0 ? (
                   <div className="w-full h-full">
                     <Loader />
                   </div>
@@ -163,7 +137,9 @@ const Models = () => {
                   <>
                     {feedData
                       ?.slice(firstPostIndex, lastPostIndex)
-                      .map((card, idx) => <Card data={card} key={idx} />)}
+                      .map((card: Post, idx: number) => (
+                        <Card data={card} key={idx} />
+                      ))}
                   </>
                 )}
               </div>

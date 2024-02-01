@@ -3,32 +3,25 @@ import PageLayout from "../../layout/page-layout";
 import LineChart from "../../components/line-chart";
 import Divider from "../../components/divider";
 import Avatar from "../../components/avatar";
+import axios from "axios";
 import { FaCog } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaEye } from "react-icons/fa6";
+import { useEffect, useState } from "react";
 import { ImStatsBars } from "react-icons/im";
 import { BiSolidLike } from "react-icons/bi";
 import { BsFilePostFill } from "react-icons/bs";
 import { AiTwotoneInteraction } from "react-icons/ai";
-import { MdDriveFileRenameOutline } from "react-icons/md";
-import { FaEye, FaRegUser, FaUserTag } from "react-icons/fa6";
-import { RxAvatar } from "react-icons/rx";
-import useConfirmationModal from "../../hooks/use-confirmation-modal";
-import Loader from "../../components/loader";
-import { Link, Router, useRouteLoaderData } from "react-router-dom";
-import { useRouter } from "next/navigation";
-import { useMediaQuery } from "../../hooks/use-media-query";
-import { useEffect, useState } from "react";
+
 import { User } from "../../types/types";
-import axios from "axios";
+import Loader from "../../components/loader";
+import { useMediaQuery } from "../../hooks/use-media-query";
+import useConfirmationModal from "../../hooks/use-confirmation-modal";
 
 export const dateStyle = (receivedDate: string): string => {
   const options: Intl.DateTimeFormatOptions = {
-    // weekday: "long",
-    // month: "long",
-    // day: "numeric",
-    // year: "numeric",
     hour: "numeric",
     minute: "numeric",
-    // hour12: true,
   };
 
   const reformattedDate: string = new Date(receivedDate).toLocaleDateString(

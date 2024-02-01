@@ -1,31 +1,29 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+
 import { getFeed } from "../../api/post";
-import Card from "../../components/card-sample";
 import Loader from "../../components/loader";
-import Pagination from "../../components/pagination";
+import Card from "../../components/card-sample";
 import PageLayout from "../../layout/page-layout";
+import Pagination from "../../components/pagination";
+import FullLoader from "../Loader/loader-full";
 
 const Showcase = () => {
-  const {
-    isPending,
-    isError,
-    data: feedData,
-    error,
-    refetch,
-  } = useQuery({
+  const { isLoading, data: feedData } = useQuery({
     queryKey: ["feed"],
     queryFn: getFeed,
+    refetchOnMount: true,
   });
 
-  useEffect(() => {
-    refetch();
-  }, []);
   // for pagination
   const [currentPage, setcurrentPage] = useState(1);
   const [postsPerPage, setpostsPerPage] = useState(10);
   const lastPostIndex = currentPage * postsPerPage;
   const firstPostIndex = lastPostIndex - postsPerPage;
+
+  if (isLoading) {
+    return <FullLoader />;
+  }
 
   return (
     <PageLayout>

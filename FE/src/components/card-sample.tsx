@@ -4,10 +4,12 @@ import { Post } from "../types/types";
 import useModelModal from "../hooks/use-model-modal";
 import { MdOutlineThumbUp } from "react-icons/md";
 import { BiSolidComment } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 const Card = ({ data }: { data: Post }) => {
   const lightmode = useMode((state) => state.isDarkMode);
   const modal = useModelModal();
+  const navigate = useNavigate();
 
   return (
     <div

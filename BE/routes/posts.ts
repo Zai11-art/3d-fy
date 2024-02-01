@@ -7,7 +7,6 @@ import {
   getComments,
   getModelUserPost,
   getPost,
-  getPosts,
   getRenderUserPost,
   patchLike,
   postComment,

@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 
 const AuthedRoute = ({
   user,
+  isAuth,
   children,
 }: {
+  isAuth: boolean | null;
   user: User | null;
   children: React.ReactNode;
 }) => {
@@ -19,7 +21,7 @@ const AuthedRoute = ({
     }
   }, []);
 
-  if (!user) {
+  if (!user && !isAuth) {
     toast.dismiss(); //It will dismiss all toast before calling current one.
     toast.error("Please login again.");
     navigate("/");

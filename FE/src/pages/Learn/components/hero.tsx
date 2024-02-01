@@ -1,7 +1,8 @@
 import { MdArrowDownward } from "react-icons/md";
-import { sectionHero } from "../../../data/learnpage-data";
+
 import useMode from "../../../hooks/state";
 import useScrollTo from "../../../hooks/use-scroll-to-el";
+import { sectionHero } from "../../../data/learnpage-data";
 
 const durationInterval = [
   "duration-[1s]",

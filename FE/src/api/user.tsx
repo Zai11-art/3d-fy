@@ -1,48 +1,72 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 import { User } from "../types/types";
 
-export const getUser = async (userId: string | undefined): Promise<User> => {
-  const user = await axios
-    .get(`http://localhost:8080/users/${userId}`)
-    .then((res) => res.data);
+export const getUser = async (
+  userId: string | undefined,
+  token: string | undefined | null
+): Promise<User> => {
+  const res = await axios.get(`http://localhost:8080/users/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
-  return user;
+  return res.data;
 };
 
 export const getFollowing = async (
-  userId: string | undefined
+  userId: string | undefined,
+  token: string | undefined | null
 ): Promise<User[]> => {
   const followings = await axios
-    .get(`http://localhost:8080/users/${userId}/following`)
+    .get(`http://localhost:8080/users/${userId}/following`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then((res) => res.data);
 
   return followings;
 };
 
 export const getFollowers = async (
-  userId: string | undefined
+  userId: string | undefined,
+  token: string | undefined | null
 ): Promise<User[]> => {
   const followers = await axios
-    .get(`http://localhost:8080/users/${userId}/followers`)
+    .get(`http://localhost:8080/users/${userId}/followers`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then((res) => res.data);
 
   return followers;
 };
 
-export const follow = async (
-  userId: string | undefined,
-  followId: string | undefined,
-  token: string | undefined
+export const patchFollow = async (
+  followingId: string | undefined | null,
+  userId: string | undefined | null,
+  token: string | undefined | null,
+  setLoading: (value: boolean) => void,
+  refetcher: () => void
 ) => {
-  const follow = await axios
-    // @ts-ignore
-    .patch(`http://localhost:8080/users/${userId}/${followId}`, _, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => res.data);
+  try {
+    setLoading(true);
+    const res = await axios.patch(
+      `http://localhost:8080/users/${userId}/patchFollow`,
+      { followId: followingId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-  return follow;
+    if (res.data) {
+      toast.success("Followed.");
+      console.log(res.data);
+      refetcher();
+    }
+  } catch (error) {
+    toast.error("Following failed. please try again.");
+  } finally {
+    setLoading(false);
+  }
 };

@@ -19,7 +19,7 @@ router.get("/:userId/following", authMiddleware, getFollowing);
 router.get("/:userId/followers", authMiddleware, getFollowers);
 
 // FOLLOW/UNFOLLOW USER
-router.patch("/:userId/:followId", authMiddleware, patchFollow);
+router.patch("/:userId/patchFollow", authMiddleware, patchFollow);
 
 // UPDATING USER SETTINGS
 router.put("/:userId/update", updateUserSettings);

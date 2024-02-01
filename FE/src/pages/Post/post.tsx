@@ -1,32 +1,31 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import { FaCog, FaTrashAlt, FaExpandArrowsAlt } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
-import Avatar from "../../components/avatar";
-import Divider from "../../components/divider";
-import TextCarousel from "../../components/text-carousel";
-import useMode from "../../hooks/state";
-import PageLayout from "../../layout/page-layout";
-import Viewer from "../Viewer/Viewer";
-import base from "/textures/food_apple_01_diff_4k.jpg";
-import { useState, useEffect } from "react";
-import { AiOutlineClose } from "react-icons/ai";
-import { FaCheck, FaX } from "react-icons/fa6";
-import { CommentType, OnsubmitPropsType, Post } from "../../types/types";
-import axios from "axios";
 import {
   MdOutlineRemoveRedEye,
   MdOutlineThumbUp,
   MdThumbUpAlt,
 } from "react-icons/md";
-import { BiSolidComment } from "react-icons/bi";
-
+import axios from "axios";
 import toast from "react-hot-toast";
-import Loader from "../../components/loader";
-import CommentSection from "../../components/comment-section";
+import { useState } from "react";
+import { FaCheck, FaX } from "react-icons/fa6";
+import { BiSolidComment } from "react-icons/bi";
+import { AiOutlineClose } from "react-icons/ai";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { FaCog, FaExpandArrowsAlt } from "react-icons/fa";
+
+import useMode from "../../hooks/state";
 import { IoMdTrash } from "react-icons/io";
-import useConfirmationModal from "../../hooks/use-confirmation-modal";
+import Avatar from "../../components/avatar";
+import Loader from "../../components/loader";
+import Divider from "../../components/divider";
+import FullLoader from "../Loader/loader-full";
+import { Post, User } from "../../types/types";
+import PageLayout from "../../layout/page-layout";
+import base from "/textures/food_apple_01_diff_4k.jpg";
+import TextCarousel from "../../components/text-carousel";
+import CommentSection from "../../components/comment-section";
 import { dateConverter, dateReformat } from "../../utils/utils";
+import useConfirmationModal from "../../hooks/use-confirmation-modal";
 
 const hdris = [
   "apartment",
@@ -43,10 +42,51 @@ const hdris = [
 
 const Post = () => {
   const { postId } = useParams();
-  const token = useMode((state) => state.token);
+  const token = useMode((state: { token: string | null }) => state.token);
   const user = useMode((state) => state.user);
   const lightmode = useMode((state) => state.isDarkMode);
-  const [postData, setPostdata] = useState<Post>();
+
+  const {
+    data: postData,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ["post", postId, user],
+    queryFn: () => getPost(postId as string),
+    refetchOnMount: true,
+  });
+
+  const { data: viewCount } = useQuery({
+    queryKey: ["views", postId, user, token],
+    queryFn: () => addViewerCount(postData?.id, postData?.views),
+    refetchOnMount: true,
+    enabled: !!postData?.id,
+  });
+
+  console.log(viewCount);
+
+  const addViewerCount = async (postId: string, viewCount: number) => {
+    try {
+      if (postData?.userId === user?.id) return null;
+
+      const res = await axios.patch(
+        `http://localhost:8080/posts/${postId}/addViews`,
+        { viewCount },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(res);
+
+      return res.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // maps
   const [isSelected, setSelected] = useState("Base");
@@ -61,7 +101,7 @@ const Post = () => {
   const [color, setColor] = useState("#ffffff");
 
   // form state
-  const [isLoading, setIsloading] = useState(false);
+  // const [isLoading, setIsloading] = useState(false);
   const navigate = useNavigate();
 
   // open comment section
@@ -73,12 +113,16 @@ const Post = () => {
   // set view count
 
   const getPost = async (postId: string | undefined) => {
-    const res = await axios.get(`http://localhost:8080/posts/${postId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const res = await axios.get(`http://localhost:8080/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    const post = res.data;
-    setPostdata(post);
+      const post = res.data;
+      return post;
+    } catch (error) {
+      toast.error(`Error fetching post.`);
+    }
   };
 
   const deletePost = async (postId: string | undefined) => {
@@ -97,29 +141,6 @@ const Post = () => {
       toast.error("Failed deleting post.");
     }
   };
-
-  const addViewerCount = async (postId: string, viewCount: number) => {
-    try {
-      if (postData?.userId === user?.id) return null;
-
-      const res = await axios.patch(
-        `http://localhost:8080/posts/${postId}/addViews`,
-        { viewCount },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    } catch (err) {}
-  };
-
-  useEffect(() => {
-    // @ts-ignore
-    addViewerCount(postData?.id, postData?.views);
-    getPost(postId);
-  }, [postData?.userId]);
 
   const patchLike = async () => {
     try {
@@ -141,27 +162,17 @@ const Post = () => {
       if (patchLike) {
         getPost(postId);
       }
+      refetch();
     } catch (error) {
       toast.error("Liking post failed.");
     }
   };
 
-  const isLiked = postData?.likes.some((liker) => liker.id === user?.id);
+  const isLiked = postData?.likes.some((liker: User) => liker.id === user?.id);
 
-  // const {
-  //   isError,
-  //   data: postData,
-  //   error,
-  //   isPending,
-  //   isLoading,
-  // } = useQuery({
-  //   queryKey: ["post"],
-  //   queryFn: () => getPost(postId as string),
-  // });
-
-  // console.log(postData);
-
-  // SECTION FOR FOLLOWING THE DIV
+  if (isLoading) {
+    return <FullLoader />;
+  }
 
   return (
     <PageLayout>
@@ -574,7 +585,7 @@ const Post = () => {
                         } `}
                       />
                       <span className="md:text-[13px] sm:text-[12.5px] text-[11px]">
-                        {`${postData.views}`}
+                        {`${viewCount}`}
                       </span>
                     </div>
                   </div>
@@ -625,70 +636,7 @@ const Post = () => {
                 <Divider />
 
                 {toggleComment && (
-                  <CommentSection postId={postData.id} getPost={getPost} />
-                  // <div className="flex flex-col gap-4 text-normal w-full">
-                  //   <div className="w-full h-full relative overflow-y-auto">
-                  //     <Formik
-                  //       //@ts-ignore
-                  //       initialValues={initialCommVal}
-                  //       onSubmit={handleFormSubmitComm}
-                  //       validationSchema={commentSchema}
-                  //     >
-                  //       {({
-                  //         values,
-                  //         handleBlur,
-                  //         handleChange,
-                  //         handleSubmit,
-                  //         resetForm,
-                  //         errors,
-                  //         touched,
-                  //       }) => (
-                  //         <form
-                  //           onSubmit={handleSubmit}
-                  //           className="w-full flex flex-col gap-2"
-                  //         >
-                  //           <div className="w-full items-center justify-between">
-                  //             <h1 className="text-lg">Comments</h1>
-                  //             {errors.content && touched.content && (
-                  //               <div className="text-red-500 text-xs">
-                  //                 {errors.content}
-                  //               </div>
-                  //             )}
-                  //           </div>
-
-                  //           <div className="w-full flex gap-4">
-                  //             <textarea
-                  //               id="content"
-                  //               name="content"
-                  //               placeholder="Comment here..."
-                  //               rows={2}
-                  //               onInput={textareaExtend}
-                  //               value={values.content}
-                  //               onChange={handleChange}
-                  //               onBlur={handleBlur}
-                  //               className={`w-full h-full flex p-2 rounded-md focus:outline-none focus:border-amber-500 focus:ring-[1.5px] focus:ring-amber-500 ${
-                  //                 lightmode
-                  //                   ? "bg-zinc-100 border-zinc-500/50 border-[1px]"
-                  //                   : "bg-zinc-950 border-zinc-500/50 border-[1px]"
-                  //               }`}
-                  //             />
-                  //             <button
-                  //               type="submit"
-                  //               className=" right-2 inset-y-0"
-                  //             >
-                  //               <RiSendPlane2Fill
-                  //                 className={`text-2xl text-orange-500 hover:opacity-60 transition-all ease-in-out`}
-                  //               />
-                  //             </button>
-                  //           </div>
-                  //         </form>
-                  //       )}
-                  //     </Formik>
-
-                  //     <Divider />
-                  //     <CommentSection postId={postData?.id} />
-                  //   </div>
-                  // </div>
+                  <CommentSection postId={postData.id} refetchPost={refetch} />
                 )}
               </>
             )}

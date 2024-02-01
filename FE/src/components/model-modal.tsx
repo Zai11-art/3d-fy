@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Avatar from "./avatar";
 import Divider from "./divider";
@@ -26,6 +26,7 @@ const ModelModal = () => {
   const useModal = useModelModal();
   const md = useMediaQuery("(max-width: 768px)");
   const data = useModelModal((state) => state.data);
+  const navigate = useNavigate();
 
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // event delegation
@@ -53,9 +54,11 @@ const ModelModal = () => {
               <div className="relative border-[1px] rounded-xl border-zinc-100/40 flex md:w-[70%] w-full md:h-full h-[300px] items-center justify-center ">
                 {/* <ViewerComponent /> */}
                 <div className="bottom-5 inset-x-0 absolute w-full flex items-center justify-center z-[200]">
-                  <Link
-                    onClick={() => useModal.onClose()}
-                    to={`/post/${data?.id}`}
+                  <button
+                    onClick={() => {
+                      useModal.onClose();
+                      navigate(`/post/${data?.id}`);
+                    }}
                     className={`py-2 px-5 rounded-full ${
                       lightmode
                         ? "bg-gradient-to-r from-orange-500/70 to-orange-500 hover:bg-orange-500 shadow-slate-500/40 shadow-md text-white"
@@ -63,7 +66,7 @@ const ModelModal = () => {
                     }`}
                   >
                     View details Here
-                  </Link>
+                  </button>
                 </div>
               </div>
 
@@ -120,7 +123,7 @@ const ModelModal = () => {
                             lightmode ? "text-slate-800" : "text-slate-300"
                           } text-slate-300`}
                         >
-                          published: {dateConverter(data?.createdAt)}
+                          published:{`${dateConverter(`${data?.createdAt}`)}`}
                         </span>
                       </div>
                     </div>

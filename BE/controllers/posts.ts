@@ -60,8 +60,6 @@ export const getPosts = async (req: Request, res: Response) => {
       })
     );
 
-    console.log(parsedPosts);
-
     res.status(200).json(parsedPosts);
   } catch (err) {
     res.status(500).json({ error: err.message });

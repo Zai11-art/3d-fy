@@ -2,6 +2,8 @@ import axios from "axios";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import Dropzone from "react-dropzone";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -9,8 +11,6 @@ import useMode from "../../hooks/state";
 import Divider from "../../components/divider";
 import PageLayout from "../../layout/page-layout";
 import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
-import Dropzone from "react-dropzone";
-import toast from "react-hot-toast";
 
 const registerSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("required"),
@@ -44,7 +44,6 @@ const Register = () => {
   const lightmode = useMode((state) => state.isDarkMode);
   const [isLoading, setIsloading] = useState(false);
   const [imagePath, setimagePath] = useState([]);
-  const [imagePathBanner, setimagePathBanner] = useState([]);
   const mode = useMode();
   const navigate = useNavigate();
 
@@ -53,25 +52,26 @@ const Register = () => {
     onSubmitProps: OnsubmitPropsType
   ) => {
     try {
-      console.log("values here");
-      console.log(values);
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
         formData.append(key, value);
       });
       formData.append("profilePic", values.profilePic.name);
 
+      const res = await axios.post(
+        "http://localhost:8080/auth/register",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await res.data;
       setIsloading(true);
-      const registerRes = await fetch("http://localhost:8080/auth/register", {
-        method: "POST",
-        body: formData,
-      });
 
-      console.log(registerRes);
-
-      const data = await registerRes.json();
-
-      if (registerRes.ok) {
+      if (res.statusText) {
         mode.setToken(data);
         toast.success(`Registered. Please login.`);
         setTimeout(() => {
@@ -90,7 +90,6 @@ const Register = () => {
     values: RegisterValuesType,
     onSubmitProps: OnsubmitPropsType
   ) => {
-    console.log(values);
     await register(values, onSubmitProps);
   };
 

@@ -1,21 +1,13 @@
+import * as yup from "yup";
 import { Formik } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import Dropzone from "react-dropzone";
-import { FaFile } from "react-icons/fa6";
-import { MdDriveFolderUpload } from "react-icons/md";
-import FileUpload from "../../components/file-upload";
+import { useNavigate } from "react-router-dom";
+
 import useMode from "../../hooks/state";
 import PageLayout from "../../layout/page-layout";
-import * as yup from "yup";
-import {
-  OnsubmitPropsType,
-  RegisterValuesType,
-  Upload3dType,
-} from "../../types/types";
-import Divider from "../../components/divider";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "next/navigation";
+import { OnsubmitPropsType, Upload3dType } from "../../types/types";
 
 const registerSchema = yup.object().shape({
   title: yup.string().required("required"),
@@ -37,85 +29,82 @@ const Upload = () => {
   const [imagePath, setimagePath] = useState([]);
   const [fileType, setFileType] = useState("");
   const [fileName, setFileName] = useState("");
-  const mode = useMode();
   const token = useMode((state) => state.token);
   const userid = useMode((state) => state.user?.id);
   const navigate = useNavigate();
-
-
-  console.log("img path here");
-  console.log(imagePath);
 
   const register = async (
     values: Upload3dType,
     onSubmitProps: OnsubmitPropsType
   ) => {
-    console.log("values here");
-    console.log(values);
-    const formData = new FormData();
-    Object.entries(values).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+    try {
+      const formData = new FormData();
+      Object.entries(values).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
 
-    console.log(formData);
-    formData.append("file", values.file?.name);
-    formData.append("userId", `${userid}`);
+      formData.append("file", values.file?.name);
+      formData.append("userId", `${userid}`);
 
-    setIsloading(true);
-    const registerRes = await fetch("http://localhost:8080/posts/upload", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
+      setIsloading(true);
+      const registerRes = await fetch("http://localhost:8080/posts/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
-    const data = await registerRes.json();
-    console.log(data);
-    if (data) {
-      toast.success(`Post uploaded.`);
-      setTimeout(() => {
-        navigate(`/${userid}/profile`);
-      }, 2000);
-    } else {
-      toast.error("Failed uploading.");
+      const data = await registerRes.json();
+      console.log(data);
+      if (data) {
+        toast.success(`Post uploaded.`);
+        setTimeout(() => {
+          navigate(`/${userid}/profile`);
+        }, 2000);
+      } else {
+        toast.error("Failed uploading.");
+      }
+      onSubmitProps.resetForm();
+    } catch (error) {
+      toast.error(`${error}`);
     }
-    onSubmitProps.resetForm();
-    // console.log(data);
   };
 
   const handleFormSubmitReg = async (
     values: Upload3dType,
     onSubmitProps: OnsubmitPropsType
   ) => {
-    console.log(values);
     await register(values, onSubmitProps);
   };
 
   const handleOnDrop = (acceptedFiles: any) => {
-    console.log(acceptedFiles);
-    setFileName(acceptedFiles[0].name);
-    if (
-      (acceptedFiles.length <= 8 &&
-        acceptedFiles[0].name.split(".").slice(-1)[0] === "glb") ||
-      acceptedFiles[0].name.split(".").slice(-1)[0] === "gltf" ||
-      acceptedFiles[0].name.split(".").slice(-1)[0] === "jpeg" ||
-      acceptedFiles[0].name.split(".").slice(-1)[0] === "jpg" ||
-      acceptedFiles[0].name.split(".").slice(-1)[0] === "png"
-    ) {
-      setFileType(acceptedFiles[0].name.split(".").slice(-1)[0]);
-      setimagePath(
-        //@ts-ignore
-        acceptedFiles.map((file) => URL.createObjectURL(file))
-      );
-      toast.success(`${acceptedFiles[0].name} uploaded successfully`);
-    } else {
-      toast.error(
-        `${
-          acceptedFiles[0].name.length > 20
-            ? acceptedFiles[0].name.slice(0, 10) + "..."
-            : acceptedFiles[0].name
-        } upload failed. Use gltf / glb / png / jpg / jpeg.`
-      );
-      return;
+    try {
+      setFileName(acceptedFiles[0].name);
+      if (
+        (acceptedFiles.length <= 8 &&
+          acceptedFiles[0].name.split(".").slice(-1)[0] === "glb") ||
+        acceptedFiles[0].name.split(".").slice(-1)[0] === "gltf" ||
+        acceptedFiles[0].name.split(".").slice(-1)[0] === "jpeg" ||
+        acceptedFiles[0].name.split(".").slice(-1)[0] === "jpg" ||
+        acceptedFiles[0].name.split(".").slice(-1)[0] === "png"
+      ) {
+        setFileType(acceptedFiles[0].name.split(".").slice(-1)[0]);
+        setimagePath(
+          //@ts-ignore
+          acceptedFiles.map((file) => URL.createObjectURL(file))
+        );
+        toast.success(`${acceptedFiles[0].name} uploaded successfully`);
+      } else {
+        toast.error(
+          `${
+            acceptedFiles[0].name.length > 20
+              ? acceptedFiles[0].name.slice(0, 10) + "..."
+              : acceptedFiles[0].name
+          } upload failed. Use gltf / glb / png / jpg / jpeg.`
+        );
+        return;
+      }
+    } catch (err) {
+      toast.error("Error uploading");
     }
   };
 
@@ -142,7 +131,6 @@ const Upload = () => {
               handleChange,
               handleSubmit,
               setFieldValue,
-              resetForm,
               errors,
               touched,
             }) => (

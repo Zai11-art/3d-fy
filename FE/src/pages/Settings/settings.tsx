@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { FaCog } from "react-icons/fa";
-import Divider from "../../components/divider";
-import useMode from "../../hooks/state";
-import PageLayout from "../../layout/page-layout";
+import axios from "axios";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { FcGoogle } from "react-icons/fc";
 import Dropzone from "react-dropzone";
-import axios from "axios";
+import { FaCog } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { Link, useNavigate } from "react-router-dom";
+
+import useMode from "../../hooks/state";
+import Divider from "../../components/divider";
+import PageLayout from "../../layout/page-layout";
+import { OnsubmitPropsType, RegisterValuesType } from "../../types/types";
 
 const registerSchema = yup.object().shape({
   email: yup.string().email("Invalid email"),
@@ -35,15 +35,6 @@ const Settings = () => {
     onSubmitProps: OnsubmitPropsType
   ) => {
     try {
-      console.log("values here");
-      console.log(values);
-
-      // const formData = new FormData();
-      // Object.entries(values).forEach(([key, value]) => {
-      //   formData.append(key, value);
-      // });
-      // formData.append("profilePic", values.profilePic.name);
-
       setIsloading(true);
 
       const response = await axios.put(
@@ -63,7 +54,7 @@ const Settings = () => {
         }, 2000);
       }
 
-      // onSubmitProps.resetForm();
+      onSubmitProps.resetForm();
     } catch (error) {
       toast.error(`Updating failed failed. Error: ${error}`);
     } finally {
@@ -359,101 +350,3 @@ const Settings = () => {
 };
 
 export default Settings;
-
-// DELETE SECTIONS
-{
-  /* <div className=" w-full h-full flex flex-col gap-5">
-  
-  <div className="flex-col flex gap-3 w-full ">
-    <div className="w-full flex gap-5 justify-between items-center">
-      <label className="text-md" htmlFor="currentPassword">
-        Current Password
-      </label>
-
-      {errors.currentPassword && touched.currentPassword && (
-        <div className="text-red-500 text-xs">{errors.currentPassword}</div>
-      )}
-    </div>
-    <input
-      disabled={isLoading}
-      type="password"
-      id="currentPassword"
-      name="currentPassword"
-      value={values.currentPassword}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      className={`${
-        errors.currentPassword && touched.currentPassword
-          ? "border-red-500 "
-          : "border-zinc-500/50"
-      } px-2 p-1 text-sm text-normal ${
-        lightmode
-          ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-          : "bg-black text-white"
-      } ${isLoading && "animate-pulse"} rounded-md border-[1px] `}
-    />
-  </div>
-
-
-  <div className="flex-col flex gap-3 w-full ">
-    <div className="w-full flex gap-5 justify-between items-center">
-      <label className="text-md" htmlFor="password">
-        New Password
-      </label>
- 
-      {errors.password && touched.password && (
-        <div className="text-red-500 text-xs">{errors.password}</div>
-      )}
-    </div>
-    <input
-      disabled={isLoading}
-      type="password"
-      id="password"
-      name="password"
-      value={values.password}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      className={`${
-        errors.password && touched.password
-          ? "border-red-500 "
-          : "border-zinc-500/50"
-      } px-2 p-1 text-sm text-normal ${
-        lightmode
-          ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-          : "bg-black text-white"
-      } ${isLoading && "animate-pulse"} rounded-md border-[1px] `}
-    />
-  </div>
-
-
-  <div className="flex-col flex gap-3 w-full ">
-    <div className="w-full flex items-center justify-between">
-      <label className="text-sm" htmlFor={"confirmPassword"}>
-        Confirm Password
-      </label>
-
-      {errors.confirmPassword && touched.confirmPassword && (
-        <div className="text-red-500 text-xs">{errors.confirmPassword}</div>
-      )}
-    </div>
-    <input
-      disabled={isLoading}
-      type="password"
-      id="confirmPassword"
-      name="confirmPassword"
-      // value={user?.confirmPassword}
-      onChange={handleChange}
-      onBlur={handleBlur}
-      className={`${
-        errors.confirmPassword && touched.confirmPassword
-          ? "border-red-500 "
-          : "border-zinc-500/50"
-      } px-2 p-1 text-sm text-normal ${
-        lightmode
-          ? "bg-zinc-100 text-black shadow-inner shadow-zinc-950/20"
-          : "bg-black text-white"
-      } ${isLoading && "animate-pulse"} border-[1px]  rounded-md`}
-    />
-  </div>
-</div>; */
-}

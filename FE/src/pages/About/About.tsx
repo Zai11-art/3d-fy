@@ -1,4 +1,5 @@
-import { FaGithub, FaReddit, FaTwitter, FaXTwitter } from "react-icons/fa6";
+import { FaGithub, FaReddit, FaXTwitter } from "react-icons/fa6";
+
 import Divider from "../../components/divider";
 import PageLayout from "../../layout/page-layout";
 
@@ -22,7 +23,7 @@ const About = () => {
               <FaXTwitter />
               <FaReddit />
             </div>
-        <Divider />
+            <Divider />
           </div>
         </div>
 

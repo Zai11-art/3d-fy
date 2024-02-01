@@ -1,28 +1,28 @@
 import { useState } from "react";
-import reactLogo from "../assets/react.svg";
 import {
   MdDashboard,
   MdOutlineDarkMode,
   MdOutlineLightMode,
 } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-
-import { MdArrowForward, MdMenu } from "react-icons/md";
-import { useMediaQuery } from "../hooks/use-media-query";
-import useMode from "../hooks/state";
-import Avatar from "./avatar";
-import Divider from "./divider";
-import { CgProfile, CgShapeHexagon } from "react-icons/cg";
-import { MdStarPurple500 } from "react-icons/md";
-import UserDropdown from "./user-dropdown";
 import toast from "react-hot-toast";
 import { FaCog, FaPlus } from "react-icons/fa";
+import { MdStarPurple500 } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import { MdArrowForward, MdMenu } from "react-icons/md";
+import { CgProfile, CgShapeHexagon } from "react-icons/cg";
+
+import Avatar from "./avatar";
+import Divider from "./divider";
+import useMode from "../hooks/state";
+import UserDropdown from "./user-dropdown";
+import { useMediaQuery } from "../hooks/use-media-query";
 
 const dummyUserData = {
   name: "Raygun",
 };
 
 const navLinks = [
+  { label: "Feed", url: "/feed" },
   { label: "Models", url: "/models" },
   { label: "Showcase", url: "/showcase" },
   { label: "Learn", url: "/learn" },

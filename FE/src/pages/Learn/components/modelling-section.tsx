@@ -1,8 +1,8 @@
-import { FaExternalLinkAlt } from "react-icons/fa";
-import { MdArrowDownward } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { MdArrowDownward } from "react-icons/md";
+import { FaExternalLinkAlt } from "react-icons/fa";
 import { TypeAnimation } from "react-type-animation";
-import ModelViewer from "../../../components/model-viewer";
+
 import {
   sectionModelling,
   sectionModellingCAD,
@@ -18,6 +18,7 @@ import {
 import useMode from "../../../hooks/state";
 import useInfoModal from "../../../hooks/use-info-modal";
 import useScrollTo from "../../../hooks/use-scroll-to-el";
+import ModelViewer from "../../../components/model-viewer";
 
 const ModellingSection = () => {
   const lightmode = useMode((state) => state.isDarkMode);

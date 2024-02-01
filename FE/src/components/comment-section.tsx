@@ -12,6 +12,8 @@ import useInputModal from "../hooks/use-input-modal";
 import useConfirmationModal from "../hooks/use-confirmation-modal";
 import { LuClipboardEdit } from "react-icons/lu";
 import { BiTrash } from "react-icons/bi";
+import { useQuery } from "@tanstack/react-query";
+import { dateConverter } from "../utils/utils";
 
 const commentSchema = yup.object().shape({
   content: yup.string().notRequired().max(100),
@@ -30,28 +32,31 @@ const textareaExtend = (e: React.FormEvent<HTMLTextAreaElement>) => {
 
 const CommentSection = ({
   postId,
-  getPost,
+  refetchPost,
 }: {
   postId: string | undefined;
-  getPost: (postId: string | undefined) => void;
+  refetchPost: () => void;
 }) => {
   const lightmode = useMode((state) => state.isDarkMode);
   const user = useMode((state) => state.user);
   const token = useMode((state) => state.token);
-  const [comments, setComments] = useState<Comment[]>();
+  // const [comments, setComments] = useState<Comment[]>();
   const [isLoading, setIsloading] = useState(false);
+
+  const {
+    isError,
+    data: comments,
+    error,
+    isPending,
+    refetch,
+  } = useQuery({
+    queryKey: ["comments"],
+    queryFn: () => fetchComments(),
+  });
 
   // BUTTON MODALs
   const modeUpdate = useInputModal();
   const modeDelete = useConfirmationModal();
-
-  const editComment = () => {
-    console.log("hehe");
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, []);
 
   const deleteComment = async (commentId: string) => {
     try {
@@ -61,9 +66,9 @@ const CommentSection = ({
         })
         .then((res) => res.data);
 
-      getPost(postId);
       if (deletedComment) {
-        fetchComments();
+        refetch();
+        refetchPost();
         toast.success("Deleted reply.");
       }
     } catch (error) {
@@ -79,9 +84,7 @@ const CommentSection = ({
         })
         .then((res) => res.data);
 
-      if (!comments) return;
-
-      setComments(comments);
+      return comments;
     } catch (error) {
       toast.error("Error fetching comments.");
     }
@@ -109,8 +112,8 @@ const CommentSection = ({
       );
 
       setIsloading(true);
-      fetchComments();
-      getPost(postId);
+      refetch();
+      refetchPost();
 
       if (!comment) {
         setIsloading(false);
@@ -217,7 +220,7 @@ const CommentSection = ({
                             {comment.username}
                           </span>
                           <span className="text-xs ">
-                            {comment.createdAt}
+                            {`${dateConverter(comment.createdAt)}`}
                             {/* {comment.content.length} */}
                           </span>
                         </div>
@@ -254,8 +257,10 @@ const CommentSection = ({
                               description: "This action is irreversible.",
                               content: `${comment.content}`,
                               commentId: `${comment.id}`,
-                              method: () => editComment(),
-                              refetcher: () => fetchComments(),
+                              refetcher: () => refetchPost(),
+                              method: function (): void {
+                                throw new Error("Function not implemented.");
+                              },
                             })
                           }
                           className="p-1 text-xs bg-blue-600 hover:bg-blue-400 rounded-full flex items-center justify-center"

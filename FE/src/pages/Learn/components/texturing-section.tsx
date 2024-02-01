@@ -1,6 +1,6 @@
-import React from "react";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { TypeAnimation } from "react-type-animation";
+
 import {
   sectionTexturing,
   sectionTexturingSoftware,

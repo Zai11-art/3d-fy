@@ -1,16 +1,17 @@
-import express from "express";
+import cors from "cors";
+import path from "path";
+import morgan from "morgan";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import express from "express";
+import { fileURLToPath } from "url";
+import compression from "compression";
+import bodyParser, { OptionsJson } from "body-parser";
+
 import userRoutes from "./routes/users.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
 import feedRoutes from "./routes/feed.js";
-import helmet from "helmet";
-import morgan from "morgan";
-import cors from "cors";
-import compression from "compression";
-import bodyParser, { OptionsJson } from "body-parser";
-import { fileURLToPath } from "url";
-import path from "path";
 
 dotenv.config();
 
